@@ -56,21 +56,35 @@
     bd.addEventListener('click', (e) => { if (e.target === bd) bd.classList.add('hidden'); });
   });
 
-  // ---------------- tabs ----------------
+  // ---------------- tabs（兩層：合菜／便當／共用 -> 各自的子分頁） ----------------
+
+  const TAB_LOADERS = {
+    orders: loadOrders,
+    monthly: loadMonthlyMenu,
+    dishes: loadDishes,
+    purchase: renderPurchase,
+    'bento-orders': loadBentoOrders,
+    'bento-monthly': loadBentoMonthlyMenu,
+    'daily-sheet': loadDailySheet,
+  };
+
+  function activateTab(tabName) {
+    document.querySelectorAll('.tab-btn').forEach((b) => b.classList.toggle('active', b.dataset.tab === tabName));
+    document.querySelectorAll('.tab-panel').forEach((p) => p.classList.toggle('active', p.id === 'tab-' + tabName));
+    if (TAB_LOADERS[tabName]) TAB_LOADERS[tabName]();
+  }
 
   document.querySelectorAll('.tab-btn').forEach((btn) => {
+    btn.addEventListener('click', () => activateTab(btn.dataset.tab));
+  });
+
+  document.querySelectorAll('.tab-top-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
-      document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-      if (btn.dataset.tab === 'orders') loadOrders();
-      if (btn.dataset.tab === 'monthly') loadMonthlyMenu();
-      if (btn.dataset.tab === 'dishes') loadDishes();
-      if (btn.dataset.tab === 'purchase') renderPurchase();
-      if (btn.dataset.tab === 'bento-orders') loadBentoOrders();
-      if (btn.dataset.tab === 'bento-monthly') loadBentoMonthlyMenu();
-      if (btn.dataset.tab === 'daily-sheet') loadDailySheet();
+      const group = btn.dataset.group;
+      document.querySelectorAll('.tab-top-btn').forEach((b) => b.classList.toggle('active', b === btn));
+      document.querySelectorAll('.tab-sub-group').forEach((g) => g.classList.toggle('hidden', g.dataset.group !== group));
+      const firstTab = document.querySelector(`.tab-sub-group[data-group="${group}"] .tab-btn`);
+      if (firstTab) activateTab(firstTab.dataset.tab);
     });
   });
 

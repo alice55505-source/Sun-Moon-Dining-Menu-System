@@ -9,19 +9,27 @@
 <body>
 <header class="topbar">
   <h1>🍱 日月自助餐 出菜單系統</h1>
-  <nav class="tabs">
-    <span class="tab-group-label">合菜</span>
-    <button class="tab-btn tab-grp-banquet active" data-tab="orders">合菜訂單</button>
-    <button class="tab-btn tab-grp-banquet" data-tab="monthly">合菜月菜單</button>
-    <span class="tab-group-label">便當</span>
-    <button class="tab-btn tab-grp-bento" data-tab="bento-orders">廠商訂單</button>
-    <button class="tab-btn tab-grp-bento" data-tab="bento-monthly">便當月菜單</button>
-    <span class="tab-group-label">共用</span>
-    <button class="tab-btn tab-grp-shared" data-tab="dishes">菜色資料庫</button>
-    <button class="tab-btn tab-grp-shared" data-tab="purchase">採購清單</button>
-    <button class="tab-btn tab-grp-shared" data-tab="daily-sheet">當天食材表</button>
+  <nav class="tabs-top">
+    <button class="tab-top-btn active" data-group="banquet">合菜</button>
+    <button class="tab-top-btn" data-group="bento">便當</button>
+    <button class="tab-top-btn" data-group="shared">共用</button>
   </nav>
 </header>
+<nav class="tabs-sub">
+  <div class="tab-sub-group" data-group="banquet">
+    <button class="tab-btn active" data-tab="orders">合菜訂單</button>
+    <button class="tab-btn" data-tab="monthly">合菜月菜單</button>
+  </div>
+  <div class="tab-sub-group hidden" data-group="bento">
+    <button class="tab-btn" data-tab="bento-orders">廠商訂單</button>
+    <button class="tab-btn" data-tab="bento-monthly">便當月菜單</button>
+  </div>
+  <div class="tab-sub-group hidden" data-group="shared">
+    <button class="tab-btn" data-tab="dishes">菜色資料庫</button>
+    <button class="tab-btn" data-tab="purchase">採購清單</button>
+    <button class="tab-btn" data-tab="daily-sheet">當天食材表</button>
+  </div>
+</nav>
 
 <main id="app">
   <!-- ============ 訂單管理 ============ -->
