@@ -5,340 +5,973 @@ DELETE FROM monthly_menu_items;
 DELETE FROM dish_ingredients;
 DELETE FROM dishes;
 
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (1, '白飯', '主食', 0, '素', '煮', '白', 0, 0, 20, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (1, '白米', 600, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (2, '炒麵', '主食', 0, '素', '炒', '黃', 0, 0, 35, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (2, '油麵', 500, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (2, '高麗菜', 150, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (2, '紅蘿蔔絲', 50, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (3, '炒米粉', '主食', 0, '素', '炒', '白', 0, 0, 35, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (3, '米粉', 400, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (3, '高麗菜', 150, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (3, '香菇絲', 30, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (4, '筒仔米糕', '主食', 1, '豬', '蒸', '褐', 0, 0, 40, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (4, '長糯米', 500, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (4, '滷肉燥', 100, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (4, '香菇', 20, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (5, '芋頭米粉', '主食', 0, '素', '炒', '褐', 0, 0, 40, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (5, '米粉', 400, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (5, '芋頭', 150, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (6, '蛋炒飯', '主食', 0, '蛋', '炒', '黃', 0, 0, 35, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (6, '白飯', 600, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (6, '雞蛋', 3, '顆');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (7, '油飯', '主食', 1, '豬', '蒸', '褐', 0, 0, 45, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (7, '長糯米', 500, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (7, '豬肉絲', 100, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (7, '香菇', 20, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (8, '什錦炒飯', '主食', 0, '素', '炒', '黃', 0, 0, 40, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (8, '白飯', 600, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (8, '玉米粒', 80, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (8, '青豆', 50, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (9, '紅燒獅子頭', '主菜', 1, '豬', '滷', '褐', 0, 0, 90, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (9, '豬絞肉', 500, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (9, '大白菜', 300, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (9, '荸薺', 80, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (10, '糖醋排骨', '主菜', 1, '豬', '炸', '紅', 0, 0, 95, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (10, '小排骨', 500, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (10, '鳳梨片', 100, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (10, '青椒', 50, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (11, '客家小炒', '主菜', 1, '豬', '炒', '褐', 0, 0, 85, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (11, '五花肉', 300, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (11, '魷魚乾', 100, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (11, '豆干', 150, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (11, '芹菜', 80, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (12, '香煎雞腿排', '主菜', 0, '雞', '煎', '褐', 0, 0, 100, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (12, '去骨雞腿', 600, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (13, '蔥爆牛肉', '主菜', 0, '牛', '炒', '褐', 0, 0, 120, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (13, '牛肉片', 400, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (13, '青蔥', 100, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (13, '洋蔥', 80, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (14, '樹子蒸鱈魚', '主菜', 0, '魚', '蒸', '白', 0, 0, 150, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (14, '鱈魚', 500, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (14, '破布子', 30, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (14, '薑絲', 20, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (15, '塔香三杯雞', '主菜', 0, '雞', '炒', '褐', 1, 0, 100, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (15, '雞腿肉', 500, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (15, '九層塔', 30, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (15, '老薑', 50, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (16, '避風塘蝦', '主菜', 0, '海鮮', '炸', '黃', 1, 0, 160, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (16, '白蝦', 500, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (16, '蒜酥', 60, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (16, '辣椒末', 20, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (17, '蒜泥蒸魚', '主菜', 0, '魚', '蒸', '白', 0, 0, 120, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (17, '鱸魚', 500, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (17, '蒜泥', 40, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (18, '京都排骨', '主菜', 1, '豬', '炸', '紅', 0, 0, 90, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (18, '大排', 500, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (18, '洋蔥', 60, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (19, '東坡肉', '主菜', 1, '豬', '滷', '褐', 0, 1, 110, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (19, '五花肉塊', 500, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (20, '左宗棠雞', '主菜', 0, '雞', '炸', '紅', 1, 0, 110, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (20, '雞胸肉', 500, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (20, '乾辣椒', 20, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (21, '宮保雞丁', '主菜', 0, '雞', '炒', '紅', 1, 0, 95, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (21, '雞胸肉', 400, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (21, '花生', 80, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (21, '乾辣椒', 15, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (22, '蜜汁叉燒', '主菜', 1, '豬', '烤', '紅', 0, 0, 100, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (22, '梅花肉', 500, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (23, '檸檬蒸魚', '主菜', 0, '魚', '蒸', '白', 0, 0, 130, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (23, '龍膽石斑', 500, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (23, '檸檬', 2, '顆');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (24, '紅燒牛腩', '主菜', 0, '牛', '滷', '褐', 0, 1, 140, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (24, '牛腩', 500, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (24, '紅蘿蔔', 100, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (25, '黑胡椒牛柳', '主菜', 0, '牛', '炒', '褐', 0, 0, 130, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (25, '牛柳', 400, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (25, '洋蔥', 80, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (26, '塔香海鮮', '主菜', 0, '海鮮', '炒', '黃', 1, 0, 150, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (26, '綜合海鮮', 400, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (26, '九層塔', 20, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (27, '白斬雞', '主菜', 0, '雞', '煮', '白', 0, 0, 100, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (27, '土雞腿', 600, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (28, '燒酒雞', '主菜', 0, '雞', '滷', '褐', 0, 0, 110, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (28, '雞腿肉', 500, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (28, '米酒', 300, 'ml');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (29, '蒜香排骨酥', '主菜', 1, '豬', '炸', '褐', 0, 0, 95, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (29, '小排骨', 500, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (29, '蒜末', 40, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (30, '沙茶羊肉', '主菜', 0, '羊', '炒', '褐', 1, 0, 150, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (30, '羊肉片', 400, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (30, '沙茶醬', 50, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (31, 'XO醬炒海鮮', '主菜', 0, '海鮮', '炒', '紅', 1, 0, 160, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (31, '綜合海鮮', 400, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (31, 'XO醬', 40, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (32, '蒸烤鴨腿', '主菜', 0, '其他', '烤', '褐', 0, 0, 140, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (32, '鴨腿', 500, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (33, '檸檬鮭魚', '主菜', 0, '魚', '煎', '橙', 0, 0, 140, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (33, '鮭魚', 450, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (33, '檸檬', 1, '顆');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (34, '蔥燒鯽魚', '主菜', 0, '魚', '煎', '褐', 0, 0, 110, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (34, '鯽魚', 500, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (34, '青蔥', 60, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (35, '塔香烘蛋', '主菜', 0, '蛋', '煎', '黃', 0, 0, 70, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (35, '雞蛋', 6, '顆');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (35, '九層塔', 20, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (36, '蒜燒中卷', '主菜', 0, '海鮮', '炒', '白', 0, 0, 120, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (36, '中卷', 400, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (36, '蒜苗', 60, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (37, '紅麴排骨', '主菜', 1, '豬', '炸', '紅', 0, 0, 95, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (37, '小排骨', 500, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (37, '紅麴醬', 40, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (38, '蜜汁烤雞腿', '主菜', 0, '雞', '烤', '褐', 0, 0, 110, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (38, '雞腿', 600, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (39, '塔香牛肉', '主菜', 0, '牛', '炒', '褐', 1, 0, 140, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (39, '牛肉片', 400, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (39, '九層塔', 20, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (40, '荷葉粉蒸肉', '主菜', 1, '豬', '蒸', '褐', 0, 1, 100, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (40, '五花肉片', 400, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (40, '蒸肉粉', 80, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (41, '檸檬雞排', '主菜', 0, '雞', '炸', '黃', 0, 0, 100, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (41, '雞胸肉', 500, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (41, '檸檬', 2, '顆');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (42, '麻油雞', '主菜', 0, '雞', '煮', '褐', 0, 1, 110, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (42, '雞腿肉', 500, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (42, '麻油', 50, 'ml');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (42, '老薑', 40, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (43, '蒜蓉蒸蝦', '主菜', 0, '海鮮', '蒸', '白', 0, 0, 150, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (43, '草蝦', 500, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (43, '蒜蓉', 50, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (44, '螞蟻上樹', '副菜', 1, '豬', '炒', '紅', 1, 0, 60, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (44, '冬粉', 200, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (44, '豬絞肉', 150, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (45, '麻婆豆腐', '副菜', 1, '豬', '煮', '紅', 1, 0, 55, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (45, '嫩豆腐', 400, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (45, '豬絞肉', 100, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (46, '滷豆干海帶', '副菜', 0, '素', '滷', '褐', 0, 1, 45, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (46, '豆干', 200, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (46, '海帶', 200, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (47, '涼拌小黃瓜', '副菜', 0, '素', '涼拌', '綠', 0, 0, 40, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (47, '小黃瓜', 300, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (47, '蒜末', 20, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (48, '蒜泥白肉', '副菜', 1, '豬', '煮', '白', 0, 0, 70, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (48, '五花肉片', 300, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (48, '蒜泥', 30, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (49, '蔭豉蚵仔', '副菜', 0, '海鮮', '煮', '黑', 0, 0, 90, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (49, '鮮蚵', 300, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (49, '豆豉', 20, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (49, '薑絲', 20, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (50, '涼拌木耳', '副菜', 0, '素', '涼拌', '黑', 0, 0, 40, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (50, '黑木耳', 250, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (51, '客家封肉', '副菜', 1, '豬', '滷', '褐', 0, 1, 85, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (51, '五花肉塊', 400, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (51, '梅乾菜', 80, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (52, '塔香豆腐煲', '副菜', 0, '素', '滷', '褐', 0, 0, 55, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (52, '板豆腐', 400, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (52, '九層塔', 15, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (53, '開陽白菜', '副菜', 0, '素', '煮', '白', 0, 0, 45, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (53, '大白菜', 400, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (53, '蝦米', 20, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (54, '涼拌豆芽', '副菜', 0, '素', '涼拌', '白', 0, 0, 35, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (54, '綠豆芽', 350, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (55, '紅燒杏鮑菇', '副菜', 0, '素', '滷', '褐', 0, 0, 50, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (55, '杏鮑菇', 300, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (56, '皮蛋豆腐', '副菜', 0, '蛋', '生食', '黑', 0, 0, 40, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (56, '皮蛋', 4, '顆');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (56, '嫩豆腐', 300, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (57, '涼拌海帶芽', '副菜', 0, '素', '涼拌', '綠', 0, 0, 35, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (57, '海帶芽', 200, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (58, '紹興醉雞', '副菜', 0, '雞', '煮', '白', 0, 0, 80, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (58, '去骨雞腿', 400, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (58, '紹興酒', 100, 'ml');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (59, '五香滷牛腱', '副菜', 0, '牛', '滷', '褐', 0, 0, 90, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (59, '牛腱', 400, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (60, '涼拌花枝', '副菜', 0, '海鮮', '涼拌', '白', 0, 0, 70, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (60, '花枝', 300, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (61, '客家炒肉絲', '副菜', 1, '豬', '炒', '褐', 0, 0, 60, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (61, '豬肉絲', 250, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (61, '豆干絲', 100, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (62, '塔香茭白筍', '副菜', 0, '素', '炒', '白', 0, 0, 45, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (62, '茭白筍', 300, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (62, '九層塔', 15, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (63, '破布子蒸肉餅', '副菜', 1, '豬', '蒸', '褐', 0, 1, 65, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (63, '豬絞肉', 300, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (63, '破布子', 30, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (64, '涼拌娃娃菜', '副菜', 0, '素', '涼拌', '綠', 0, 0, 40, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (64, '娃娃菜', 300, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (65, '蒜香四季豆', '副菜', 0, '素', '炒', '綠', 0, 0, 45, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (65, '四季豆', 300, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (65, '蒜末', 20, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (66, '客家小魚乾', '副菜', 0, '海鮮', '炒', '黑', 1, 0, 55, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (66, '小魚乾', 150, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (66, '花生', 80, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (67, '塔香皮蛋', '副菜', 0, '蛋', '炒', '黑', 0, 0, 45, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (67, '皮蛋', 4, '顆');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (67, '九層塔', 15, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (68, '涼拌牛腱', '副菜', 0, '牛', '涼拌', '褐', 0, 0, 85, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (68, '牛腱', 350, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (69, '塔香素肚', '副菜', 0, '素', '炒', '黃', 0, 0, 45, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (69, '素肚', 250, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (69, '九層塔', 15, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (70, '清炒高麗菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (70, '高麗菜', 500, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (71, '炒地瓜葉', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (71, '地瓜葉', 400, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (72, '蒜炒A菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (72, 'A菜', 400, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (73, '香菇燴時蔬', '時蔬', 0, '素', '煮', '綠', 0, 1, 50, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (73, '綜合時蔬', 400, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (73, '乾香菇', 30, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (74, '塔香茄子', '時蔬', 0, '素', '炒', '紫', 0, 0, 45, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (74, '茄子', 400, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (74, '九層塔', 20, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (75, '炒青花菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (75, '青花菜', 400, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (76, '開陽高麗菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (76, '高麗菜', 450, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (76, '蝦米', 15, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (77, '蒜炒山蘇', '時蔬', 0, '素', '炒', '綠', 0, 0, 50, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (77, '山蘇', 350, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (78, '皇宮菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (78, '皇宮菜', 400, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (79, '炒龍鬚菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 50, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (79, '龍鬚菜', 350, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (80, '蒜炒油菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (80, '油菜', 400, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (81, '清炒絲瓜', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (81, '絲瓜', 400, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (82, '炒山藥', '時蔬', 0, '素', '炒', '白', 0, 0, 50, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (82, '山藥', 350, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (83, '涼拌秋葵', '時蔬', 0, '素', '涼拌', '綠', 0, 0, 40, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (83, '秋葵', 300, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (84, '塔香四季豆', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (84, '四季豆', 300, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (84, '九層塔', 15, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (85, '清炒白花椰', '時蔬', 0, '素', '炒', '白', 0, 0, 45, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (85, '白花椰菜', 400, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (86, '蒜香蘆筍', '時蔬', 0, '素', '炒', '綠', 0, 0, 55, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (86, '蘆筍', 300, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (86, '蒜末', 20, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (87, '炒紅鳳菜', '時蔬', 0, '素', '炒', '紅', 0, 0, 45, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (87, '紅鳳菜', 350, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (88, '蒜炒莧菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (88, '莧菜', 350, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (89, '蒜炒空心菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (89, '空心菜', 400, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (90, '五味小卷拼盤', '配菜', 0, '海鮮', '涼拌', '白', 0, 0, 100, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (90, '小卷', 300, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (91, '滷味拼盤', '配菜', 1, '豬', '滷', '褐', 0, 0, 90, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (91, '豬耳朵', 100, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (91, '豆干', 100, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (91, '海帶', 100, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (92, '涼拌三絲', '配菜', 0, '素', '涼拌', '白', 0, 0, 45, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (92, '干絲', 150, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (92, '紅蘿蔔絲', 80, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (92, '小黃瓜絲', 80, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (93, '水果拼盤', '配菜', 0, '素', '生食', '橙', 0, 0, 60, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (93, '季節水果', 600, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (94, '鹽水雞拼盤', '配菜', 0, '雞', '煮', '白', 0, 0, 90, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (94, '雞胸肉', 400, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (95, '燻鮭魚沙拉', '配菜', 0, '魚', '生食', '橙', 0, 0, 100, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (95, '燻鮭魚', 200, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (95, '生菜', 200, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (96, '涼拌海蜇皮', '配菜', 0, '海鮮', '涼拌', '白', 0, 0, 90, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (96, '海蜇皮', 250, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (97, '蔬菜沙拉', '配菜', 0, '素', '生食', '綠', 0, 0, 60, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (97, '綜合生菜', 400, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (98, '酸辣湯', '湯品', 1, '豬', '煮', '紅', 1, 0, 45, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (98, '豬肉絲', 100, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (98, '豆腐', 150, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (98, '黑木耳', 50, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (99, '玉米濃湯', '湯品', 0, '素', '煮', '黃', 0, 1, 35, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (99, '玉米粒', 200, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (99, '玉米醬', 200, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (100, '蘿蔔排骨湯', '湯品', 1, '豬', '煮', '白', 0, 1, 55, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (100, '白蘿蔔', 300, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (100, '排骨', 250, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (101, '味噌豆腐湯', '湯品', 0, '素', '煮', '白', 0, 1, 35, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (101, '豆腐', 200, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (101, '味噌', 50, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (102, '冬瓜蛤蜊湯', '湯品', 0, '海鮮', '煮', '白', 0, 0, 45, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (102, '冬瓜', 300, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (102, '蛤蜊', 200, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (103, '苦瓜排骨湯', '湯品', 1, '豬', '煮', '綠', 0, 0, 50, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (103, '苦瓜', 300, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (103, '排骨', 250, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (104, '竹筍排骨湯', '湯品', 1, '豬', '煮', '白', 0, 0, 50, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (104, '桂竹筍', 300, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (104, '排骨', 250, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (105, '紫菜蛋花湯', '湯品', 0, '蛋', '煮', '黑', 0, 0, 30, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (105, '紫菜', 30, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (105, '雞蛋', 3, '顆');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (106, '紅豆湯圓', '甜點', 0, '素', '煮', '紅', 0, 1, 30, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (106, '紅豆', 200, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (106, '小湯圓', 150, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (107, '布丁', '甜點', 0, '素', '其他', '黃', 0, 1, 25, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (107, '雞蛋布丁', 6, '個');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (108, '涼糕', '甜點', 0, '素', '其他', '白', 0, 0, 25, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (108, '涼糕', 6, '塊');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (109, '芒果青', '甜點', 0, '素', '生食', '橙', 0, 0, 30, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (109, '芒果', 400, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (110, '仙草凍', '甜點', 0, '素', '其他', '黑', 0, 0, 25, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (110, '仙草凍', 500, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (111, '桂圓紅棗茶凍', '甜點', 0, '素', '其他', '褐', 0, 0, 28, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (111, '桂圓', 60, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (111, '紅棗', 40, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (112, '綠豆湯', '甜點', 0, '素', '煮', '綠', 0, 1, 25, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (112, '綠豆', 250, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (113, '銀耳蓮子湯', '甜點', 0, '素', '煮', '白', 0, 1, 30, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (113, '白木耳', 60, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (113, '蓮子', 100, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (114, '古早味紅茶', '飲料', 0, '素', '其他', '褐', 0, 0, 20, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (114, '紅茶', 2000, 'ml');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (115, '冬瓜茶', '飲料', 0, '素', '其他', '褐', 0, 0, 20, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (115, '冬瓜茶磚', 200, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (116, '仙草蜜', '飲料', 0, '素', '其他', '黑', 0, 0, 25, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (116, '仙草凍', 500, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (117, '柳橙汁', '飲料', 0, '素', '其他', '橙', 0, 0, 25, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (117, '柳橙原汁', 1500, 'ml');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (118, '檸檬愛玉', '飲料', 0, '素', '其他', '黃', 0, 0, 25, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (118, '愛玉凍', 500, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (118, '檸檬汁', 100, 'ml');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (119, '梅子綠茶', '飲料', 0, '素', '其他', '綠', 0, 0, 25, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (119, '綠茶', 1800, 'ml');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (119, '梅子醬', 100, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (120, '決明子茶', '飲料', 0, '素', '其他', '褐', 0, 0, 20, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (120, '決明子', 60, 'g');
-INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (121, '米漿', '飲料', 0, '素', '其他', '白', 0, 0, 25, '');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (121, '在來米', 200, 'g');
-INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (121, '花生', 60, 'g');
+INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES
+(1, '塔香五花肉', '主菜', 1, '豬', '炒', '褐', 0, 0, 95, ''),
+(2, '蒜香五花肉', '主菜', 1, '豬', '炒', '褐', 0, 0, 90, ''),
+(3, '紅燒五花肉', '主菜', 1, '豬', '滷', '褐', 0, 1, 90, ''),
+(4, '京都五花肉', '主菜', 1, '豬', '炸', '紅', 0, 0, 90, ''),
+(5, '麻辣五花肉', '主菜', 1, '豬', '炒', '紅', 1, 0, 95, ''),
+(6, '塔香小排骨', '主菜', 1, '豬', '炒', '褐', 0, 0, 100, ''),
+(7, '蒜香小排骨', '主菜', 1, '豬', '炒', '褐', 0, 0, 95, ''),
+(8, '紅燒小排骨', '主菜', 1, '豬', '滷', '褐', 0, 1, 95, ''),
+(9, '京都小排骨', '主菜', 1, '豬', '炸', '紅', 0, 0, 95, ''),
+(10, '麻辣小排骨', '主菜', 1, '豬', '炒', '紅', 1, 0, 100, ''),
+(11, '塔香梅花肉', '主菜', 1, '豬', '炒', '褐', 0, 0, 100, ''),
+(12, '蒜香梅花肉', '主菜', 1, '豬', '炒', '褐', 0, 0, 95, ''),
+(13, '紅燒梅花肉', '主菜', 1, '豬', '滷', '褐', 0, 1, 95, ''),
+(14, '京都梅花肉', '主菜', 1, '豬', '炸', '紅', 0, 0, 95, ''),
+(15, '麻辣梅花肉', '主菜', 1, '豬', '炒', '紅', 1, 0, 100, ''),
+(16, '塔香松阪豬', '主菜', 1, '豬', '炒', '褐', 0, 0, 110, ''),
+(17, '蒜香松阪豬', '主菜', 1, '豬', '炒', '褐', 0, 0, 105, ''),
+(18, '紅燒松阪豬', '主菜', 1, '豬', '滷', '褐', 0, 1, 105, ''),
+(19, '京都松阪豬', '主菜', 1, '豬', '炸', '紅', 0, 0, 105, ''),
+(20, '麻辣松阪豬', '主菜', 1, '豬', '炒', '紅', 1, 0, 110, ''),
+(21, '塔香豬腳', '主菜', 1, '豬', '炒', '褐', 0, 0, 110, ''),
+(22, '蒜香豬腳', '主菜', 1, '豬', '炒', '褐', 0, 0, 105, ''),
+(23, '紅燒豬腳', '主菜', 1, '豬', '滷', '褐', 0, 1, 105, ''),
+(24, '京都豬腳', '主菜', 1, '豬', '炸', '紅', 0, 0, 105, ''),
+(25, '麻辣豬腳', '主菜', 1, '豬', '炒', '紅', 1, 0, 110, ''),
+(26, '塔香大里肌', '主菜', 1, '豬', '炒', '褐', 0, 0, 95, ''),
+(27, '蒜香大里肌', '主菜', 1, '豬', '炒', '褐', 0, 0, 90, ''),
+(28, '紅燒大里肌', '主菜', 1, '豬', '滷', '褐', 0, 1, 90, ''),
+(29, '京都大里肌', '主菜', 1, '豬', '炸', '紅', 0, 0, 90, ''),
+(30, '麻辣大里肌', '主菜', 1, '豬', '炒', '紅', 1, 0, 95, ''),
+(31, '塔香去骨雞腿', '主菜', 0, '雞', '炒', '褐', 0, 0, 105, ''),
+(32, '蒜香去骨雞腿', '主菜', 0, '雞', '炒', '褐', 0, 0, 100, ''),
+(33, '紅燒去骨雞腿', '主菜', 0, '雞', '滷', '褐', 0, 1, 100, ''),
+(34, '京都去骨雞腿', '主菜', 0, '雞', '炸', '紅', 0, 0, 100, ''),
+(35, '麻辣去骨雞腿', '主菜', 0, '雞', '炒', '紅', 1, 0, 105, ''),
+(36, '塔香雞胸肉', '主菜', 0, '雞', '炒', '褐', 0, 0, 95, ''),
+(37, '蒜香雞胸肉', '主菜', 0, '雞', '炒', '褐', 0, 0, 90, ''),
+(38, '紅燒雞胸肉', '主菜', 0, '雞', '滷', '褐', 0, 1, 90, ''),
+(39, '京都雞胸肉', '主菜', 0, '雞', '炸', '紅', 0, 0, 90, ''),
+(40, '麻辣雞胸肉', '主菜', 0, '雞', '炒', '紅', 1, 0, 95, '');
+INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES
+(41, '塔香雞翅', '主菜', 0, '雞', '炒', '褐', 0, 0, 100, ''),
+(42, '蒜香雞翅', '主菜', 0, '雞', '炒', '褐', 0, 0, 95, ''),
+(43, '紅燒雞翅', '主菜', 0, '雞', '滷', '褐', 0, 1, 95, ''),
+(44, '京都雞翅', '主菜', 0, '雞', '炸', '紅', 0, 0, 95, ''),
+(45, '麻辣雞翅', '主菜', 0, '雞', '炒', '紅', 1, 0, 100, ''),
+(46, '塔香土雞腿', '主菜', 0, '雞', '炒', '褐', 0, 0, 110, ''),
+(47, '蒜香土雞腿', '主菜', 0, '雞', '炒', '褐', 0, 0, 105, ''),
+(48, '紅燒土雞腿', '主菜', 0, '雞', '滷', '褐', 0, 1, 105, ''),
+(49, '京都土雞腿', '主菜', 0, '雞', '炸', '紅', 0, 0, 105, ''),
+(50, '麻辣土雞腿', '主菜', 0, '雞', '炒', '紅', 1, 0, 110, ''),
+(51, '塔香牛肋條', '主菜', 0, '牛', '炒', '褐', 0, 0, 150, ''),
+(52, '蒜香牛肋條', '主菜', 0, '牛', '炒', '褐', 0, 0, 145, ''),
+(53, '紅燒牛肋條', '主菜', 0, '牛', '滷', '褐', 0, 1, 145, ''),
+(54, '京都牛肋條', '主菜', 0, '牛', '炸', '紅', 0, 0, 145, ''),
+(55, '麻辣牛肋條', '主菜', 0, '牛', '炒', '紅', 1, 0, 150, ''),
+(56, '塔香牛腩', '主菜', 0, '牛', '炒', '褐', 0, 0, 150, ''),
+(57, '蒜香牛腩', '主菜', 0, '牛', '炒', '褐', 0, 0, 145, ''),
+(58, '紅燒牛腩', '主菜', 0, '牛', '滷', '褐', 0, 1, 145, ''),
+(59, '京都牛腩', '主菜', 0, '牛', '炸', '紅', 0, 0, 145, ''),
+(60, '麻辣牛腩', '主菜', 0, '牛', '炒', '紅', 1, 0, 150, ''),
+(61, '塔香牛小排', '主菜', 0, '牛', '炒', '褐', 0, 0, 170, ''),
+(62, '蒜香牛小排', '主菜', 0, '牛', '炒', '褐', 0, 0, 165, ''),
+(63, '紅燒牛小排', '主菜', 0, '牛', '滷', '褐', 0, 1, 165, ''),
+(64, '京都牛小排', '主菜', 0, '牛', '炸', '紅', 0, 0, 165, ''),
+(65, '麻辣牛小排', '主菜', 0, '牛', '炒', '紅', 1, 0, 170, ''),
+(66, '塔香牛柳', '主菜', 0, '牛', '炒', '褐', 0, 0, 150, ''),
+(67, '蒜香牛柳', '主菜', 0, '牛', '炒', '褐', 0, 0, 145, ''),
+(68, '紅燒牛柳', '主菜', 0, '牛', '滷', '褐', 0, 1, 145, ''),
+(69, '京都牛柳', '主菜', 0, '牛', '炸', '紅', 0, 0, 145, ''),
+(70, '麻辣牛柳', '主菜', 0, '牛', '炒', '紅', 1, 0, 150, ''),
+(71, '塔香羊小排', '主菜', 0, '羊', '炒', '褐', 0, 0, 170, ''),
+(72, '蒜香羊小排', '主菜', 0, '羊', '炒', '褐', 0, 0, 165, ''),
+(73, '紅燒羊小排', '主菜', 0, '羊', '滷', '褐', 0, 1, 165, ''),
+(74, '京都羊小排', '主菜', 0, '羊', '炸', '紅', 0, 0, 165, ''),
+(75, '麻辣羊小排', '主菜', 0, '羊', '炒', '紅', 1, 0, 170, ''),
+(76, '塔香鱸魚', '主菜', 0, '魚', '炒', '黃', 0, 0, 140, ''),
+(77, '蒜蒸鱸魚', '主菜', 0, '魚', '蒸', '白', 0, 0, 135, ''),
+(78, '清蒸鱸魚', '主菜', 0, '魚', '蒸', '白', 0, 0, 130, ''),
+(79, '避風塘鱸魚', '主菜', 0, '魚', '炸', '黃', 1, 0, 145, ''),
+(80, 'XO醬鱸魚', '主菜', 0, '魚', '炒', '紅', 1, 0, 150, '');
+INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES
+(81, '塔香鮭魚', '主菜', 0, '魚', '炒', '黃', 0, 0, 150, ''),
+(82, '蒜蒸鮭魚', '主菜', 0, '魚', '蒸', '白', 0, 0, 145, ''),
+(83, '清蒸鮭魚', '主菜', 0, '魚', '蒸', '白', 0, 0, 140, ''),
+(84, '避風塘鮭魚', '主菜', 0, '魚', '炸', '黃', 1, 0, 155, ''),
+(85, 'XO醬鮭魚', '主菜', 0, '魚', '炒', '紅', 1, 0, 160, ''),
+(86, '塔香虱目魚肚', '主菜', 0, '魚', '炒', '黃', 0, 0, 130, ''),
+(87, '蒜蒸虱目魚肚', '主菜', 0, '魚', '蒸', '白', 0, 0, 125, ''),
+(88, '清蒸虱目魚肚', '主菜', 0, '魚', '蒸', '白', 0, 0, 120, ''),
+(89, '避風塘虱目魚肚', '主菜', 0, '魚', '炸', '黃', 1, 0, 135, ''),
+(90, 'XO醬虱目魚肚', '主菜', 0, '魚', '炒', '紅', 1, 0, 140, ''),
+(91, '塔香白蝦', '主菜', 0, '海鮮', '炒', '黃', 0, 0, 160, ''),
+(92, '蒜蒸白蝦', '主菜', 0, '海鮮', '蒸', '白', 0, 0, 155, ''),
+(93, '清蒸白蝦', '主菜', 0, '海鮮', '蒸', '白', 0, 0, 150, ''),
+(94, '避風塘白蝦', '主菜', 0, '海鮮', '炸', '黃', 1, 0, 165, ''),
+(95, 'XO醬白蝦', '主菜', 0, '海鮮', '炒', '紅', 1, 0, 170, ''),
+(96, '塔香中卷', '主菜', 0, '海鮮', '炒', '黃', 0, 0, 130, ''),
+(97, '蒜蒸中卷', '主菜', 0, '海鮮', '蒸', '白', 0, 0, 125, ''),
+(98, '清蒸中卷', '主菜', 0, '海鮮', '蒸', '白', 0, 0, 120, ''),
+(99, '避風塘中卷', '主菜', 0, '海鮮', '炸', '黃', 1, 0, 135, ''),
+(100, 'XO醬中卷', '主菜', 0, '海鮮', '炒', '紅', 1, 0, 140, ''),
+(101, '涼拌豆干', '副菜', 0, '素', '涼拌', '褐', 0, 0, 40, ''),
+(102, '塔香豆干', '副菜', 0, '素', '炒', '褐', 0, 0, 45, ''),
+(103, '紅燒豆干', '副菜', 0, '素', '滷', '褐', 0, 1, 45, ''),
+(104, '蒜炒豆干', '副菜', 0, '素', '炒', '褐', 0, 0, 40, ''),
+(105, '麻辣豆干', '副菜', 0, '素', '炒', '紅', 1, 0, 50, ''),
+(106, '涼拌板豆腐', '副菜', 0, '素', '涼拌', '白', 0, 0, 40, ''),
+(107, '塔香板豆腐', '副菜', 0, '素', '炒', '白', 0, 0, 45, ''),
+(108, '紅燒板豆腐', '副菜', 0, '素', '滷', '褐', 0, 1, 45, ''),
+(109, '蒜炒板豆腐', '副菜', 0, '素', '炒', '白', 0, 0, 40, ''),
+(110, '麻辣板豆腐', '副菜', 0, '素', '炒', '紅', 1, 0, 50, ''),
+(111, '涼拌嫩豆腐', '副菜', 0, '素', '涼拌', '白', 0, 0, 40, ''),
+(112, '塔香嫩豆腐', '副菜', 0, '素', '炒', '白', 0, 0, 45, ''),
+(113, '紅燒嫩豆腐', '副菜', 0, '素', '滷', '褐', 0, 1, 45, ''),
+(114, '蒜炒嫩豆腐', '副菜', 0, '素', '炒', '白', 0, 0, 40, ''),
+(115, '麻辣嫩豆腐', '副菜', 0, '素', '炒', '紅', 1, 0, 50, ''),
+(116, '涼拌皮蛋', '副菜', 0, '蛋', '涼拌', '黑', 0, 0, 40, ''),
+(117, '塔香皮蛋', '副菜', 0, '蛋', '炒', '黑', 0, 0, 45, ''),
+(118, '紅燒皮蛋', '副菜', 0, '蛋', '滷', '褐', 0, 1, 45, ''),
+(119, '蒜炒皮蛋', '副菜', 0, '蛋', '炒', '黑', 0, 0, 40, ''),
+(120, '麻辣皮蛋', '副菜', 0, '蛋', '炒', '紅', 1, 0, 50, '');
+INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES
+(121, '涼拌雞蛋', '副菜', 0, '蛋', '涼拌', '黃', 0, 0, 40, ''),
+(122, '塔香雞蛋', '副菜', 0, '蛋', '炒', '黃', 0, 0, 45, ''),
+(123, '紅燒雞蛋', '副菜', 0, '蛋', '滷', '褐', 0, 1, 45, ''),
+(124, '蒜炒雞蛋', '副菜', 0, '蛋', '炒', '黃', 0, 0, 40, ''),
+(125, '麻辣雞蛋', '副菜', 0, '蛋', '炒', '紅', 1, 0, 50, ''),
+(126, '涼拌黑木耳', '副菜', 0, '素', '涼拌', '黑', 0, 0, 40, ''),
+(127, '塔香黑木耳', '副菜', 0, '素', '炒', '黑', 0, 0, 45, ''),
+(128, '紅燒黑木耳', '副菜', 0, '素', '滷', '褐', 0, 1, 45, ''),
+(129, '蒜炒黑木耳', '副菜', 0, '素', '炒', '黑', 0, 0, 40, ''),
+(130, '麻辣黑木耳', '副菜', 0, '素', '炒', '紅', 1, 0, 50, ''),
+(131, '涼拌杏鮑菇', '副菜', 0, '素', '涼拌', '褐', 0, 0, 45, ''),
+(132, '塔香杏鮑菇', '副菜', 0, '素', '炒', '褐', 0, 0, 50, ''),
+(133, '紅燒杏鮑菇', '副菜', 0, '素', '滷', '褐', 0, 1, 50, ''),
+(134, '蒜炒杏鮑菇', '副菜', 0, '素', '炒', '褐', 0, 0, 45, ''),
+(135, '麻辣杏鮑菇', '副菜', 0, '素', '炒', '紅', 1, 0, 55, ''),
+(136, '涼拌鮮香菇', '副菜', 0, '素', '涼拌', '褐', 0, 0, 45, ''),
+(137, '塔香鮮香菇', '副菜', 0, '素', '炒', '褐', 0, 0, 50, ''),
+(138, '紅燒鮮香菇', '副菜', 0, '素', '滷', '褐', 0, 1, 50, ''),
+(139, '蒜炒鮮香菇', '副菜', 0, '素', '炒', '褐', 0, 0, 45, ''),
+(140, '麻辣鮮香菇', '副菜', 0, '素', '炒', '紅', 1, 0, 55, ''),
+(141, '涼拌金針菇', '副菜', 0, '素', '涼拌', '黃', 0, 0, 40, ''),
+(142, '塔香金針菇', '副菜', 0, '素', '炒', '黃', 0, 0, 45, ''),
+(143, '紅燒金針菇', '副菜', 0, '素', '滷', '褐', 0, 1, 45, ''),
+(144, '蒜炒金針菇', '副菜', 0, '素', '炒', '黃', 0, 0, 40, ''),
+(145, '麻辣金針菇', '副菜', 0, '素', '炒', '紅', 1, 0, 50, ''),
+(146, '涼拌海帶', '副菜', 0, '素', '涼拌', '黑', 0, 0, 40, ''),
+(147, '塔香海帶', '副菜', 0, '素', '炒', '黑', 0, 0, 45, ''),
+(148, '紅燒海帶', '副菜', 0, '素', '滷', '褐', 0, 1, 45, ''),
+(149, '蒜炒海帶', '副菜', 0, '素', '炒', '黑', 0, 0, 40, ''),
+(150, '麻辣海帶', '副菜', 0, '素', '炒', '紅', 1, 0, 50, ''),
+(151, '涼拌海帶芽', '副菜', 0, '素', '涼拌', '綠', 0, 0, 35, ''),
+(152, '塔香海帶芽', '副菜', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(153, '紅燒海帶芽', '副菜', 0, '素', '滷', '褐', 0, 1, 40, ''),
+(154, '蒜炒海帶芽', '副菜', 0, '素', '炒', '綠', 0, 0, 35, ''),
+(155, '麻辣海帶芽', '副菜', 0, '素', '炒', '紅', 1, 0, 45, ''),
+(156, '涼拌冬粉', '副菜', 0, '素', '涼拌', '白', 0, 0, 40, ''),
+(157, '塔香冬粉', '副菜', 0, '素', '炒', '白', 0, 0, 45, ''),
+(158, '紅燒冬粉', '副菜', 0, '素', '滷', '褐', 0, 1, 45, ''),
+(159, '蒜炒冬粉', '副菜', 0, '素', '炒', '白', 0, 0, 40, ''),
+(160, '麻辣冬粉', '副菜', 0, '素', '炒', '紅', 1, 0, 50, '');
+INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES
+(161, '涼拌小黃瓜', '副菜', 0, '素', '涼拌', '綠', 0, 0, 35, ''),
+(162, '塔香小黃瓜', '副菜', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(163, '紅燒小黃瓜', '副菜', 0, '素', '滷', '褐', 0, 1, 40, ''),
+(164, '蒜炒小黃瓜', '副菜', 0, '素', '炒', '綠', 0, 0, 35, ''),
+(165, '麻辣小黃瓜', '副菜', 0, '素', '炒', '紅', 1, 0, 45, ''),
+(166, '涼拌干絲', '副菜', 0, '素', '涼拌', '白', 0, 0, 40, ''),
+(167, '塔香干絲', '副菜', 0, '素', '炒', '白', 0, 0, 45, ''),
+(168, '紅燒干絲', '副菜', 0, '素', '滷', '褐', 0, 1, 45, ''),
+(169, '蒜炒干絲', '副菜', 0, '素', '炒', '白', 0, 0, 40, ''),
+(170, '麻辣干絲', '副菜', 0, '素', '炒', '紅', 1, 0, 50, ''),
+(171, '涼拌牛腱', '副菜', 0, '牛', '涼拌', '褐', 0, 0, 85, ''),
+(172, '塔香牛腱', '副菜', 0, '牛', '炒', '褐', 0, 0, 90, ''),
+(173, '紅燒牛腱', '副菜', 0, '牛', '滷', '褐', 0, 1, 90, ''),
+(174, '蒜炒牛腱', '副菜', 0, '牛', '炒', '褐', 0, 0, 85, ''),
+(175, '麻辣牛腱', '副菜', 0, '牛', '炒', '紅', 1, 0, 95, ''),
+(176, '涼拌豬耳朵', '副菜', 1, '豬', '涼拌', '褐', 0, 0, 60, ''),
+(177, '塔香豬耳朵', '副菜', 1, '豬', '炒', '褐', 0, 0, 65, ''),
+(178, '紅燒豬耳朵', '副菜', 1, '豬', '滷', '褐', 0, 1, 65, ''),
+(179, '蒜炒豬耳朵', '副菜', 1, '豬', '炒', '褐', 0, 0, 60, ''),
+(180, '麻辣豬耳朵', '副菜', 1, '豬', '炒', '紅', 1, 0, 70, ''),
+(181, '涼拌花枝', '副菜', 0, '海鮮', '涼拌', '白', 0, 0, 65, ''),
+(182, '塔香花枝', '副菜', 0, '海鮮', '炒', '白', 0, 0, 70, ''),
+(183, '紅燒花枝', '副菜', 0, '海鮮', '滷', '褐', 0, 1, 70, ''),
+(184, '蒜炒花枝', '副菜', 0, '海鮮', '炒', '白', 0, 0, 65, ''),
+(185, '麻辣花枝', '副菜', 0, '海鮮', '炒', '紅', 1, 0, 75, ''),
+(186, '涼拌豬肝', '副菜', 1, '豬', '涼拌', '褐', 0, 0, 55, ''),
+(187, '塔香豬肝', '副菜', 1, '豬', '炒', '褐', 0, 0, 60, ''),
+(188, '紅燒豬肝', '副菜', 1, '豬', '滷', '褐', 0, 1, 60, ''),
+(189, '蒜炒豬肝', '副菜', 1, '豬', '炒', '褐', 0, 0, 55, ''),
+(190, '麻辣豬肝', '副菜', 1, '豬', '炒', '紅', 1, 0, 65, ''),
+(191, '涼拌小魚乾', '副菜', 0, '海鮮', '涼拌', '黑', 0, 0, 50, ''),
+(192, '塔香小魚乾', '副菜', 0, '海鮮', '炒', '黑', 0, 0, 55, ''),
+(193, '紅燒小魚乾', '副菜', 0, '海鮮', '滷', '褐', 0, 1, 55, ''),
+(194, '蒜炒小魚乾', '副菜', 0, '海鮮', '炒', '黑', 0, 0, 50, ''),
+(195, '麻辣小魚乾', '副菜', 0, '海鮮', '炒', '紅', 1, 0, 60, ''),
+(196, '涼拌綠豆芽', '副菜', 0, '素', '涼拌', '白', 0, 0, 35, ''),
+(197, '塔香綠豆芽', '副菜', 0, '素', '炒', '白', 0, 0, 40, ''),
+(198, '紅燒綠豆芽', '副菜', 0, '素', '滷', '褐', 0, 1, 40, ''),
+(199, '蒜炒綠豆芽', '副菜', 0, '素', '炒', '白', 0, 0, 35, ''),
+(200, '麻辣綠豆芽', '副菜', 0, '素', '炒', '紅', 1, 0, 45, '');
+INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES
+(201, '蒜炒高麗菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(202, '清炒高麗菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(203, '塔香炒高麗菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, ''),
+(204, '涼拌高麗菜', '時蔬', 0, '素', '涼拌', '綠', 0, 0, 40, ''),
+(205, '蒜炒地瓜葉', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(206, '清炒地瓜葉', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(207, '塔香炒地瓜葉', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, ''),
+(208, '涼拌地瓜葉', '時蔬', 0, '素', '涼拌', '綠', 0, 0, 40, ''),
+(209, '蒜炒A菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(210, '清炒A菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(211, '塔香炒A菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, ''),
+(212, '涼拌A菜', '時蔬', 0, '素', '涼拌', '綠', 0, 0, 40, ''),
+(213, '蒜炒空心菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(214, '清炒空心菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(215, '塔香炒空心菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, ''),
+(216, '涼拌空心菜', '時蔬', 0, '素', '涼拌', '綠', 0, 0, 40, ''),
+(217, '蒜炒油菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(218, '清炒油菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(219, '塔香炒油菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, ''),
+(220, '涼拌油菜', '時蔬', 0, '素', '涼拌', '綠', 0, 0, 40, ''),
+(221, '蒜炒山蘇', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(222, '清炒山蘇', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(223, '塔香炒山蘇', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, ''),
+(224, '涼拌山蘇', '時蔬', 0, '素', '涼拌', '綠', 0, 0, 40, ''),
+(225, '蒜炒龍鬚菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(226, '清炒龍鬚菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(227, '塔香炒龍鬚菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, ''),
+(228, '涼拌龍鬚菜', '時蔬', 0, '素', '涼拌', '綠', 0, 0, 40, ''),
+(229, '蒜炒皇宮菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(230, '清炒皇宮菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(231, '塔香炒皇宮菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, ''),
+(232, '涼拌皇宮菜', '時蔬', 0, '素', '涼拌', '綠', 0, 0, 40, ''),
+(233, '蒜炒紅鳳菜', '時蔬', 0, '素', '炒', '紅', 0, 0, 40, ''),
+(234, '清炒紅鳳菜', '時蔬', 0, '素', '炒', '紅', 0, 0, 40, ''),
+(235, '塔香炒紅鳳菜', '時蔬', 0, '素', '炒', '紅', 0, 0, 45, ''),
+(236, '涼拌紅鳳菜', '時蔬', 0, '素', '涼拌', '紅', 0, 0, 40, ''),
+(237, '蒜炒莧菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(238, '清炒莧菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(239, '塔香炒莧菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, ''),
+(240, '涼拌莧菜', '時蔬', 0, '素', '涼拌', '綠', 0, 0, 40, '');
+INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES
+(241, '蒜炒茄子', '時蔬', 0, '素', '炒', '紫', 0, 0, 40, ''),
+(242, '清炒茄子', '時蔬', 0, '素', '炒', '紫', 0, 0, 40, ''),
+(243, '塔香炒茄子', '時蔬', 0, '素', '炒', '紫', 0, 0, 45, ''),
+(244, '涼拌茄子', '時蔬', 0, '素', '涼拌', '紫', 0, 0, 40, ''),
+(245, '蒜炒四季豆', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(246, '清炒四季豆', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(247, '塔香炒四季豆', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, ''),
+(248, '涼拌四季豆', '時蔬', 0, '素', '涼拌', '綠', 0, 0, 40, ''),
+(249, '蒜炒秋葵', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(250, '清炒秋葵', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(251, '塔香炒秋葵', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, ''),
+(252, '涼拌秋葵', '時蔬', 0, '素', '涼拌', '綠', 0, 0, 40, ''),
+(253, '蒜炒絲瓜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(254, '清炒絲瓜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(255, '塔香炒絲瓜', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, ''),
+(256, '涼拌絲瓜', '時蔬', 0, '素', '涼拌', '綠', 0, 0, 40, ''),
+(257, '蒜炒山藥', '時蔬', 0, '素', '炒', '白', 0, 0, 40, ''),
+(258, '清炒山藥', '時蔬', 0, '素', '炒', '白', 0, 0, 40, ''),
+(259, '塔香炒山藥', '時蔬', 0, '素', '炒', '白', 0, 0, 45, ''),
+(260, '涼拌山藥', '時蔬', 0, '素', '涼拌', '白', 0, 0, 40, ''),
+(261, '蒜炒白花椰菜', '時蔬', 0, '素', '炒', '白', 0, 0, 40, ''),
+(262, '清炒白花椰菜', '時蔬', 0, '素', '炒', '白', 0, 0, 40, ''),
+(263, '塔香炒白花椰菜', '時蔬', 0, '素', '炒', '白', 0, 0, 45, ''),
+(264, '涼拌白花椰菜', '時蔬', 0, '素', '涼拌', '白', 0, 0, 40, ''),
+(265, '蒜炒青花菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(266, '清炒青花菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(267, '塔香炒青花菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, ''),
+(268, '涼拌青花菜', '時蔬', 0, '素', '涼拌', '綠', 0, 0, 40, ''),
+(269, '蒜炒蘆筍', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(270, '清炒蘆筍', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(271, '塔香炒蘆筍', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, ''),
+(272, '涼拌蘆筍', '時蔬', 0, '素', '涼拌', '綠', 0, 0, 40, ''),
+(273, '蒜炒高麗菜芽', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(274, '清炒高麗菜芽', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(275, '塔香炒高麗菜芽', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, ''),
+(276, '涼拌高麗菜芽', '時蔬', 0, '素', '涼拌', '綠', 0, 0, 40, ''),
+(277, '蒜炒大陸妹', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(278, '清炒大陸妹', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(279, '塔香炒大陸妹', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, ''),
+(280, '涼拌大陸妹', '時蔬', 0, '素', '涼拌', '綠', 0, 0, 40, '');
+INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES
+(281, '蒜炒過貓', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(282, '清炒過貓', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(283, '塔香炒過貓', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, ''),
+(284, '涼拌過貓', '時蔬', 0, '素', '涼拌', '綠', 0, 0, 40, ''),
+(285, '蒜炒川七', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(286, '清炒川七', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(287, '塔香炒川七', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, ''),
+(288, '涼拌川七', '時蔬', 0, '素', '涼拌', '綠', 0, 0, 40, ''),
+(289, '蒜炒芥藍', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(290, '清炒芥藍', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(291, '塔香炒芥藍', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, ''),
+(292, '涼拌芥藍', '時蔬', 0, '素', '涼拌', '綠', 0, 0, 40, ''),
+(293, '蒜炒甜豆', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(294, '清炒甜豆', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(295, '塔香炒甜豆', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, ''),
+(296, '涼拌甜豆', '時蔬', 0, '素', '涼拌', '綠', 0, 0, 40, ''),
+(297, '蒜炒娃娃菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(298, '清炒娃娃菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 40, ''),
+(299, '塔香炒娃娃菜', '時蔬', 0, '素', '炒', '綠', 0, 0, 45, ''),
+(300, '涼拌娃娃菜', '時蔬', 0, '素', '涼拌', '綠', 0, 0, 40, ''),
+(301, '白飯', '主食', 0, '素', '煮', '白', 0, 0, 20, ''),
+(302, '炒麵', '主食', 0, '素', '炒', '黃', 0, 0, 35, ''),
+(303, '炒米粉', '主食', 0, '素', '炒', '白', 0, 0, 35, ''),
+(304, '筒仔米糕', '主食', 1, '豬', '蒸', '褐', 0, 0, 40, ''),
+(305, '芋頭米粉', '主食', 0, '素', '炒', '褐', 0, 0, 40, ''),
+(306, '蛋炒飯', '主食', 0, '蛋', '炒', '黃', 0, 0, 35, ''),
+(307, '油飯', '主食', 1, '豬', '蒸', '褐', 0, 0, 45, ''),
+(308, '什錦炒飯', '主食', 0, '素', '炒', '黃', 0, 0, 40, ''),
+(309, '五味小卷拼盤', '配菜', 0, '海鮮', '涼拌', '白', 0, 0, 100, ''),
+(310, '滷味拼盤', '配菜', 1, '豬', '滷', '褐', 0, 0, 90, ''),
+(311, '涼拌三絲', '配菜', 0, '素', '涼拌', '白', 0, 0, 45, ''),
+(312, '水果拼盤', '配菜', 0, '素', '生食', '橙', 0, 0, 60, ''),
+(313, '鹽水雞拼盤', '配菜', 0, '雞', '煮', '白', 0, 0, 90, ''),
+(314, '燻鮭魚沙拉', '配菜', 0, '魚', '生食', '橙', 0, 0, 100, ''),
+(315, '涼拌海蜇皮', '配菜', 0, '海鮮', '涼拌', '白', 0, 0, 90, ''),
+(316, '蔬菜沙拉', '配菜', 0, '素', '生食', '綠', 0, 0, 60, ''),
+(317, '酸辣湯', '湯品', 1, '豬', '煮', '紅', 1, 0, 45, ''),
+(318, '玉米濃湯', '湯品', 0, '素', '煮', '黃', 0, 1, 35, ''),
+(319, '蘿蔔排骨湯', '湯品', 1, '豬', '煮', '白', 0, 1, 55, ''),
+(320, '味噌豆腐湯', '湯品', 0, '素', '煮', '白', 0, 1, 35, '');
+INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES
+(321, '冬瓜蛤蜊湯', '湯品', 0, '海鮮', '煮', '白', 0, 0, 45, ''),
+(322, '苦瓜排骨湯', '湯品', 1, '豬', '煮', '綠', 0, 0, 50, ''),
+(323, '竹筍排骨湯', '湯品', 1, '豬', '煮', '白', 0, 0, 50, ''),
+(324, '紫菜蛋花湯', '湯品', 0, '蛋', '煮', '黑', 0, 0, 30, ''),
+(325, '紅豆湯圓', '甜點', 0, '素', '煮', '紅', 0, 1, 30, ''),
+(326, '布丁', '甜點', 0, '素', '其他', '黃', 0, 1, 25, ''),
+(327, '涼糕', '甜點', 0, '素', '其他', '白', 0, 0, 25, ''),
+(328, '芒果青', '甜點', 0, '素', '生食', '橙', 0, 0, 30, ''),
+(329, '仙草凍', '甜點', 0, '素', '其他', '黑', 0, 0, 25, ''),
+(330, '桂圓紅棗茶凍', '甜點', 0, '素', '其他', '褐', 0, 0, 28, ''),
+(331, '綠豆湯', '甜點', 0, '素', '煮', '綠', 0, 1, 25, ''),
+(332, '銀耳蓮子湯', '甜點', 0, '素', '煮', '白', 0, 1, 30, ''),
+(333, '古早味紅茶', '飲料', 0, '素', '其他', '褐', 0, 0, 20, ''),
+(334, '冬瓜茶', '飲料', 0, '素', '其他', '褐', 0, 0, 20, ''),
+(335, '仙草蜜', '飲料', 0, '素', '其他', '黑', 0, 0, 25, ''),
+(336, '柳橙汁', '飲料', 0, '素', '其他', '橙', 0, 0, 25, ''),
+(337, '檸檬愛玉', '飲料', 0, '素', '其他', '黃', 0, 0, 25, ''),
+(338, '梅子綠茶', '飲料', 0, '素', '其他', '綠', 0, 0, 25, ''),
+(339, '決明子茶', '飲料', 0, '素', '其他', '褐', 0, 0, 20, ''),
+(340, '米漿', '飲料', 0, '素', '其他', '白', 0, 0, 25, '');
+
+INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES
+(1, '五花肉', 400, 'g'),
+(1, '九層塔', 20, 'g'),
+(2, '五花肉', 400, 'g'),
+(2, '蒜末', 30, 'g'),
+(3, '五花肉', 400, 'g'),
+(4, '五花肉', 400, 'g'),
+(4, '洋蔥', 60, 'g'),
+(5, '五花肉', 400, 'g'),
+(5, '乾辣椒', 20, 'g'),
+(6, '小排骨', 500, 'g'),
+(6, '九層塔', 20, 'g'),
+(7, '小排骨', 500, 'g'),
+(7, '蒜末', 30, 'g'),
+(8, '小排骨', 500, 'g'),
+(9, '小排骨', 500, 'g'),
+(9, '洋蔥', 60, 'g'),
+(10, '小排骨', 500, 'g'),
+(10, '乾辣椒', 20, 'g'),
+(11, '梅花肉', 450, 'g'),
+(11, '九層塔', 20, 'g'),
+(12, '梅花肉', 450, 'g'),
+(12, '蒜末', 30, 'g'),
+(13, '梅花肉', 450, 'g'),
+(14, '梅花肉', 450, 'g'),
+(14, '洋蔥', 60, 'g'),
+(15, '梅花肉', 450, 'g'),
+(15, '乾辣椒', 20, 'g'),
+(16, '松阪豬', 350, 'g'),
+(16, '九層塔', 20, 'g'),
+(17, '松阪豬', 350, 'g'),
+(17, '蒜末', 30, 'g'),
+(18, '松阪豬', 350, 'g'),
+(19, '松阪豬', 350, 'g'),
+(19, '洋蔥', 60, 'g'),
+(20, '松阪豬', 350, 'g'),
+(20, '乾辣椒', 20, 'g'),
+(21, '豬腳', 500, 'g'),
+(21, '九層塔', 20, 'g'),
+(22, '豬腳', 500, 'g'),
+(22, '蒜末', 30, 'g'),
+(23, '豬腳', 500, 'g'),
+(24, '豬腳', 500, 'g'),
+(24, '洋蔥', 60, 'g'),
+(25, '豬腳', 500, 'g'),
+(25, '乾辣椒', 20, 'g'),
+(26, '大里肌', 400, 'g'),
+(26, '九層塔', 20, 'g'),
+(27, '大里肌', 400, 'g'),
+(27, '蒜末', 30, 'g'),
+(28, '大里肌', 400, 'g'),
+(29, '大里肌', 400, 'g'),
+(29, '洋蔥', 60, 'g'),
+(30, '大里肌', 400, 'g'),
+(30, '乾辣椒', 20, 'g'),
+(31, '去骨雞腿', 500, 'g'),
+(31, '九層塔', 20, 'g'),
+(32, '去骨雞腿', 500, 'g'),
+(32, '蒜末', 30, 'g'),
+(33, '去骨雞腿', 500, 'g'),
+(34, '去骨雞腿', 500, 'g'),
+(34, '洋蔥', 60, 'g'),
+(35, '去骨雞腿', 500, 'g'),
+(35, '乾辣椒', 20, 'g'),
+(36, '雞胸肉', 450, 'g'),
+(36, '九層塔', 20, 'g'),
+(37, '雞胸肉', 450, 'g'),
+(37, '蒜末', 30, 'g'),
+(38, '雞胸肉', 450, 'g'),
+(39, '雞胸肉', 450, 'g'),
+(39, '洋蔥', 60, 'g'),
+(40, '雞胸肉', 450, 'g'),
+(40, '乾辣椒', 20, 'g'),
+(41, '雞翅', 500, 'g'),
+(41, '九層塔', 20, 'g'),
+(42, '雞翅', 500, 'g'),
+(42, '蒜末', 30, 'g'),
+(43, '雞翅', 500, 'g'),
+(44, '雞翅', 500, 'g'),
+(44, '洋蔥', 60, 'g'),
+(45, '雞翅', 500, 'g');
+INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES
+(45, '乾辣椒', 20, 'g'),
+(46, '土雞腿', 600, 'g'),
+(46, '九層塔', 20, 'g'),
+(47, '土雞腿', 600, 'g'),
+(47, '蒜末', 30, 'g'),
+(48, '土雞腿', 600, 'g'),
+(49, '土雞腿', 600, 'g'),
+(49, '洋蔥', 60, 'g'),
+(50, '土雞腿', 600, 'g'),
+(50, '乾辣椒', 20, 'g'),
+(51, '牛肋條', 400, 'g'),
+(51, '九層塔', 20, 'g'),
+(52, '牛肋條', 400, 'g'),
+(52, '蒜末', 30, 'g'),
+(53, '牛肋條', 400, 'g'),
+(54, '牛肋條', 400, 'g'),
+(54, '洋蔥', 60, 'g'),
+(55, '牛肋條', 400, 'g'),
+(55, '乾辣椒', 20, 'g'),
+(56, '牛腩', 450, 'g'),
+(56, '九層塔', 20, 'g'),
+(57, '牛腩', 450, 'g'),
+(57, '蒜末', 30, 'g'),
+(58, '牛腩', 450, 'g'),
+(59, '牛腩', 450, 'g'),
+(59, '洋蔥', 60, 'g'),
+(60, '牛腩', 450, 'g'),
+(60, '乾辣椒', 20, 'g'),
+(61, '牛小排', 400, 'g'),
+(61, '九層塔', 20, 'g'),
+(62, '牛小排', 400, 'g'),
+(62, '蒜末', 30, 'g'),
+(63, '牛小排', 400, 'g'),
+(64, '牛小排', 400, 'g'),
+(64, '洋蔥', 60, 'g'),
+(65, '牛小排', 400, 'g'),
+(65, '乾辣椒', 20, 'g'),
+(66, '牛柳', 400, 'g'),
+(66, '九層塔', 20, 'g'),
+(67, '牛柳', 400, 'g'),
+(67, '蒜末', 30, 'g'),
+(68, '牛柳', 400, 'g'),
+(69, '牛柳', 400, 'g'),
+(69, '洋蔥', 60, 'g'),
+(70, '牛柳', 400, 'g'),
+(70, '乾辣椒', 20, 'g'),
+(71, '羊小排', 400, 'g'),
+(71, '九層塔', 20, 'g'),
+(72, '羊小排', 400, 'g'),
+(72, '蒜末', 30, 'g'),
+(73, '羊小排', 400, 'g'),
+(74, '羊小排', 400, 'g'),
+(74, '洋蔥', 60, 'g'),
+(75, '羊小排', 400, 'g'),
+(75, '乾辣椒', 20, 'g'),
+(76, '鱸魚', 500, 'g'),
+(76, '九層塔', 20, 'g'),
+(77, '鱸魚', 500, 'g'),
+(77, '蒜蓉', 40, 'g'),
+(78, '鱸魚', 500, 'g'),
+(78, '薑絲', 20, 'g'),
+(79, '鱸魚', 500, 'g'),
+(79, '蒜酥', 50, 'g'),
+(80, '鱸魚', 500, 'g'),
+(80, 'XO醬', 40, 'g'),
+(81, '鮭魚', 450, 'g'),
+(81, '九層塔', 20, 'g'),
+(82, '鮭魚', 450, 'g'),
+(82, '蒜蓉', 40, 'g'),
+(83, '鮭魚', 450, 'g'),
+(83, '薑絲', 20, 'g'),
+(84, '鮭魚', 450, 'g'),
+(84, '蒜酥', 50, 'g'),
+(85, '鮭魚', 450, 'g'),
+(85, 'XO醬', 40, 'g'),
+(86, '虱目魚肚', 400, 'g'),
+(86, '九層塔', 20, 'g'),
+(87, '虱目魚肚', 400, 'g'),
+(87, '蒜蓉', 40, 'g'),
+(88, '虱目魚肚', 400, 'g');
+INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES
+(88, '薑絲', 20, 'g'),
+(89, '虱目魚肚', 400, 'g'),
+(89, '蒜酥', 50, 'g'),
+(90, '虱目魚肚', 400, 'g'),
+(90, 'XO醬', 40, 'g'),
+(91, '白蝦', 450, 'g'),
+(91, '九層塔', 20, 'g'),
+(92, '白蝦', 450, 'g'),
+(92, '蒜蓉', 40, 'g'),
+(93, '白蝦', 450, 'g'),
+(93, '薑絲', 20, 'g'),
+(94, '白蝦', 450, 'g'),
+(94, '蒜酥', 50, 'g'),
+(95, '白蝦', 450, 'g'),
+(95, 'XO醬', 40, 'g'),
+(96, '中卷', 400, 'g'),
+(96, '九層塔', 20, 'g'),
+(97, '中卷', 400, 'g'),
+(97, '蒜蓉', 40, 'g'),
+(98, '中卷', 400, 'g'),
+(98, '薑絲', 20, 'g'),
+(99, '中卷', 400, 'g'),
+(99, '蒜酥', 50, 'g'),
+(100, '中卷', 400, 'g'),
+(100, 'XO醬', 40, 'g'),
+(101, '豆干', 250, 'g'),
+(101, '蒜末', 15, 'g'),
+(102, '豆干', 250, 'g'),
+(102, '九層塔', 15, 'g'),
+(103, '豆干', 250, 'g'),
+(104, '豆干', 250, 'g'),
+(104, '蒜末', 20, 'g'),
+(105, '豆干', 250, 'g'),
+(105, '乾辣椒', 15, 'g'),
+(106, '板豆腐', 400, 'g'),
+(106, '蒜末', 15, 'g'),
+(107, '板豆腐', 400, 'g'),
+(107, '九層塔', 15, 'g'),
+(108, '板豆腐', 400, 'g'),
+(109, '板豆腐', 400, 'g'),
+(109, '蒜末', 20, 'g'),
+(110, '板豆腐', 400, 'g'),
+(110, '乾辣椒', 15, 'g'),
+(111, '嫩豆腐', 400, 'g'),
+(111, '蒜末', 15, 'g'),
+(112, '嫩豆腐', 400, 'g'),
+(112, '九層塔', 15, 'g'),
+(113, '嫩豆腐', 400, 'g'),
+(114, '嫩豆腐', 400, 'g'),
+(114, '蒜末', 20, 'g'),
+(115, '嫩豆腐', 400, 'g'),
+(115, '乾辣椒', 15, 'g'),
+(116, '皮蛋', 4, '顆'),
+(116, '蒜末', 15, 'g'),
+(117, '皮蛋', 4, '顆'),
+(117, '九層塔', 15, 'g'),
+(118, '皮蛋', 4, '顆'),
+(119, '皮蛋', 4, '顆'),
+(119, '蒜末', 20, 'g'),
+(120, '皮蛋', 4, '顆'),
+(120, '乾辣椒', 15, 'g'),
+(121, '雞蛋', 5, '顆'),
+(121, '蒜末', 15, 'g'),
+(122, '雞蛋', 5, '顆'),
+(122, '九層塔', 15, 'g'),
+(123, '雞蛋', 5, '顆'),
+(124, '雞蛋', 5, '顆'),
+(124, '蒜末', 20, 'g'),
+(125, '雞蛋', 5, '顆'),
+(125, '乾辣椒', 15, 'g'),
+(126, '黑木耳', 250, 'g'),
+(126, '蒜末', 15, 'g'),
+(127, '黑木耳', 250, 'g'),
+(127, '九層塔', 15, 'g'),
+(128, '黑木耳', 250, 'g'),
+(129, '黑木耳', 250, 'g'),
+(129, '蒜末', 20, 'g'),
+(130, '黑木耳', 250, 'g'),
+(130, '乾辣椒', 15, 'g'),
+(131, '杏鮑菇', 300, 'g');
+INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES
+(131, '蒜末', 15, 'g'),
+(132, '杏鮑菇', 300, 'g'),
+(132, '九層塔', 15, 'g'),
+(133, '杏鮑菇', 300, 'g'),
+(134, '杏鮑菇', 300, 'g'),
+(134, '蒜末', 20, 'g'),
+(135, '杏鮑菇', 300, 'g'),
+(135, '乾辣椒', 15, 'g'),
+(136, '鮮香菇', 250, 'g'),
+(136, '蒜末', 15, 'g'),
+(137, '鮮香菇', 250, 'g'),
+(137, '九層塔', 15, 'g'),
+(138, '鮮香菇', 250, 'g'),
+(139, '鮮香菇', 250, 'g'),
+(139, '蒜末', 20, 'g'),
+(140, '鮮香菇', 250, 'g'),
+(140, '乾辣椒', 15, 'g'),
+(141, '金針菇', 250, 'g'),
+(141, '蒜末', 15, 'g'),
+(142, '金針菇', 250, 'g'),
+(142, '九層塔', 15, 'g'),
+(143, '金針菇', 250, 'g'),
+(144, '金針菇', 250, 'g'),
+(144, '蒜末', 20, 'g'),
+(145, '金針菇', 250, 'g'),
+(145, '乾辣椒', 15, 'g'),
+(146, '海帶', 250, 'g'),
+(146, '蒜末', 15, 'g'),
+(147, '海帶', 250, 'g'),
+(147, '九層塔', 15, 'g'),
+(148, '海帶', 250, 'g'),
+(149, '海帶', 250, 'g'),
+(149, '蒜末', 20, 'g'),
+(150, '海帶', 250, 'g'),
+(150, '乾辣椒', 15, 'g'),
+(151, '海帶芽', 200, 'g'),
+(151, '蒜末', 15, 'g'),
+(152, '海帶芽', 200, 'g'),
+(152, '九層塔', 15, 'g'),
+(153, '海帶芽', 200, 'g'),
+(154, '海帶芽', 200, 'g'),
+(154, '蒜末', 20, 'g'),
+(155, '海帶芽', 200, 'g'),
+(155, '乾辣椒', 15, 'g'),
+(156, '冬粉', 200, 'g'),
+(156, '蒜末', 15, 'g'),
+(157, '冬粉', 200, 'g'),
+(157, '九層塔', 15, 'g'),
+(158, '冬粉', 200, 'g'),
+(159, '冬粉', 200, 'g'),
+(159, '蒜末', 20, 'g'),
+(160, '冬粉', 200, 'g'),
+(160, '乾辣椒', 15, 'g'),
+(161, '小黃瓜', 300, 'g'),
+(161, '蒜末', 15, 'g'),
+(162, '小黃瓜', 300, 'g'),
+(162, '九層塔', 15, 'g'),
+(163, '小黃瓜', 300, 'g'),
+(164, '小黃瓜', 300, 'g'),
+(164, '蒜末', 20, 'g'),
+(165, '小黃瓜', 300, 'g'),
+(165, '乾辣椒', 15, 'g'),
+(166, '干絲', 200, 'g'),
+(166, '蒜末', 15, 'g'),
+(167, '干絲', 200, 'g'),
+(167, '九層塔', 15, 'g'),
+(168, '干絲', 200, 'g'),
+(169, '干絲', 200, 'g'),
+(169, '蒜末', 20, 'g'),
+(170, '干絲', 200, 'g'),
+(170, '乾辣椒', 15, 'g'),
+(171, '牛腱', 350, 'g'),
+(171, '蒜末', 15, 'g'),
+(172, '牛腱', 350, 'g'),
+(172, '九層塔', 15, 'g'),
+(173, '牛腱', 350, 'g'),
+(174, '牛腱', 350, 'g'),
+(174, '蒜末', 20, 'g'),
+(175, '牛腱', 350, 'g'),
+(175, '乾辣椒', 15, 'g');
+INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES
+(176, '豬耳朵', 250, 'g'),
+(176, '蒜末', 15, 'g'),
+(177, '豬耳朵', 250, 'g'),
+(177, '九層塔', 15, 'g'),
+(178, '豬耳朵', 250, 'g'),
+(179, '豬耳朵', 250, 'g'),
+(179, '蒜末', 20, 'g'),
+(180, '豬耳朵', 250, 'g'),
+(180, '乾辣椒', 15, 'g'),
+(181, '花枝', 300, 'g'),
+(181, '蒜末', 15, 'g'),
+(182, '花枝', 300, 'g'),
+(182, '九層塔', 15, 'g'),
+(183, '花枝', 300, 'g'),
+(184, '花枝', 300, 'g'),
+(184, '蒜末', 20, 'g'),
+(185, '花枝', 300, 'g'),
+(185, '乾辣椒', 15, 'g'),
+(186, '豬肝', 300, 'g'),
+(186, '蒜末', 15, 'g'),
+(187, '豬肝', 300, 'g'),
+(187, '九層塔', 15, 'g'),
+(188, '豬肝', 300, 'g'),
+(189, '豬肝', 300, 'g'),
+(189, '蒜末', 20, 'g'),
+(190, '豬肝', 300, 'g'),
+(190, '乾辣椒', 15, 'g'),
+(191, '小魚乾', 150, 'g'),
+(191, '蒜末', 15, 'g'),
+(192, '小魚乾', 150, 'g'),
+(192, '九層塔', 15, 'g'),
+(193, '小魚乾', 150, 'g'),
+(194, '小魚乾', 150, 'g'),
+(194, '蒜末', 20, 'g'),
+(195, '小魚乾', 150, 'g'),
+(195, '乾辣椒', 15, 'g'),
+(196, '綠豆芽', 350, 'g'),
+(196, '蒜末', 15, 'g'),
+(197, '綠豆芽', 350, 'g'),
+(197, '九層塔', 15, 'g'),
+(198, '綠豆芽', 350, 'g'),
+(199, '綠豆芽', 350, 'g'),
+(199, '蒜末', 20, 'g'),
+(200, '綠豆芽', 350, 'g'),
+(200, '乾辣椒', 15, 'g'),
+(201, '高麗菜', 400, 'g'),
+(201, '蒜末', 15, 'g'),
+(202, '高麗菜', 400, 'g'),
+(203, '高麗菜', 400, 'g'),
+(203, '九層塔', 15, 'g'),
+(204, '高麗菜', 400, 'g'),
+(204, '蒜末', 15, 'g'),
+(205, '地瓜葉', 400, 'g'),
+(205, '蒜末', 15, 'g'),
+(206, '地瓜葉', 400, 'g'),
+(207, '地瓜葉', 400, 'g'),
+(207, '九層塔', 15, 'g'),
+(208, '地瓜葉', 400, 'g'),
+(208, '蒜末', 15, 'g'),
+(209, 'A菜', 400, 'g'),
+(209, '蒜末', 15, 'g'),
+(210, 'A菜', 400, 'g'),
+(211, 'A菜', 400, 'g'),
+(211, '九層塔', 15, 'g'),
+(212, 'A菜', 400, 'g'),
+(212, '蒜末', 15, 'g'),
+(213, '空心菜', 400, 'g'),
+(213, '蒜末', 15, 'g'),
+(214, '空心菜', 400, 'g'),
+(215, '空心菜', 400, 'g'),
+(215, '九層塔', 15, 'g'),
+(216, '空心菜', 400, 'g'),
+(216, '蒜末', 15, 'g'),
+(217, '油菜', 400, 'g'),
+(217, '蒜末', 15, 'g'),
+(218, '油菜', 400, 'g'),
+(219, '油菜', 400, 'g'),
+(219, '九層塔', 15, 'g'),
+(220, '油菜', 400, 'g'),
+(220, '蒜末', 15, 'g');
+INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES
+(221, '山蘇', 400, 'g'),
+(221, '蒜末', 15, 'g'),
+(222, '山蘇', 400, 'g'),
+(223, '山蘇', 400, 'g'),
+(223, '九層塔', 15, 'g'),
+(224, '山蘇', 400, 'g'),
+(224, '蒜末', 15, 'g'),
+(225, '龍鬚菜', 400, 'g'),
+(225, '蒜末', 15, 'g'),
+(226, '龍鬚菜', 400, 'g'),
+(227, '龍鬚菜', 400, 'g'),
+(227, '九層塔', 15, 'g'),
+(228, '龍鬚菜', 400, 'g'),
+(228, '蒜末', 15, 'g'),
+(229, '皇宮菜', 400, 'g'),
+(229, '蒜末', 15, 'g'),
+(230, '皇宮菜', 400, 'g'),
+(231, '皇宮菜', 400, 'g'),
+(231, '九層塔', 15, 'g'),
+(232, '皇宮菜', 400, 'g'),
+(232, '蒜末', 15, 'g'),
+(233, '紅鳳菜', 400, 'g'),
+(233, '蒜末', 15, 'g'),
+(234, '紅鳳菜', 400, 'g'),
+(235, '紅鳳菜', 400, 'g'),
+(235, '九層塔', 15, 'g'),
+(236, '紅鳳菜', 400, 'g'),
+(236, '蒜末', 15, 'g'),
+(237, '莧菜', 400, 'g'),
+(237, '蒜末', 15, 'g'),
+(238, '莧菜', 400, 'g'),
+(239, '莧菜', 400, 'g'),
+(239, '九層塔', 15, 'g'),
+(240, '莧菜', 400, 'g'),
+(240, '蒜末', 15, 'g'),
+(241, '茄子', 400, 'g'),
+(241, '蒜末', 15, 'g'),
+(242, '茄子', 400, 'g'),
+(243, '茄子', 400, 'g'),
+(243, '九層塔', 15, 'g'),
+(244, '茄子', 400, 'g'),
+(244, '蒜末', 15, 'g'),
+(245, '四季豆', 400, 'g'),
+(245, '蒜末', 15, 'g'),
+(246, '四季豆', 400, 'g'),
+(247, '四季豆', 400, 'g'),
+(247, '九層塔', 15, 'g'),
+(248, '四季豆', 400, 'g'),
+(248, '蒜末', 15, 'g'),
+(249, '秋葵', 400, 'g'),
+(249, '蒜末', 15, 'g'),
+(250, '秋葵', 400, 'g'),
+(251, '秋葵', 400, 'g'),
+(251, '九層塔', 15, 'g'),
+(252, '秋葵', 400, 'g'),
+(252, '蒜末', 15, 'g'),
+(253, '絲瓜', 400, 'g'),
+(253, '蒜末', 15, 'g'),
+(254, '絲瓜', 400, 'g'),
+(255, '絲瓜', 400, 'g'),
+(255, '九層塔', 15, 'g'),
+(256, '絲瓜', 400, 'g'),
+(256, '蒜末', 15, 'g'),
+(257, '山藥', 400, 'g'),
+(257, '蒜末', 15, 'g'),
+(258, '山藥', 400, 'g'),
+(259, '山藥', 400, 'g'),
+(259, '九層塔', 15, 'g'),
+(260, '山藥', 400, 'g'),
+(260, '蒜末', 15, 'g'),
+(261, '白花椰菜', 400, 'g'),
+(261, '蒜末', 15, 'g'),
+(262, '白花椰菜', 400, 'g'),
+(263, '白花椰菜', 400, 'g'),
+(263, '九層塔', 15, 'g'),
+(264, '白花椰菜', 400, 'g'),
+(264, '蒜末', 15, 'g'),
+(265, '青花菜', 400, 'g'),
+(265, '蒜末', 15, 'g'),
+(266, '青花菜', 400, 'g');
+INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES
+(267, '青花菜', 400, 'g'),
+(267, '九層塔', 15, 'g'),
+(268, '青花菜', 400, 'g'),
+(268, '蒜末', 15, 'g'),
+(269, '蘆筍', 400, 'g'),
+(269, '蒜末', 15, 'g'),
+(270, '蘆筍', 400, 'g'),
+(271, '蘆筍', 400, 'g'),
+(271, '九層塔', 15, 'g'),
+(272, '蘆筍', 400, 'g'),
+(272, '蒜末', 15, 'g'),
+(273, '高麗菜芽', 400, 'g'),
+(273, '蒜末', 15, 'g'),
+(274, '高麗菜芽', 400, 'g'),
+(275, '高麗菜芽', 400, 'g'),
+(275, '九層塔', 15, 'g'),
+(276, '高麗菜芽', 400, 'g'),
+(276, '蒜末', 15, 'g'),
+(277, '大陸妹', 400, 'g'),
+(277, '蒜末', 15, 'g'),
+(278, '大陸妹', 400, 'g'),
+(279, '大陸妹', 400, 'g'),
+(279, '九層塔', 15, 'g'),
+(280, '大陸妹', 400, 'g'),
+(280, '蒜末', 15, 'g'),
+(281, '過貓', 400, 'g'),
+(281, '蒜末', 15, 'g'),
+(282, '過貓', 400, 'g'),
+(283, '過貓', 400, 'g'),
+(283, '九層塔', 15, 'g'),
+(284, '過貓', 400, 'g'),
+(284, '蒜末', 15, 'g'),
+(285, '川七', 400, 'g'),
+(285, '蒜末', 15, 'g'),
+(286, '川七', 400, 'g'),
+(287, '川七', 400, 'g'),
+(287, '九層塔', 15, 'g'),
+(288, '川七', 400, 'g'),
+(288, '蒜末', 15, 'g'),
+(289, '芥藍', 400, 'g'),
+(289, '蒜末', 15, 'g'),
+(290, '芥藍', 400, 'g'),
+(291, '芥藍', 400, 'g'),
+(291, '九層塔', 15, 'g'),
+(292, '芥藍', 400, 'g'),
+(292, '蒜末', 15, 'g'),
+(293, '甜豆', 400, 'g'),
+(293, '蒜末', 15, 'g'),
+(294, '甜豆', 400, 'g'),
+(295, '甜豆', 400, 'g'),
+(295, '九層塔', 15, 'g'),
+(296, '甜豆', 400, 'g'),
+(296, '蒜末', 15, 'g'),
+(297, '娃娃菜', 400, 'g'),
+(297, '蒜末', 15, 'g'),
+(298, '娃娃菜', 400, 'g'),
+(299, '娃娃菜', 400, 'g'),
+(299, '九層塔', 15, 'g'),
+(300, '娃娃菜', 400, 'g'),
+(300, '蒜末', 15, 'g'),
+(301, '白米', 600, 'g'),
+(302, '油麵', 500, 'g'),
+(302, '高麗菜', 150, 'g'),
+(302, '紅蘿蔔絲', 50, 'g'),
+(303, '米粉', 400, 'g'),
+(303, '高麗菜', 150, 'g'),
+(303, '香菇絲', 30, 'g'),
+(304, '長糯米', 500, 'g'),
+(304, '滷肉燥', 100, 'g'),
+(304, '香菇', 20, 'g'),
+(305, '米粉', 400, 'g'),
+(305, '芋頭', 150, 'g'),
+(306, '白飯', 600, 'g'),
+(306, '雞蛋', 3, '顆'),
+(307, '長糯米', 500, 'g'),
+(307, '豬肉絲', 100, 'g'),
+(307, '香菇', 20, 'g'),
+(308, '白飯', 600, 'g'),
+(308, '玉米粒', 80, 'g'),
+(308, '青豆', 50, 'g');
+INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES
+(309, '小卷', 300, 'g'),
+(310, '豬耳朵', 100, 'g'),
+(310, '豆干', 100, 'g'),
+(310, '海帶', 100, 'g'),
+(311, '干絲', 150, 'g'),
+(311, '紅蘿蔔絲', 80, 'g'),
+(311, '小黃瓜絲', 80, 'g'),
+(312, '季節水果', 600, 'g'),
+(313, '雞胸肉', 400, 'g'),
+(314, '燻鮭魚', 200, 'g'),
+(314, '生菜', 200, 'g'),
+(315, '海蜇皮', 250, 'g'),
+(316, '綜合生菜', 400, 'g'),
+(317, '豬肉絲', 100, 'g'),
+(317, '豆腐', 150, 'g'),
+(317, '黑木耳', 50, 'g'),
+(318, '玉米粒', 200, 'g'),
+(318, '玉米醬', 200, 'g'),
+(319, '白蘿蔔', 300, 'g'),
+(319, '排骨', 250, 'g'),
+(320, '豆腐', 200, 'g'),
+(320, '味噌', 50, 'g'),
+(321, '冬瓜', 300, 'g'),
+(321, '蛤蜊', 200, 'g'),
+(322, '苦瓜', 300, 'g'),
+(322, '排骨', 250, 'g'),
+(323, '桂竹筍', 300, 'g'),
+(323, '排骨', 250, 'g'),
+(324, '紫菜', 30, 'g'),
+(324, '雞蛋', 3, '顆'),
+(325, '紅豆', 200, 'g'),
+(325, '小湯圓', 150, 'g'),
+(326, '雞蛋布丁', 6, '個'),
+(327, '涼糕', 6, '塊'),
+(328, '芒果', 400, 'g'),
+(329, '仙草凍', 500, 'g'),
+(330, '桂圓', 60, 'g'),
+(330, '紅棗', 40, 'g'),
+(331, '綠豆', 250, 'g'),
+(332, '白木耳', 60, 'g'),
+(332, '蓮子', 100, 'g'),
+(333, '紅茶', 2000, 'ml'),
+(334, '冬瓜茶磚', 200, 'g'),
+(335, '仙草凍', 500, 'g'),
+(336, '柳橙原汁', 1500, 'ml'),
+(337, '愛玉凍', 500, 'g'),
+(337, '檸檬汁', 100, 'ml'),
+(338, '綠茶', 1800, 'ml'),
+(338, '梅子醬', 100, 'g'),
+(339, '決明子', 60, 'g'),
+(340, '在來米', 200, 'g'),
+(340, '花生', 60, 'g');
