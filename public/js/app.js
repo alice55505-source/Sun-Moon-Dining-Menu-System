@@ -117,9 +117,9 @@
     purchaseDate.value = new Date().toISOString().slice(0, 10);
     purchaseDate.addEventListener('change', renderPurchase);
 
-    document.getElementById('bentoOrderFilterDate').addEventListener('change', loadBentoOrders);
+    document.getElementById('bentoOrderFilterMonth').addEventListener('change', loadBentoOrders);
     document.getElementById('clearBentoOrderFilter').addEventListener('click', () => {
-      document.getElementById('bentoOrderFilterDate').value = '';
+      document.getElementById('bentoOrderFilterMonth').value = '';
       loadBentoOrders();
     });
     document.getElementById('btnNewBentoOrder').addEventListener('click', () => openBentoOrderForm());
@@ -813,6 +813,7 @@
       closeModal('dishModal');
       await refreshDishCache();
       loadDishes();
+      if (document.getElementById('dailySheetDate').value) loadDailySheet();
     } catch (err) {
       toast(err.message, true);
     }
@@ -840,14 +841,14 @@
     `;
   }
 
-  // ================= 便當：廠商訂單 =================
+  // ================= 便當：工廠訂單 =================
 
   const BENTO_PRICE_TIERS = {
     '便當': [50, 55, 60, 65, 70, 75, 80],
     '合菜': [68, 70, 75, 80],
   };
   const BENTO_ORDER_FORM_FIELDS = [
-    'delivery_date', 'meal_period', 'order_type', 'price_tier', 'vendor_name', 'quantity', 'opt_no_pork', 'notes',
+    'vendor_name', 'order_month', 'meal_period', 'order_type', 'price_tier', 'quantity', 'opt_no_pork', 'opt_soup', 'notes',
   ];
 
   function populateBentoPriceTierOptions(selected) {
@@ -858,37 +859,29 @@
     if (selected != null && tiers.includes(Number(selected))) sel.value = String(selected);
   }
 
-  async function loadBentoOrders() {
-    const date = document.getElementById('bentoOrderFilterDate').value;
-    const qs = date ? `?date=${date}` : '';
-    const orders = await api('/api/bento-orders' + qs);
-    const tbody = document.getElementById('bentoOrderTableBody');
-    tbody.innerHTML = '';
-    if (orders.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--muted)">尚無廠商訂單</td></tr>';
-      return;
-    }
-    for (const o of orders) {
-      const statusLabel2 = { pending: '未確認', confirmed: '已確認' }[o.menu_status] || o.menu_status;
-      const tr = el(`
-        <tr>
-          <td>${o.delivery_date}</td>
-          <td>${o.meal_period}</td>
-          <td>${o.order_type}</td>
-          <td>${o.price_tier} 元</td>
-          <td>${escapeHtml(o.vendor_name)}</td>
-          <td>${o.quantity}</td>
-          <td>${o.opt_no_pork ? '不豬' : ''}</td>
-          <td><span class="status-badge status-${o.menu_status}">${statusLabel2}</span></td>
-          <td>
-            <button class="btn-ghost btn-small" data-edit="${o.id}">編輯</button>
-            ${o.menu_status !== 'confirmed' ? `<button class="btn-primary btn-small" data-confirm="${o.id}">確認</button>` : ''}
-            <button class="btn-danger btn-small" data-del="${o.id}">刪除</button>
-          </td>
-        </tr>
-      `);
-      tbody.appendChild(tr);
-    }
+  function bentoOrderRowHtml(o) {
+    const statusLabel2 = { pending: '未確認', confirmed: '已確認' }[o.menu_status] || o.menu_status;
+    return `
+      <tr>
+        <td>${o.order_month}</td>
+        <td>${o.meal_period}</td>
+        <td>${o.price_tier} 元</td>
+        <td>${escapeHtml(o.vendor_name)}</td>
+        <td>${o.quantity}</td>
+        <td>${o.opt_no_pork ? '不豬' : ''}</td>
+        <td>${o.opt_soup ? '1湯' : ''}</td>
+        <td>${escapeHtml(o.notes || '')}</td>
+        <td><span class="status-badge status-${o.menu_status}">${statusLabel2}</span></td>
+        <td>
+          <button class="btn-ghost btn-small" data-edit="${o.id}">編輯</button>
+          ${o.menu_status !== 'confirmed' ? `<button class="btn-primary btn-small" data-confirm="${o.id}">確認</button>` : ''}
+          <button class="btn-danger btn-small" data-del="${o.id}">刪除</button>
+        </td>
+      </tr>
+    `;
+  }
+
+  function bindBentoOrderRowActions(tbody) {
     tbody.querySelectorAll('[data-edit]').forEach((b) =>
       b.addEventListener('click', () => openBentoOrderForm(Number(b.dataset.edit)))
     );
@@ -909,10 +902,30 @@
     );
   }
 
+  async function loadBentoOrders() {
+    const month = document.getElementById('bentoOrderFilterMonth').value;
+    const qs = month ? `?month=${month}` : '';
+    const orders = await api('/api/bento-orders' + qs);
+    const bentoOrders = orders.filter((o) => o.order_type === '便當');
+    const comboOrders = orders.filter((o) => o.order_type === '合菜');
+
+    const bentoTbody = document.getElementById('bentoOrderTableBodyBento');
+    bentoTbody.innerHTML = bentoOrders.length
+      ? bentoOrders.map(bentoOrderRowHtml).join('')
+      : '<tr><td colspan="10" style="text-align:center;color:var(--muted)">尚無便當訂單</td></tr>';
+    bindBentoOrderRowActions(bentoTbody);
+
+    const comboTbody = document.getElementById('bentoOrderTableBodyCombo');
+    comboTbody.innerHTML = comboOrders.length
+      ? comboOrders.map(bentoOrderRowHtml).join('')
+      : '<tr><td colspan="10" style="text-align:center;color:var(--muted)">尚無合菜訂單</td></tr>';
+    bindBentoOrderRowActions(comboTbody);
+  }
+
   async function openBentoOrderForm(orderId) {
     document.getElementById('bentoOrderForm').reset();
     document.getElementById('bo_id').value = orderId || '';
-    document.getElementById('bentoOrderModalTitle').textContent = orderId ? '編輯廠商訂單' : '新增廠商訂單';
+    document.getElementById('bentoOrderModalTitle').textContent = orderId ? '編輯工廠訂單' : '新增工廠訂單';
     if (orderId) {
       const order = await api('/api/bento-orders/' + orderId);
       for (const f of BENTO_ORDER_FORM_FIELDS) {
@@ -924,6 +937,9 @@
       populateBentoPriceTierOptions(order.price_tier);
     } else {
       document.getElementById('bo_quantity').value = 1;
+      // 新訂單直接沿用目前「依月份篩選」選的月份，沒篩選就用當月
+      document.getElementById('bo_order_month').value =
+        document.getElementById('bentoOrderFilterMonth').value || new Date().toISOString().slice(0, 7);
       populateBentoPriceTierOptions();
     }
     openModal('bentoOrderModal');
@@ -978,8 +994,6 @@
 
   function renderBentoCalendar(data) {
     const container = document.getElementById('bentoMonthlyCalendar');
-    const printTitle = document.getElementById('printBentoMonthTitle');
-    if (printTitle) printTitle.textContent = `日月自助餐 便當 ${data.month} 月菜單`;
     if (data.days.length === 0) {
       container.innerHTML = '<p class="hint">本月尚未排便當菜單，請按上方「自動排本月便當菜單」一次排出全月每一天的菜單，或於下方逐日手動安排。</p>';
       return;
@@ -1009,17 +1023,30 @@
     }
     while (cells.length % 7 !== 0) cells.push('<td class="cal-empty"></td>');
 
-    let rowsHtml = '';
+    const weekRows = [];
     for (let i = 0; i < cells.length; i += 7) {
-      rowsHtml += `<tr>${cells.slice(i, i + 7).join('')}</tr>`;
+      weekRows.push(`<tr>${cells.slice(i, i + 7).join('')}</tr>`);
     }
 
-    container.innerHTML = `
-      <table class="calendar-table">
-        <thead><tr>${WEEKDAY_HEADER_ORDER.map((i) => `<th>星期${WEEKDAY_LABELS[i]}</th>`).join('')}</tr></thead>
-        <tbody>${rowsHtml}</tbody>
-      </table>
-    `;
+    // 便當每天的資訊比合菜多（7項/天 vs 6項/天），整月印在一張會太擠，
+    // 所以每 2 週（2 個星期列）拆成一個獨立表格區塊，列印時各自分頁。
+    const headerHtml = `<tr>${WEEKDAY_HEADER_ORDER.map((i) => `<th>星期${WEEKDAY_LABELS[i]}</th>`).join('')}</tr>`;
+    const chunks = [];
+    for (let i = 0; i < weekRows.length; i += 2) chunks.push(weekRows.slice(i, i + 2));
+
+    container.innerHTML = chunks
+      .map(
+        (chunkRows, idx) => `
+      <div class="calendar-page${idx < chunks.length - 1 ? ' calendar-page-break' : ''}">
+        <div class="calendar-page-label">日月自助餐 便當 ${data.month} 月菜單（第 ${idx * 2 + 1}-${idx * 2 + 2} 週）</div>
+        <table class="calendar-table">
+          <thead>${headerHtml}</thead>
+          <tbody>${chunkRows.join('')}</tbody>
+        </table>
+      </div>
+    `
+      )
+      .join('');
 
     container.querySelectorAll('.cal-cell').forEach((cell) => {
       cell.addEventListener('click', () => openBentoDayMenu(cell.dataset.date));
@@ -1172,7 +1199,7 @@
     return items
       .map(
         (it) => `
-      <tr>
+      <tr class="sheet-row-clickable" data-dish-id="${it.dish_id}">
         <td>${escapeHtml(labelFn(it))}</td>
         <td>${escapeHtml(it.name)}</td>
         <td>${escapeHtml(it.ingredientText || '')}</td>
@@ -1189,6 +1216,7 @@
     const banquetRows = dailySheetRows(data.banquet.items, slotLabel);
 
     result.innerHTML = `
+      <p class="hint no-print">點選任一列可直接編輯該菜色（含食材），儲存後會同步更新菜色資料庫並重新整理這張表。</p>
       <div class="sheet-section-title">便當菜單（含用料）</div>
       <table class="sheet-table">
         <thead><tr><th>分類</th><th>菜單</th><th>食材明細</th><th>用餐數量</th><th>備註</th></tr></thead>
@@ -1207,6 +1235,10 @@
         </tbody>
       </table>
     `;
+
+    result.querySelectorAll('.sheet-row-clickable').forEach((row) => {
+      row.addEventListener('click', () => openDishForm(Number(row.dataset.dishId)));
+    });
   }
 
   async function loadDailySheet() {

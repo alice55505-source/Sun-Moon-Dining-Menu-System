@@ -1,6 +1,8 @@
-// 把一筆廠商訂單（便當或合菜加味）解析成「這份訂單實際吃到哪些菜」。
+// 把一筆工廠訂單（便當或合菜）解析成「這份訂單在指定某一天實際吃到哪些菜」。
+// 工廠訂單是掛在「月份」（order.order_month）的固定訂單，一旦建立就視為那個月每一天都沿用，
+// 所以解析時另外要傳入實際要算哪一天（date），而不是只看訂單本身的月份。
 // 便當：主菜依不豬篩一般/不豬；副菜依 price_tier 門檻疊加 基本/70加/80加；時蔬固定兩道都算。
-// 合菜（合菜加味）：直接套用當天「合菜月菜單」（monthly_menu_items）排的那組菜，
+// 合菜：直接套用當天「合菜月菜單」（monthly_menu_items）排的那組菜，
 //   主菜依不豬篩一般/不豬，副菜與時蔬全拿——與現有合菜訂單客製化菜單同一套資料來源。
 // 採購清單（purchase.js）與當天食材表（daily-sheet.js）共用這個函式，避免兩處各寫一份邏輯。
 
@@ -30,17 +32,17 @@ export async function fetchBanquetMenuItems(db, menuDate) {
   return results;
 }
 
-export async function resolveBentoOrderDishes(db, order) {
+export async function resolveBentoOrderDishes(db, order, date) {
   const mainVariant = order.opt_no_pork ? '不豬' : '一般';
 
   if (order.order_type === '合菜') {
-    const items = await fetchBanquetMenuItems(db, order.delivery_date);
+    const items = await fetchBanquetMenuItems(db, date);
     return items
       .filter((it) => it.slot_category !== '主菜' || it.variant === mainVariant)
       .map((it) => ({ category: it.slot_category, dish_id: it.dish_id, name: it.name, price: it.price }));
   }
 
-  const items = await fetchBentoMenuItems(db, order.delivery_date);
+  const items = await fetchBentoMenuItems(db, date);
   const sideVariants = ['基本'];
   if (order.price_tier >= 70) sideVariants.push('70加');
   if (order.price_tier >= 80) sideVariants.push('80加');

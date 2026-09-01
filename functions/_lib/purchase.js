@@ -61,11 +61,11 @@ export async function getOrderIngredientBreakdown(db, orderId) {
   };
 }
 
-// 計算單一「廠商訂單」（便當或合菜加味）的食材採購量（依訂單份數放大）
-export async function getBentoOrderIngredientBreakdown(db, orderId) {
+// 計算單一「工廠訂單」（便當或合菜）在指定某一天的食材採購量（依訂單份數放大）
+export async function getBentoOrderIngredientBreakdown(db, orderId, date) {
   const order = await getBentoOrderById(db, orderId);
   if (!order) return null;
-  const menuItems = await resolveBentoOrderDishes(db, order);
+  const menuItems = await resolveBentoOrderDishes(db, order, date);
 
   const perDish = [];
   for (const mi of menuItems) {
@@ -106,11 +106,13 @@ function aggregateIngredients(ingredientList) {
     .sort((a, b) => a.name.localeCompare(b.name, 'zh-Hant'));
 }
 
-// 依日期彙總所有「已確認」訂單的採購量（合菜訂單＋便當/合菜加味廠商訂單共用同一份採購清單）
+// 依日期彙總所有「已確認」訂單的採購量（合菜訂單＋便當/合菜工廠訂單共用同一份採購清單）。
+// 工廠訂單掛在月份，所以用 date 所在月份找該月已確認的工廠訂單，視為那個月每一天都適用。
 export async function getPurchaseListByDate(db, date) {
+  const month = date.slice(0, 7);
   const [{ results: orders }, { results: bentoOrders }] = await Promise.all([
     db.prepare(`SELECT id FROM orders WHERE delivery_date = ? AND menu_status = 'confirmed'`).bind(date).all(),
-    db.prepare(`SELECT id FROM bento_orders WHERE delivery_date = ? AND menu_status = 'confirmed'`).bind(date).all(),
+    db.prepare(`SELECT id FROM bento_orders WHERE order_month = ? AND menu_status = 'confirmed'`).bind(month).all(),
   ]);
 
   const allIngredients = [];
@@ -127,7 +129,7 @@ export async function getPurchaseListByDate(db, date) {
     });
   }
   for (const o of bentoOrders) {
-    const breakdown = await getBentoOrderIngredientBreakdown(db, o.id);
+    const breakdown = await getBentoOrderIngredientBreakdown(db, o.id, date);
     if (!breakdown) continue;
     allIngredients.push(...breakdown.aggregated);
     orderSummaries.push({

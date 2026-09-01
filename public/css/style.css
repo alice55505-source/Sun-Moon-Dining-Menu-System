@@ -162,6 +162,9 @@ tr.clickable { cursor: pointer; }
 .cal-dishes li.hint { color: var(--muted); }
 .cal-slot { display: inline-block; min-width: 40px; color: var(--muted); font-size: 10px; margin-right: 3px; }
 
+.calendar-page { margin-bottom: 20px; }
+.calendar-page-label { display: none; }
+
 .modal-backdrop {
   position: fixed; inset: 0; background: rgba(30,20,10,0.45);
   display: flex; align-items: flex-start; justify-content: center; padding: 30px 16px;
@@ -208,6 +211,8 @@ legend { font-size: 13px; color: var(--muted); padding: 0 6px; }
 .sheet-table th, .sheet-table td { padding: 7px 10px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
 .sheet-table th { background: #f3ece2; color: var(--muted); font-weight: 600; }
 .sheet-table tr.sheet-subtotal td { font-weight: 700; background: #f6f1ea; }
+.sheet-table tr.sheet-row-clickable { cursor: pointer; }
+.sheet-table tr.sheet-row-clickable:hover td { background: #fbf7f1; }
 .sheet-section-title { font-weight: 700; margin: 18px 0 4px; font-size: 15px; }
 .sheet-section-title:first-child { margin-top: 0; }
 
@@ -241,6 +246,10 @@ legend { font-size: 13px; color: var(--muted); padding: 0 6px; }
   .cal-cell:hover { background: none; }
   .cal-dishes li { white-space: normal !important; overflow: visible !important; line-height: 1.5; }
   .cal-slot { color: #555; }
+  .calendar-page-label {
+    display: block; font-size: 14px; font-weight: 700; margin: 0 0 6px; color: #000;
+  }
+  .calendar-page-break { page-break-after: always; break-after: page; }
   .sheet-table { width: 100% !important; font-size: 12px; }
   .sheet-table th, .sheet-table td { border: 1px solid #999 !important; padding: 4px 6px !important; }
 }

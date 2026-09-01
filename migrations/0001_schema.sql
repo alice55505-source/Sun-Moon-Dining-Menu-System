@@ -78,25 +78,28 @@ CREATE TABLE IF NOT EXISTS order_menu_items (
 );
 
 -- ==================== 便當板塊 ====================
--- 廠商訂單：便當（依 50/55/60/65/70/75/80 元價位分級）或合菜加味（68/70/75/80 元）。
--- 菜色組合不用人工客製化，是依 delivery_date + order_type + price_tier + opt_no_pork
+-- 工廠訂單：便當（依 50/55/60/65/70/75/80 元價位分級）或合菜（68/70/75/80 元）。
+-- 工廠訂便當原則上是整個月都固定訂，所以訂單是「掛在某個月份」（order_month，YYYY-MM），
+-- 一旦建立就視為那個月每一天都沿用同樣的價位/份數，不用每天重新下單。
+-- 菜色組合不用人工客製化，是依當天日期 + order_type + price_tier + opt_no_pork
 -- 即時算出來的（見 functions/_lib/bentoOrderResolve.js），所以不需要另一張逐筆菜單表。
 CREATE TABLE IF NOT EXISTS bento_orders (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  delivery_date TEXT NOT NULL,
+  order_month TEXT NOT NULL,
   meal_period TEXT NOT NULL DEFAULT '午餐',
   order_type TEXT NOT NULL DEFAULT '便當',
   price_tier REAL NOT NULL DEFAULT 50,
   vendor_name TEXT NOT NULL,
   quantity INTEGER NOT NULL DEFAULT 1,
   opt_no_pork INTEGER NOT NULL DEFAULT 0,
+  opt_soup INTEGER NOT NULL DEFAULT 0,
   notes TEXT DEFAULT '',
   menu_status TEXT NOT NULL DEFAULT 'pending',
   created_at TEXT DEFAULT (datetime('now')),
   updated_at TEXT DEFAULT (datetime('now'))
 );
 
-CREATE INDEX IF NOT EXISTS idx_bento_orders_date ON bento_orders(delivery_date);
+CREATE INDEX IF NOT EXISTS idx_bento_orders_month ON bento_orders(order_month);
 
 -- 便當「每一天」的菜單。主菜: variant=一般/不豬（各1道）；
 -- 副菜: variant=基本/70加/80加（各1道，共3道，價位達門檻才計入）；

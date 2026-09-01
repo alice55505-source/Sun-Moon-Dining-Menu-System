@@ -3,16 +3,16 @@ import { BENTO_ORDER_FIELDS, normalizeBentoOrderBody } from '../../_lib/bentoOrd
 
 export async function onRequestGet({ request, env }) {
   const url = new URL(request.url);
-  const date = url.searchParams.get('date');
+  const month = url.searchParams.get('month');
   const status = url.searchParams.get('status');
 
   let sql = 'SELECT * FROM bento_orders';
   const conds = [];
   const params = [];
-  if (date) { conds.push('delivery_date = ?'); params.push(date); }
+  if (month) { conds.push('order_month = ?'); params.push(month); }
   if (status) { conds.push('menu_status = ?'); params.push(status); }
   if (conds.length) sql += ' WHERE ' + conds.join(' AND ');
-  sql += ' ORDER BY delivery_date, meal_period';
+  sql += ' ORDER BY order_month, meal_period, vendor_name';
 
   const { results } = await env.DB.prepare(sql).bind(...params).all();
   return json(results);
@@ -21,7 +21,8 @@ export async function onRequestGet({ request, env }) {
 export async function onRequestPost({ request, env }) {
   const body = await request.json().catch(() => ({}));
   const b = normalizeBentoOrderBody(body);
-  if (!b.delivery_date || !b.vendor_name) return errorJson('出貨日期與廠商名稱為必填');
+  if (!b.vendor_name) return errorJson('工廠名稱為必填');
+  if (!b.order_month) return errorJson('月份為必填');
   if (!b.price_tier) return errorJson('價位為必填');
 
   const cols = BENTO_ORDER_FIELDS.join(', ');
