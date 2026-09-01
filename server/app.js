@@ -3,7 +3,12 @@ const express = require('express');
 const db = require('./db');
 const seed = require('./seed');
 const { validateMonthlyMenu } = require('./monthlyMenuRules');
-const { generateCustomMenu, MAX_ITEMS, MAX_PRICE } = require('./customMenuGenerator');
+const {
+  generateCustomMenu,
+  PRICE_THRESHOLD,
+  HIGH_TIER_MAX_ITEMS,
+  getMaxItemsForPrice,
+} = require('./customMenuGenerator');
 const { getOrderIngredientBreakdown, getPurchaseListByDate } = require('./purchase');
 
 seed();
@@ -229,9 +234,16 @@ app.put('/api/orders/:id/menu', (req, res) => {
   if (!order) return res.status(404).json({ error: '找不到訂單' });
   const { items, confirm } = req.body || {};
   if (!Array.isArray(items)) return res.status(400).json({ error: 'items 為必填陣列' });
-  if (items.length > MAX_ITEMS) return res.status(400).json({ error: `最多 ${MAX_ITEMS} 樣菜色` });
   const totalPrice = items.reduce((s, it) => s + (Number(it.price) || 0), 0);
-  if (totalPrice > MAX_PRICE) return res.status(400).json({ error: `總價需在 ${MAX_PRICE} 元以內（目前 ${totalPrice}）` });
+  if (items.length > HIGH_TIER_MAX_ITEMS) {
+    return res.status(400).json({ error: `最多 ${HIGH_TIER_MAX_ITEMS} 樣菜色` });
+  }
+  const maxItemsAllowed = getMaxItemsForPrice(totalPrice);
+  if (items.length > maxItemsAllowed) {
+    return res.status(400).json({
+      error: `總價 $${totalPrice} 在 ${PRICE_THRESHOLD} 元以內最多 ${maxItemsAllowed} 樣，若要選 ${items.length} 樣，總價需超過 ${PRICE_THRESHOLD} 元`,
+    });
+  }
 
   const tx = db.transaction(() => {
     db.prepare('DELETE FROM order_menu_items WHERE order_id = ?').run(order.id);

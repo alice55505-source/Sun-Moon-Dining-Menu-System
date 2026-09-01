@@ -1,7 +1,18 @@
 const db = require('./db');
 
-const MAX_ITEMS = 6;
-const MAX_PRICE = 200;
+// 客製化菜單樣數上限採兩段式：總價200元以內最多6樣；一旦總價超過200元，
+// 上限放寬為12樣（超過200元後可由使用者手動新增至上限）。
+const PRICE_THRESHOLD = 200;
+const LOW_TIER_MAX_ITEMS = 6;
+const HIGH_TIER_MAX_ITEMS = 12;
+
+function getMaxItemsForPrice(totalPrice) {
+  return totalPrice > PRICE_THRESHOLD ? HIGH_TIER_MAX_ITEMS : LOW_TIER_MAX_ITEMS;
+}
+
+// 自動產生建議菜單時，預設鎖定在基本檔次（200元內、6樣）
+const MAX_ITEMS = LOW_TIER_MAX_ITEMS;
+const MAX_PRICE = PRICE_THRESHOLD;
 
 function getMonth(dateStr) {
   return (dateStr || '').slice(0, 7);
@@ -160,4 +171,12 @@ function generateCustomMenu(order) {
   };
 }
 
-module.exports = { generateCustomMenu, MAX_ITEMS, MAX_PRICE };
+module.exports = {
+  generateCustomMenu,
+  MAX_ITEMS,
+  MAX_PRICE,
+  PRICE_THRESHOLD,
+  LOW_TIER_MAX_ITEMS,
+  HIGH_TIER_MAX_ITEMS,
+  getMaxItemsForPrice,
+};

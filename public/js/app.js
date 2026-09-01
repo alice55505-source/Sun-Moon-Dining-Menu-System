@@ -1,4 +1,12 @@
 (() => {
+  // 客製化菜單樣數上限：總價200元以內最多6樣；超過200元後上限放寬為12樣（可手動新增）
+  const PRICE_THRESHOLD = 200;
+  const LOW_TIER_MAX_ITEMS = 6;
+  const HIGH_TIER_MAX_ITEMS = 12;
+  function maxItemsForPrice(totalPrice) {
+    return totalPrice > PRICE_THRESHOLD ? HIGH_TIER_MAX_ITEMS : LOW_TIER_MAX_ITEMS;
+  }
+
   const state = {
     dishes: [],
     meta: { dishCategories: [], proteinTypes: [], cookingMethods: [], colorTags: [] },
@@ -251,7 +259,7 @@
         <div style="grid-column:1/-1"><span>備註</span>${escapeHtml(order.notes || '')}</div>
       </div>
 
-      <div class="section-title">客製化菜單（主食／主菜／副菜／配菜／湯品／甜點／飲料，最多6樣、預算200元）</div>
+      <div class="section-title">客製化菜單（主食／主菜／副菜／配菜／湯品／甜點／飲料：總價200元以內最多6樣，超過200元最多可達12樣）</div>
       <div id="genWarnings"></div>
       <div id="menuItemsList"></div>
       <div class="add-slot-row" style="margin:10px 0">
@@ -296,8 +304,18 @@
     const dishId = Number(document.getElementById('addMenuDish').value);
     const dish = state.dishes.find((d) => d.id === dishId);
     if (!dish) { toast('請先在菜色資料庫新增此分類的菜色', true); return; }
-    if (state.currentGeneratedMenu.length >= 6) { toast('最多只能選 6 樣菜', true); return; }
-    state.currentGeneratedMenu.push({ category: cat, dish_id: dish.id, name: dish.name, price: dish.price });
+    const items = state.currentGeneratedMenu;
+    const currentTotal = items.reduce((s, it) => s + (Number(it.price) || 0), 0);
+    const newTotal = currentTotal + (Number(dish.price) || 0);
+    const cap = maxItemsForPrice(newTotal);
+    if (items.length >= cap) {
+      const hint = newTotal <= PRICE_THRESHOLD
+        ? `總價 ${PRICE_THRESHOLD} 元以內最多 ${LOW_TIER_MAX_ITEMS} 樣，若要選更多樣，總價需超過 ${PRICE_THRESHOLD} 元`
+        : `最多只能選 ${HIGH_TIER_MAX_ITEMS} 樣菜`;
+      toast(hint, true);
+      return;
+    }
+    items.push({ category: cat, dish_id: dish.id, name: dish.name, price: dish.price });
     renderMenuItemsList();
   }
 
@@ -337,10 +355,14 @@
   function renderMenuSummary() {
     const items = state.currentGeneratedMenu;
     const total = items.reduce((s, it) => s + (Number(it.price) || 0), 0);
+    const cap = maxItemsForPrice(total);
     const summary = document.getElementById('menuSummary');
-    const over = total > 200 || items.length > 6;
+    const over = items.length > cap;
     summary.className = 'menu-summary' + (over ? ' over' : '');
-    summary.textContent = `共 ${items.length} / 6 樣　總價 $${total} / 200`;
+    const tierHint = total > PRICE_THRESHOLD
+      ? `（總價超過${PRICE_THRESHOLD}元，上限${HIGH_TIER_MAX_ITEMS}樣）`
+      : `（總價${PRICE_THRESHOLD}元以內，上限${LOW_TIER_MAX_ITEMS}樣；超過${PRICE_THRESHOLD}元可達${HIGH_TIER_MAX_ITEMS}樣）`;
+    summary.textContent = `共 ${items.length} / ${cap} 樣　總價 $${total} ${tierHint}`;
   }
 
   async function autoGenerateMenu(orderId) {
