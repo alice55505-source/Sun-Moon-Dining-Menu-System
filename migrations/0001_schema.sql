@@ -76,3 +76,38 @@ CREATE TABLE IF NOT EXISTS order_menu_items (
   price REAL NOT NULL DEFAULT 0,
   sort_order INTEGER NOT NULL DEFAULT 0
 );
+
+-- ==================== 便當板塊 ====================
+-- 廠商訂單：便當（依 50/55/60/65/70/75/80 元價位分級）或合菜加味（68/70/75/80 元）。
+-- 菜色組合不用人工客製化，是依 delivery_date + order_type + price_tier + opt_no_pork
+-- 即時算出來的（見 functions/_lib/bentoOrderResolve.js），所以不需要另一張逐筆菜單表。
+CREATE TABLE IF NOT EXISTS bento_orders (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  delivery_date TEXT NOT NULL,
+  meal_period TEXT NOT NULL DEFAULT '午餐',
+  order_type TEXT NOT NULL DEFAULT '便當',
+  price_tier REAL NOT NULL DEFAULT 50,
+  vendor_name TEXT NOT NULL,
+  quantity INTEGER NOT NULL DEFAULT 1,
+  opt_no_pork INTEGER NOT NULL DEFAULT 0,
+  notes TEXT DEFAULT '',
+  menu_status TEXT NOT NULL DEFAULT 'pending',
+  created_at TEXT DEFAULT (datetime('now')),
+  updated_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_bento_orders_date ON bento_orders(delivery_date);
+
+-- 便當「每一天」的菜單。主菜: variant=一般/不豬（各1道）；
+-- 副菜: variant=基本/70加/80加（各1道，共3道，價位達門檻才計入）；
+-- 時蔬: variant=一般（固定2道，所有價位都有）。
+CREATE TABLE IF NOT EXISTS bento_menu_items (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  menu_date TEXT NOT NULL,
+  slot_category TEXT NOT NULL,
+  variant TEXT NOT NULL DEFAULT '一般',
+  dish_id INTEGER NOT NULL REFERENCES dishes(id) ON DELETE CASCADE,
+  sort_order INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE INDEX IF NOT EXISTS idx_bento_menu_items_date ON bento_menu_items(menu_date);

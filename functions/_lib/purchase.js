@@ -1,5 +1,11 @@
+import { resolveBentoOrderDishes } from './bentoOrderResolve.js';
+
 async function getOrderById(db, orderId) {
   return db.prepare(`SELECT * FROM orders WHERE id = ?`).bind(orderId).first();
+}
+
+async function getBentoOrderById(db, orderId) {
+  return db.prepare(`SELECT * FROM bento_orders WHERE id = ?`).bind(orderId).first();
 }
 
 async function getOrderMenuItems(db, orderId) {
@@ -55,6 +61,39 @@ export async function getOrderIngredientBreakdown(db, orderId) {
   };
 }
 
+// 計算單一「廠商訂單」（便當或合菜加味）的食材採購量（依訂單份數放大）
+export async function getBentoOrderIngredientBreakdown(db, orderId) {
+  const order = await getBentoOrderById(db, orderId);
+  if (!order) return null;
+  const menuItems = await resolveBentoOrderDishes(db, order);
+
+  const perDish = [];
+  for (const mi of menuItems) {
+    const rawIngredients = await getDishIngredients(db, mi.dish_id);
+    const ingredients = rawIngredients.map((ing) => ({
+      name: ing.name,
+      unit: ing.unit,
+      qtyPerUnit: ing.qty,
+      qtyTotal: round2(ing.qty * order.quantity),
+    }));
+    perDish.push({
+      category: mi.category,
+      dish_id: mi.dish_id,
+      dish_name: mi.name,
+      price: mi.price,
+      ingredients,
+    });
+  }
+
+  const aggregated = aggregateIngredients(perDish.flatMap((p) => p.ingredients));
+
+  return {
+    order,
+    perDish,
+    aggregated,
+  };
+}
+
 function aggregateIngredients(ingredientList) {
   const map = new Map();
   for (const ing of ingredientList) {
@@ -67,12 +106,12 @@ function aggregateIngredients(ingredientList) {
     .sort((a, b) => a.name.localeCompare(b.name, 'zh-Hant'));
 }
 
-// 依日期彙總所有「已確認」訂單的採購量
+// 依日期彙總所有「已確認」訂單的採購量（合菜訂單＋便當/合菜加味廠商訂單共用同一份採購清單）
 export async function getPurchaseListByDate(db, date) {
-  const { results: orders } = await db
-    .prepare(`SELECT id FROM orders WHERE delivery_date = ? AND menu_status = 'confirmed'`)
-    .bind(date)
-    .all();
+  const [{ results: orders }, { results: bentoOrders }] = await Promise.all([
+    db.prepare(`SELECT id FROM orders WHERE delivery_date = ? AND menu_status = 'confirmed'`).bind(date).all(),
+    db.prepare(`SELECT id FROM bento_orders WHERE delivery_date = ? AND menu_status = 'confirmed'`).bind(date).all(),
+  ]);
 
   const allIngredients = [];
   const orderSummaries = [];
@@ -81,15 +120,27 @@ export async function getPurchaseListByDate(db, date) {
     if (!breakdown) continue;
     allIngredients.push(...breakdown.aggregated);
     orderSummaries.push({
+      type: '合菜',
       order_id: breakdown.order.id,
       customer_name: breakdown.order.customer_name,
+      quantity: breakdown.order.quantity,
+    });
+  }
+  for (const o of bentoOrders) {
+    const breakdown = await getBentoOrderIngredientBreakdown(db, o.id);
+    if (!breakdown) continue;
+    allIngredients.push(...breakdown.aggregated);
+    orderSummaries.push({
+      type: breakdown.order.order_type,
+      order_id: breakdown.order.id,
+      customer_name: breakdown.order.vendor_name,
       quantity: breakdown.order.quantity,
     });
   }
 
   return {
     date,
-    orderCount: orders.length,
+    orderCount: orders.length + bentoOrders.length,
     orders: orderSummaries,
     aggregated: aggregateIngredients(allIngredients),
   };

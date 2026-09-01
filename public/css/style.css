@@ -33,7 +33,14 @@ body {
 }
 .topbar h1 { font-size: 18px; margin: 0; }
 
-.tabs { display: flex; gap: 8px; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; row-gap: 8px; }
+.tab-group-label {
+  color: rgba(255,255,255,0.75);
+  font-size: 11px;
+  padding: 0 2px 0 6px;
+  align-self: center;
+}
+.tab-group-label:first-child { padding-left: 0; }
 .tab-btn {
   background: rgba(255,255,255,0.15);
   border: none;
@@ -44,6 +51,9 @@ body {
   font-size: 14px;
 }
 .tab-btn.active { background: #fff; color: var(--primary-dark); font-weight: 600; }
+.tab-btn.tab-grp-bento { background: rgba(255,255,255,0.28); }
+.tab-btn.tab-grp-bento.active { background: #fff9ec; color: var(--primary-dark); }
+.tab-btn.tab-grp-shared { background: rgba(0,0,0,0.12); }
 
 main { padding: 20px; max-width: 1200px; margin: 0 auto; }
 
@@ -184,6 +194,13 @@ legend { font-size: 13px; color: var(--muted); padding: 0 6px; }
 .ingredient-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
 .ingredient-table th, .ingredient-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); text-align: left; }
 
+.sheet-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13.5px; background: var(--card); }
+.sheet-table th, .sheet-table td { padding: 7px 10px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+.sheet-table th { background: #f3ece2; color: var(--muted); font-weight: 600; }
+.sheet-table tr.sheet-subtotal td { font-weight: 700; background: #f6f1ea; }
+.sheet-section-title { font-weight: 700; margin: 18px 0 4px; font-size: 15px; }
+.sheet-section-title:first-child { margin-top: 0; }
+
 .toast {
   position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
   background: #2b2118; color: #fff; padding: 10px 18px; border-radius: 8px; font-size: 13.5px; z-index: 100;
@@ -199,19 +216,21 @@ legend { font-size: 13px; color: var(--muted); padding: 0 6px; }
   @page { size: landscape; margin: 10mm; }
   body { background: #fff !important; }
   body * { visibility: hidden; }
-  #tab-monthly, #tab-monthly * { visibility: visible; }
-  #tab-monthly {
+  .tab-panel.active, .tab-panel.active * { visibility: visible; }
+  .tab-panel.active {
     position: absolute; left: 0; top: 0; width: 100%; padding: 0; margin: 0;
   }
   .no-print { display: none !important; }
   .print-only {
     display: block; font-size: 18px; font-weight: 700; margin: 0 0 10px; color: #000;
   }
-  #monthlyCalendar { overflow: visible !important; }
+  #monthlyCalendar, #bentoMonthlyCalendar { overflow: visible !important; }
   .calendar-table { min-width: 0 !important; width: 100% !important; font-size: 10px; table-layout: fixed; }
   .calendar-table th, .calendar-table td { padding: 3px 4px !important; border: 1px solid #999 !important; }
   .cal-cell { cursor: default; }
   .cal-cell:hover { background: none; }
   .cal-dishes li { white-space: normal !important; overflow: visible !important; line-height: 1.5; }
   .cal-slot { color: #555; }
+  .sheet-table { width: 100% !important; font-size: 12px; }
+  .sheet-table th, .sheet-table td { border: 1px solid #999 !important; padding: 4px 6px !important; }
 }

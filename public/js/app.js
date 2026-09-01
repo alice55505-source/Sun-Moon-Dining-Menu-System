@@ -68,6 +68,9 @@
       if (btn.dataset.tab === 'monthly') loadMonthlyMenu();
       if (btn.dataset.tab === 'dishes') loadDishes();
       if (btn.dataset.tab === 'purchase') renderPurchase();
+      if (btn.dataset.tab === 'bento-orders') loadBentoOrders();
+      if (btn.dataset.tab === 'bento-monthly') loadBentoMonthlyMenu();
+      if (btn.dataset.tab === 'daily-sheet') loadDailySheet();
     });
   });
 
@@ -99,6 +102,26 @@
     const purchaseDate = document.getElementById('purchaseDate');
     purchaseDate.value = new Date().toISOString().slice(0, 10);
     purchaseDate.addEventListener('change', renderPurchase);
+
+    document.getElementById('bentoOrderFilterDate').addEventListener('change', loadBentoOrders);
+    document.getElementById('clearBentoOrderFilter').addEventListener('click', () => {
+      document.getElementById('bentoOrderFilterDate').value = '';
+      loadBentoOrders();
+    });
+    document.getElementById('btnNewBentoOrder').addEventListener('click', () => openBentoOrderForm());
+    document.getElementById('bentoOrderForm').addEventListener('submit', submitBentoOrderForm);
+    document.getElementById('bo_order_type').addEventListener('change', populateBentoPriceTierOptions);
+
+    const bentoMonthlyPicker = document.getElementById('bentoMonthlyPicker');
+    bentoMonthlyPicker.value = new Date().toISOString().slice(0, 7);
+    bentoMonthlyPicker.addEventListener('change', loadBentoMonthlyMenu);
+    document.getElementById('btnGenerateBentoMonth').addEventListener('click', generateBentoMonth);
+    document.getElementById('btnPrintBentoMonth').addEventListener('click', printBentoMonthlyCalendar);
+
+    const dailySheetDate = document.getElementById('dailySheetDate');
+    dailySheetDate.value = new Date().toISOString().slice(0, 10);
+    dailySheetDate.addEventListener('change', loadDailySheet);
+    document.getElementById('btnPrintDailySheet').addEventListener('click', printDailySheet);
 
     loadOrders();
   }
@@ -792,7 +815,7 @@
       result.innerHTML = `<p class="hint">${date} 尚無已確認菜單的訂單</p>`;
       return;
     }
-    const orderList = data.orders.map((o) => `${escapeHtml(o.customer_name)}（${o.quantity}份）`).join('、');
+    const orderList = data.orders.map((o) => `[${o.type}]${escapeHtml(o.customer_name)}（${o.quantity}份）`).join('、');
     const rows = data.aggregated.map((a) => `<tr><td>${escapeHtml(a.name)}</td><td>${a.qtyTotal}</td><td>${a.unit}</td></tr>`).join('');
     result.innerHTML = `
       <p class="hint">共 ${data.orderCount} 筆已確認訂單：${orderList}</p>
@@ -801,6 +824,388 @@
         <tbody>${rows}</tbody>
       </table>
     `;
+  }
+
+  // ================= 便當：廠商訂單 =================
+
+  const BENTO_PRICE_TIERS = {
+    '便當': [50, 55, 60, 65, 70, 75, 80],
+    '合菜': [68, 70, 75, 80],
+  };
+  const BENTO_ORDER_FORM_FIELDS = [
+    'delivery_date', 'meal_period', 'order_type', 'price_tier', 'vendor_name', 'quantity', 'opt_no_pork', 'notes',
+  ];
+
+  function populateBentoPriceTierOptions(selected) {
+    const type = document.getElementById('bo_order_type').value;
+    const sel = document.getElementById('bo_price_tier');
+    const tiers = BENTO_PRICE_TIERS[type] || [];
+    sel.innerHTML = tiers.map((t) => `<option value="${t}">${t} 元</option>`).join('');
+    if (selected != null && tiers.includes(Number(selected))) sel.value = String(selected);
+  }
+
+  async function loadBentoOrders() {
+    const date = document.getElementById('bentoOrderFilterDate').value;
+    const qs = date ? `?date=${date}` : '';
+    const orders = await api('/api/bento-orders' + qs);
+    const tbody = document.getElementById('bentoOrderTableBody');
+    tbody.innerHTML = '';
+    if (orders.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--muted)">尚無廠商訂單</td></tr>';
+      return;
+    }
+    for (const o of orders) {
+      const statusLabel2 = { pending: '未確認', confirmed: '已確認' }[o.menu_status] || o.menu_status;
+      const tr = el(`
+        <tr>
+          <td>${o.delivery_date}</td>
+          <td>${o.meal_period}</td>
+          <td>${o.order_type}</td>
+          <td>${o.price_tier} 元</td>
+          <td>${escapeHtml(o.vendor_name)}</td>
+          <td>${o.quantity}</td>
+          <td>${o.opt_no_pork ? '不豬' : ''}</td>
+          <td><span class="status-badge status-${o.menu_status}">${statusLabel2}</span></td>
+          <td>
+            <button class="btn-ghost btn-small" data-edit="${o.id}">編輯</button>
+            ${o.menu_status !== 'confirmed' ? `<button class="btn-primary btn-small" data-confirm="${o.id}">確認</button>` : ''}
+            <button class="btn-danger btn-small" data-del="${o.id}">刪除</button>
+          </td>
+        </tr>
+      `);
+      tbody.appendChild(tr);
+    }
+    tbody.querySelectorAll('[data-edit]').forEach((b) =>
+      b.addEventListener('click', () => openBentoOrderForm(Number(b.dataset.edit)))
+    );
+    tbody.querySelectorAll('[data-confirm]').forEach((b) =>
+      b.addEventListener('click', async () => {
+        await api('/api/bento-orders/' + b.dataset.confirm, { method: 'PUT', body: JSON.stringify({ menu_status: 'confirmed' }) });
+        toast('訂單已確認');
+        loadBentoOrders();
+      })
+    );
+    tbody.querySelectorAll('[data-del]').forEach((b) =>
+      b.addEventListener('click', async () => {
+        if (!confirm('確定要刪除此訂單嗎？')) return;
+        await api('/api/bento-orders/' + b.dataset.del, { method: 'DELETE' });
+        toast('訂單已刪除');
+        loadBentoOrders();
+      })
+    );
+  }
+
+  async function openBentoOrderForm(orderId) {
+    document.getElementById('bentoOrderForm').reset();
+    document.getElementById('bo_id').value = orderId || '';
+    document.getElementById('bentoOrderModalTitle').textContent = orderId ? '編輯廠商訂單' : '新增廠商訂單';
+    if (orderId) {
+      const order = await api('/api/bento-orders/' + orderId);
+      for (const f of BENTO_ORDER_FORM_FIELDS) {
+        const input = document.getElementById('bo_' + f);
+        if (!input) continue;
+        if (input.type === 'checkbox') input.checked = !!order[f];
+        else if (f !== 'price_tier') input.value = order[f] ?? '';
+      }
+      populateBentoPriceTierOptions(order.price_tier);
+    } else {
+      document.getElementById('bo_quantity').value = 1;
+      populateBentoPriceTierOptions();
+    }
+    openModal('bentoOrderModal');
+  }
+
+  async function submitBentoOrderForm(e) {
+    e.preventDefault();
+    const orderId = document.getElementById('bo_id').value;
+    const body = {};
+    for (const f of BENTO_ORDER_FORM_FIELDS) {
+      const input = document.getElementById('bo_' + f);
+      if (!input) continue;
+      body[f] = input.type === 'checkbox' ? input.checked : input.value;
+    }
+    try {
+      if (orderId) {
+        await api('/api/bento-orders/' + orderId, { method: 'PUT', body: JSON.stringify(body) });
+        toast('訂單已更新');
+      } else {
+        await api('/api/bento-orders', { method: 'POST', body: JSON.stringify(body) });
+        toast('訂單已新增');
+      }
+      closeModal('bentoOrderModal');
+      loadBentoOrders();
+    } catch (err) {
+      toast(err.message, true);
+    }
+  }
+
+  // ================= 便當：便當月菜單（每日行事曆） =================
+
+  let currentBentoMonthCalendar = null;
+  const BENTO_SLOT_CATEGORIES = ['主菜', '副菜', '時蔬'];
+  const BENTO_SLOT_VARIANTS = {
+    '主菜': ['一般', '不豬'],
+    '副菜': ['基本', '70加', '80加'],
+    '時蔬': ['一般'],
+  };
+
+  function bentoSlotLabel(it) {
+    if (it.slot_category === '主菜') return it.variant === '不豬' ? '主菜(不豬)' : '主菜(一般)';
+    if (it.slot_category === '副菜') return `副菜(${it.variant})`;
+    return it.slot_category;
+  }
+
+  async function loadBentoMonthlyMenu() {
+    const month = document.getElementById('bentoMonthlyPicker').value;
+    const data = await api('/api/bento-menu?month=' + month);
+    currentBentoMonthCalendar = data;
+    renderBentoCalendar(data);
+  }
+
+  function renderBentoCalendar(data) {
+    const container = document.getElementById('bentoMonthlyCalendar');
+    const printTitle = document.getElementById('printBentoMonthTitle');
+    if (printTitle) printTitle.textContent = `日月自助餐 便當 ${data.month} 月菜單`;
+    if (data.days.length === 0) {
+      container.innerHTML = '<p class="hint">本月尚未排便當菜單，請按上方「自動排本月便當菜單」一次排出全月每一天的菜單，或於下方逐日手動安排。</p>';
+      return;
+    }
+
+    const [year, monthNum] = data.month.split('-').map(Number);
+    const firstWeekdaySun = new Date(year, monthNum - 1, 1).getDay();
+    const firstWeekday = (firstWeekdaySun + 6) % 7;
+    const totalDays = new Date(year, monthNum, 0).getDate();
+    const dayMap = new Map(data.days.map((d) => [d.date, d]));
+
+    const cells = [];
+    for (let i = 0; i < firstWeekday; i++) cells.push('<td class="cal-empty"></td>');
+    for (let day = 1; day <= totalDays; day++) {
+      const dateStr = `${data.month}-${String(day).padStart(2, '0')}`;
+      const d = dayMap.get(dateStr);
+      const items = d ? d.items : [];
+      const dishList = items
+        .map((it) => `<li><span class="cal-slot">${bentoSlotLabel(it)}</span>${escapeHtml(it.name)}</li>`)
+        .join('');
+      cells.push(`
+        <td class="cal-cell" data-date="${dateStr}">
+          <div class="cal-date">${dateStr.slice(5)}</div>
+          <ul class="cal-dishes">${dishList || '<li class="hint">尚未排菜</li>'}</ul>
+        </td>
+      `);
+    }
+    while (cells.length % 7 !== 0) cells.push('<td class="cal-empty"></td>');
+
+    let rowsHtml = '';
+    for (let i = 0; i < cells.length; i += 7) {
+      rowsHtml += `<tr>${cells.slice(i, i + 7).join('')}</tr>`;
+    }
+
+    container.innerHTML = `
+      <table class="calendar-table">
+        <thead><tr>${WEEKDAY_HEADER_ORDER.map((i) => `<th>星期${WEEKDAY_LABELS[i]}</th>`).join('')}</tr></thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>
+    `;
+
+    container.querySelectorAll('.cal-cell').forEach((cell) => {
+      cell.addEventListener('click', () => openBentoDayMenu(cell.dataset.date));
+    });
+  }
+
+  async function generateBentoMonth() {
+    const month = document.getElementById('bentoMonthlyPicker').value;
+    if (!confirm(`確定要自動排出 ${month} 整個月每一天的便當菜單嗎？這會覆蓋這個月目前已排的便當菜單。`)) return;
+
+    const btn = document.getElementById('btnGenerateBentoMonth');
+    const progress = document.getElementById('bentoMonthGenProgress');
+    const fill = document.getElementById('bentoMonthGenProgressFill');
+    const text = document.getElementById('bentoMonthGenProgressText');
+
+    btn.disabled = true;
+    progress.classList.remove('hidden');
+    fill.style.width = '4%';
+    text.textContent = '正在排本月便當菜單…0%';
+
+    let pct = 4;
+    const timer = setInterval(() => {
+      pct += (90 - pct) * 0.12;
+      fill.style.width = `${pct.toFixed(0)}%`;
+      text.textContent = `正在排本月便當菜單…${pct.toFixed(0)}%`;
+    }, 200);
+
+    try {
+      const data = await api('/api/bento-menu/generate', { method: 'POST', body: JSON.stringify({ month }) });
+      clearInterval(timer);
+      fill.style.width = '100%';
+      text.textContent = '完成！';
+      currentBentoMonthCalendar = data;
+      renderBentoCalendar(data);
+      toast('已自動排出本月每一天的便當菜單');
+    } catch (err) {
+      clearInterval(timer);
+      toast(err.message, true);
+    } finally {
+      btn.disabled = false;
+      setTimeout(() => {
+        progress.classList.add('hidden');
+        fill.style.width = '0%';
+      }, 600);
+    }
+  }
+
+  function printBentoMonthlyCalendar() {
+    if (!currentBentoMonthCalendar || currentBentoMonthCalendar.days.length === 0) {
+      toast('本月尚未排便當菜單，請先自動排本月便當菜單或手動安排後再列印', true);
+      return;
+    }
+    window.print();
+  }
+
+  function findBentoDay(date) {
+    return currentBentoMonthCalendar && currentBentoMonthCalendar.days.find((d) => d.date === date);
+  }
+
+  function openBentoDayMenu(date) {
+    renderBentoDayMenuModal(date);
+    openModal('dayMenuModal');
+  }
+
+  function renderBentoDayMenuModal(date) {
+    const day = findBentoDay(date) || { date, items: [], warnings: [] };
+    document.getElementById('dayMenuModalTitle').textContent = `${date}（星期${weekdayLabel(date)}）便當菜單`;
+    const body = document.getElementById('dayMenuModalBody');
+    body.innerHTML = `
+      <div id="dayWarnings"></div>
+      <div id="daySlots" class="monthly-slots"></div>
+    `;
+
+    const warnBox = document.getElementById('dayWarnings');
+    warnBox.innerHTML = day.warnings.length
+      ? day.warnings.map((w) => `<div class="${w.level === 'error' ? 'err-item' : 'warn-item'}">⚠️ [原則${w.rule}] ${escapeHtml(w.message)}</div>`).join('')
+      : '<div class="ok-item">✅ 當天菜單符合原則2~5檢核</div>';
+
+    const slotsContainer = document.getElementById('daySlots');
+    slotsContainer.innerHTML = '';
+    for (const slot of BENTO_SLOT_CATEGORIES) {
+      const variants = BENTO_SLOT_VARIANTS[slot];
+      const items = day.items.filter((it) => it.slot_category === slot);
+      const card = el(`
+        <div class="slot-card">
+          <h3>${slot}</h3>
+          <div class="slot-list"></div>
+          <div class="add-slot-row">
+            ${variants.length > 1 ? `<select class="variant-select">${variants.map((v) => `<option value="${v}">${v}</option>`).join('')}</select>` : ''}
+            <select class="dish-select"></select>
+            <button type="button" class="btn-ghost btn-small add-btn">＋ 加入</button>
+          </div>
+        </div>
+      `);
+      const list = card.querySelector('.slot-list');
+      if (items.length === 0) {
+        list.innerHTML = '<p class="hint">尚未設定</p>';
+      } else {
+        for (const it of items) {
+          const row = el(`
+            <div class="slot-item">
+              <span>${escapeHtml(it.name)}
+                ${it.variant ? `<span class="tag variant">${it.variant}</span>` : ''}
+                <span class="tag">${it.protein_type}／${it.cooking_method}／${it.color_tag}${it.is_spicy ? '／辣' : ''}</span>
+              </span>
+              <button type="button" class="btn-danger btn-small" data-remove="${it.id}">移除</button>
+            </div>
+          `);
+          row.querySelector('[data-remove]').addEventListener('click', async () => {
+            await api('/api/bento-menu/' + it.id, { method: 'DELETE' });
+            await loadBentoMonthlyMenu();
+            renderBentoDayMenuModal(date);
+          });
+          list.appendChild(row);
+        }
+      }
+      const dishSelect = card.querySelector('.dish-select');
+      dishSelect.innerHTML = dishesByCategory(slot)
+        .map((d) => `<option value="${d.id}">${escapeHtml(d.name)}（${d.protein_type}/${d.cooking_method}/${d.color_tag}${d.is_spicy ? '/辣' : ''}）</option>`)
+        .join('') || '<option disabled>菜色資料庫尚無此分類菜色</option>';
+
+      card.querySelector('.add-btn').addEventListener('click', async () => {
+        const dishId = Number(dishSelect.value);
+        if (!dishId) { toast('請先在菜色資料庫新增此分類的菜色', true); return; }
+        const variantSelect = card.querySelector('.variant-select');
+        try {
+          await api('/api/bento-menu', {
+            method: 'POST',
+            body: JSON.stringify({
+              date,
+              slot_category: slot,
+              variant: variantSelect ? variantSelect.value : variants[0],
+              dish_id: dishId,
+              sort_order: items.length + 1,
+            }),
+          });
+          await loadBentoMonthlyMenu();
+          renderBentoDayMenuModal(date);
+        } catch (err) {
+          toast(err.message, true);
+        }
+      });
+      slotsContainer.appendChild(card);
+    }
+  }
+
+  // ================= 共用：當天食材表 =================
+
+  function dailySheetRows(items, labelFn) {
+    return items
+      .map(
+        (it) => `
+      <tr>
+        <td>${escapeHtml(labelFn(it))}</td>
+        <td>${escapeHtml(it.name)}</td>
+        <td>${escapeHtml(it.ingredientText || '')}</td>
+        <td>${it.mealCount}</td>
+        <td>${escapeHtml(it.notes || '')}</td>
+      </tr>`
+      )
+      .join('');
+  }
+
+  function renderDailySheet(data) {
+    const result = document.getElementById('dailySheetResult');
+    const bentoRows = dailySheetRows(data.bento.items, bentoSlotLabel);
+    const banquetRows = dailySheetRows(data.banquet.items, slotLabel);
+
+    result.innerHTML = `
+      <div class="sheet-section-title">便當菜單（含用料）</div>
+      <table class="sheet-table">
+        <thead><tr><th>分類</th><th>菜單</th><th>食材明細</th><th>用餐數量</th><th>備註</th></tr></thead>
+        <tbody>
+          ${bentoRows || '<tr><td colspan="5" class="hint">當天尚未排便當菜單</td></tr>'}
+          <tr class="sheet-subtotal"><td colspan="3">所有便當</td><td>${data.bento.total}</td><td></td></tr>
+        </tbody>
+      </table>
+
+      <div class="sheet-section-title">合菜菜單（門市）</div>
+      <table class="sheet-table">
+        <thead><tr><th>分類</th><th>菜單</th><th>食材明細</th><th>用餐數量</th><th>備註</th></tr></thead>
+        <tbody>
+          ${banquetRows || '<tr><td colspan="5" class="hint">當天尚未排合菜月菜單</td></tr>'}
+          <tr class="sheet-subtotal"><td colspan="3">所有合菜</td><td>${data.banquet.total}</td><td></td></tr>
+        </tbody>
+      </table>
+    `;
+  }
+
+  async function loadDailySheet() {
+    const date = document.getElementById('dailySheetDate').value;
+    if (!date) return;
+    const printTitle = document.getElementById('printDailySheetTitle');
+    if (printTitle) printTitle.textContent = `日月自助餐 當天食材表 ${date}`;
+    const data = await api('/api/daily-sheet?date=' + date);
+    renderDailySheet(data);
+  }
+
+  function printDailySheet() {
+    window.print();
   }
 
   init();

@@ -10,10 +10,16 @@
 <header class="topbar">
   <h1>🍱 日月自助餐 出菜單系統</h1>
   <nav class="tabs">
-    <button class="tab-btn active" data-tab="orders">合菜訂單</button>
-    <button class="tab-btn" data-tab="monthly">月菜單管理</button>
-    <button class="tab-btn" data-tab="dishes">菜色資料庫</button>
-    <button class="tab-btn" data-tab="purchase">採購清單</button>
+    <span class="tab-group-label">合菜</span>
+    <button class="tab-btn tab-grp-banquet active" data-tab="orders">合菜訂單</button>
+    <button class="tab-btn tab-grp-banquet" data-tab="monthly">合菜月菜單</button>
+    <span class="tab-group-label">便當</span>
+    <button class="tab-btn tab-grp-bento" data-tab="bento-orders">廠商訂單</button>
+    <button class="tab-btn tab-grp-bento" data-tab="bento-monthly">便當月菜單</button>
+    <span class="tab-group-label">共用</span>
+    <button class="tab-btn tab-grp-shared" data-tab="dishes">菜色資料庫</button>
+    <button class="tab-btn tab-grp-shared" data-tab="purchase">採購清單</button>
+    <button class="tab-btn tab-grp-shared" data-tab="daily-sheet">當天食材表</button>
   </nav>
 </header>
 
@@ -41,10 +47,10 @@
     </div>
   </section>
 
-  <!-- ============ 月菜單管理 ============ -->
+  <!-- ============ 合菜月菜單 ============ -->
   <section id="tab-monthly" class="tab-panel">
     <div class="panel-header no-print">
-      <h2>月菜單管理</h2>
+      <h2>合菜月菜單</h2>
       <div class="filters">
         <label>月份 <input type="month" id="monthlyPicker" /></label>
         <button id="btnGenerateMonth" class="btn-primary">🔄 自動排本月菜單（每天不重複）</button>
@@ -84,12 +90,66 @@
   <!-- ============ 採購清單 ============ -->
   <section id="tab-purchase" class="tab-panel">
     <div class="panel-header">
-      <h2>採購清單（依出貨日期彙總已確認訂單）</h2>
+      <h2>採購清單（依出貨日期彙總已確認訂單，合菜＋便當共用）</h2>
       <div class="filters">
         <label>出貨日期 <input type="date" id="purchaseDate" /></label>
       </div>
     </div>
     <div id="purchaseResult"></div>
+  </section>
+
+  <!-- ============ 便當：廠商訂單 ============ -->
+  <section id="tab-bento-orders" class="tab-panel">
+    <div class="panel-header">
+      <h2>廠商訂單（便當／合菜加味）</h2>
+      <div class="filters">
+        <label>依日期篩選 <input type="date" id="bentoOrderFilterDate" /></label>
+        <button id="clearBentoOrderFilter" class="btn-ghost">清除</button>
+        <button id="btnNewBentoOrder" class="btn-primary">＋ 新增訂單</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table id="bentoOrderTable">
+        <thead>
+          <tr>
+            <th>出貨日期</th><th>午/晚餐</th><th>類型</th><th>價位</th><th>廠商</th><th>份數</th><th>不豬</th><th>狀態</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="bentoOrderTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 便當：便當月菜單 ============ -->
+  <section id="tab-bento-monthly" class="tab-panel">
+    <div class="panel-header no-print">
+      <h2>便當月菜單</h2>
+      <div class="filters">
+        <label>月份 <input type="month" id="bentoMonthlyPicker" /></label>
+        <button id="btnGenerateBentoMonth" class="btn-primary">🔄 自動排本月便當菜單（每天不重複）</button>
+        <button id="btnPrintBentoMonth" class="btn-ghost">🖨️ 列印／匯出 PDF</button>
+      </div>
+    </div>
+    <p class="hint no-print">每天固定排：主菜2（1一般＋1不豬）、副菜3（基本／70元加1／80元加1，依訂單價位疊加）、時蔬2。廠商訂單選 50~65元只拿「基本」副菜；70/75元多拿1道；80元再多拿1道。排菜原則與合菜月菜單相同（同天不重複調味風格/主食材、炸物≤2、辣菜≤2、主菜與副菜不同肉類）。點選下方任一天可查看/手動調整當天菜色。</p>
+    <div id="bentoMonthGenProgress" class="gen-progress hidden no-print">
+      <div class="gen-progress-bar"><div id="bentoMonthGenProgressFill" class="gen-progress-fill"></div></div>
+      <span id="bentoMonthGenProgressText" class="gen-progress-text">正在排本月便當菜單…</span>
+    </div>
+    <h2 id="printBentoMonthTitle" class="print-only"></h2>
+    <div id="bentoMonthlyCalendar" class="calendar-list"></div>
+  </section>
+
+  <!-- ============ 共用：當天食材表 ============ -->
+  <section id="tab-daily-sheet" class="tab-panel">
+    <div class="panel-header no-print">
+      <h2>當天食材表</h2>
+      <div class="filters">
+        <label>日期 <input type="date" id="dailySheetDate" /></label>
+        <button id="btnPrintDailySheet" class="btn-ghost">🖨️ 列印</button>
+      </div>
+    </div>
+    <h2 id="printDailySheetTitle" class="print-only"></h2>
+    <div id="dailySheetResult"></div>
   </section>
 </main>
 
@@ -199,6 +259,47 @@
         <div class="modal-actions">
           <button type="button" class="btn-ghost" data-close="dishModal">取消</button>
           <button type="submit" class="btn-primary">儲存菜色</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 廠商訂單編輯 Modal ============ -->
+<div id="bentoOrderModal" class="modal-backdrop hidden">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="bentoOrderModalTitle">新增廠商訂單</h3>
+      <button class="modal-close" data-close="bentoOrderModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="bentoOrderForm">
+        <input type="hidden" id="bo_id" />
+        <div class="grid-2">
+          <label>出貨日期 <input required type="date" id="bo_delivery_date" /></label>
+          <label>午餐／晚餐
+            <select id="bo_meal_period">
+              <option value="午餐">午餐</option>
+              <option value="晚餐">晚餐</option>
+            </select>
+          </label>
+          <label>類型
+            <select id="bo_order_type">
+              <option value="便當">便當</option>
+              <option value="合菜">合菜（加味）</option>
+            </select>
+          </label>
+          <label>價位 <select required id="bo_price_tier"></select></label>
+          <label>廠商名稱 <input required type="text" id="bo_vendor_name" /></label>
+          <label>份數 <input required type="number" min="1" id="bo_quantity" value="1" /></label>
+        </div>
+        <div class="checkbox-row">
+          <label><input type="checkbox" id="bo_opt_no_pork" /> 不豬</label>
+        </div>
+        <label class="block">備註 <input type="text" id="bo_notes" /></label>
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" data-close="bentoOrderModal">取消</button>
+          <button type="submit" class="btn-primary">儲存訂單</button>
         </div>
       </form>
     </div>
