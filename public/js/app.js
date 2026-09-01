@@ -470,26 +470,51 @@
       container.innerHTML = '<p class="hint">本月尚未排菜單，請按上方「自動排本月菜單」一次排出全月每一天的菜單，或於下方逐日手動安排。</p>';
       return;
     }
-    container.innerHTML = '';
-    for (const day of data.days) {
-      const dishNames = day.items.map((it) => it.name).join('、');
+
+    const [year, monthNum] = data.month.split('-').map(Number);
+    const firstWeekday = new Date(year, monthNum - 1, 1).getDay(); // 0=週日
+    const totalDays = new Date(year, monthNum, 0).getDate();
+    const dayMap = new Map(data.days.map((d) => [d.date, d]));
+
+    const cells = [];
+    for (let i = 0; i < firstWeekday; i++) cells.push('<td class="cal-empty"></td>');
+    for (let day = 1; day <= totalDays; day++) {
+      const dateStr = `${data.month}-${String(day).padStart(2, '0')}`;
+      const d = dayMap.get(dateStr);
+      const items = d ? d.items : [];
+      const warnings = d ? d.warnings : [];
       const badge =
-        day.items.length === 0
+        items.length === 0
           ? '<span class="day-badge empty">未排菜</span>'
-          : day.warnings.length > 0
-          ? `<span class="day-badge warn">${day.warnings.length} 項提醒</span>`
+          : warnings.length > 0
+          ? `<span class="day-badge warn">${warnings.length}項提醒</span>`
           : '<span class="day-badge ok">符合原則</span>';
-      const row = el(`
-        <div class="day-row" data-date="${day.date}">
-          <div><div class="day-label">${day.date.slice(5)}</div><div class="weekday">星期${weekdayLabel(day.date)}</div></div>
-          <div>${badge}</div>
-          <div class="day-dishes">${escapeHtml(dishNames) || '尚未排菜'}</div>
-          <div>›</div>
-        </div>
+      const dishList = items.map((it) => `<li>${escapeHtml(it.name)}</li>`).join('');
+      cells.push(`
+        <td class="cal-cell" data-date="${dateStr}">
+          <div class="cal-date">${day}</div>
+          ${badge}
+          <ul class="cal-dishes">${dishList || '<li class="hint">尚未排菜</li>'}</ul>
+        </td>
       `);
-      row.addEventListener('click', () => openDayMenu(day.date));
-      container.appendChild(row);
     }
+    while (cells.length % 7 !== 0) cells.push('<td class="cal-empty"></td>');
+
+    let rowsHtml = '';
+    for (let i = 0; i < cells.length; i += 7) {
+      rowsHtml += `<tr>${cells.slice(i, i + 7).join('')}</tr>`;
+    }
+
+    container.innerHTML = `
+      <table class="calendar-table">
+        <thead><tr>${WEEKDAY_LABELS.map((w) => `<th>星期${w}</th>`).join('')}</tr></thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>
+    `;
+
+    container.querySelectorAll('.cal-cell').forEach((cell) => {
+      cell.addEventListener('click', () => openDayMenu(cell.dataset.date));
+    });
   }
 
   async function generateMonth() {
