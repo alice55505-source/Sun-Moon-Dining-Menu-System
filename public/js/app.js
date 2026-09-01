@@ -103,6 +103,7 @@
     });
     document.getElementById('btnNewOrder').addEventListener('click', () => openOrderForm());
     document.getElementById('orderForm').addEventListener('submit', submitOrderForm);
+    document.getElementById('btnPrintOrder').addEventListener('click', () => window.print());
 
     const monthlyPicker = document.getElementById('monthlyPicker');
     monthlyPicker.value = new Date().toISOString().slice(0, 7);
@@ -286,6 +287,7 @@
 
     const body = document.getElementById('orderDetailBody');
     body.innerHTML = `
+      <h2 class="print-only">日月自助餐 合菜訂單 - ${escapeHtml(order.customer_name)}（${order.delivery_date}）</h2>
       <div class="detail-grid">
         <div><span>出貨日期</span>${order.delivery_date} ${order.delivery_time || ''}</div>
         <div><span>客戶</span>${escapeHtml(order.customer_name)}（${escapeHtml(order.customer_phone || '')}）</div>
@@ -299,15 +301,15 @@
       </div>
 
       <div class="section-title">客製化菜單（主食／主菜／副菜／配菜／湯品／甜點／飲料：訂單單價200元以內最多6樣，超過200元最多可達12樣）</div>
-      <div id="genWarnings"></div>
+      <div id="genWarnings" class="no-print"></div>
       <div id="menuItemsList"></div>
-      <div class="add-slot-row" style="margin:10px 0">
+      <div class="add-slot-row no-print" style="margin:10px 0">
         <select id="addMenuCategory">${MENU_CATEGORIES.map((c) => `<option value="${c}">${c}</option>`).join('')}</select>
         <select id="addMenuDish"></select>
         <button type="button" class="btn-ghost btn-small" id="addMenuItemBtn">＋ 加入</button>
       </div>
       <div class="menu-summary" id="menuSummary"></div>
-      <div class="modal-actions" style="justify-content:space-between">
+      <div class="modal-actions no-print" style="justify-content:space-between">
         <button type="button" class="btn-ghost" id="btnAutoGenerate">🔄 依訂單條件自動產生建議菜單</button>
         <div style="display:flex;gap:10px">
           <button type="button" class="btn-ghost" id="btnSaveDraft">儲存草稿</button>

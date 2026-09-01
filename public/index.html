@@ -236,9 +236,12 @@
 <!-- ============ 訂單詳情 / 客製化菜單 Modal ============ -->
 <div id="orderDetailModal" class="modal-backdrop hidden">
   <div class="modal modal-lg">
-    <div class="modal-head">
+    <div class="modal-head no-print">
       <h3>訂單詳情與客製化菜單</h3>
-      <button class="modal-close" data-close="orderDetailModal">✕</button>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button type="button" class="btn-ghost btn-small" id="btnPrintOrder">🖨️ 下載／列印 PDF</button>
+        <button class="modal-close" data-close="orderDetailModal">✕</button>
+      </div>
     </div>
     <div class="modal-body" id="orderDetailBody"></div>
   </div>

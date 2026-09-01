@@ -252,4 +252,17 @@ legend { font-size: 13px; color: var(--muted); padding: 0 6px; }
   .calendar-page-break { page-break-after: always; break-after: page; }
   .sheet-table { width: 100% !important; font-size: 12px; }
   .sheet-table th, .sheet-table td { border: 1px solid #999 !important; padding: 4px 6px !important; }
+
+  /* 訂單詳情視窗開啟時，只印訂單內容本身，不印底下的分頁 */
+  #orderDetailModal:not(.hidden) {
+    position: fixed; inset: 0; background: #fff; z-index: 999;
+    display: block !important; padding: 0; margin: 0; overflow: visible;
+  }
+  #orderDetailModal:not(.hidden), #orderDetailModal:not(.hidden) * { visibility: visible; }
+  #orderDetailModal:not(.hidden) .modal { max-width: 100%; box-shadow: none; border-radius: 0; }
+  #orderDetailModal:not(.hidden) .modal-body { max-height: none; overflow: visible; padding: 0 10mm; }
+  #orderDetailModal .menu-item-row input[type="number"] {
+    border: none; background: transparent; -moz-appearance: textfield;
+  }
+  #orderDetailModal button { display: none !important; }
 }
