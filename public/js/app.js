@@ -62,6 +62,7 @@
     orders: loadOrders,
     monthly: loadMonthlyMenu,
     dishes: loadDishes,
+    inventory: loadInventory,
     purchase: renderPurchase,
     'bento-orders': loadBentoOrders,
     'bento-monthly': loadBentoMonthlyMenu,
@@ -117,6 +118,10 @@
     const purchaseDate = document.getElementById('purchaseDate');
     purchaseDate.value = new Date().toISOString().slice(0, 10);
     purchaseDate.addEventListener('change', renderPurchase);
+
+    document.getElementById('btnNewInventoryItem').addEventListener('click', () => openInventoryForm());
+    document.getElementById('inventoryForm').addEventListener('submit', submitInventoryForm);
+    document.getElementById('btnSyncInventory').addEventListener('click', syncInventoryFromDishes);
 
     document.getElementById('bentoOrderFilterMonth').addEventListener('change', loadBentoOrders);
     document.getElementById('clearBentoOrderFilter').addEventListener('click', () => {
@@ -821,7 +826,82 @@
     }
   }
 
-  // ================= 採購清單 =================
+  // ================= 庫存：庫存清點 =================
+
+  async function loadInventory() {
+    const items = await api('/api/inventory');
+    const tbody = document.getElementById('inventoryTableBody');
+    if (items.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted)">尚無庫存資料，可按「從菜色食材補齊清單」或手動新增</td></tr>';
+      return;
+    }
+    tbody.innerHTML = items
+      .map(
+        (it) => `
+      <tr>
+        <td>${escapeHtml(it.name)}</td>
+        <td>${escapeHtml(it.unit)}</td>
+        <td>${it.qty}</td>
+        <td>${escapeHtml((it.updated_at || '').slice(0, 16))}</td>
+        <td>
+          <button class="btn-ghost btn-small" data-edit="${it.id}">編輯</button>
+          <button class="btn-danger btn-small" data-del="${it.id}">刪除</button>
+        </td>
+      </tr>`
+      )
+      .join('');
+    tbody.querySelectorAll('[data-edit]').forEach((b) =>
+      b.addEventListener('click', () => openInventoryForm(items.find((it) => it.id === Number(b.dataset.edit))))
+    );
+    tbody.querySelectorAll('[data-del]').forEach((b) =>
+      b.addEventListener('click', async () => {
+        if (!confirm('確定要刪除這項庫存紀錄嗎？')) return;
+        await api('/api/inventory/' + b.dataset.del, { method: 'DELETE' });
+        toast('已刪除');
+        loadInventory();
+      })
+    );
+  }
+
+  function openInventoryForm(item) {
+    document.getElementById('inventoryForm').reset();
+    document.getElementById('inv_id').value = item ? item.id : '';
+    document.getElementById('inventoryModalTitle').textContent = item ? '編輯食材庫存' : '新增食材';
+    document.getElementById('inv_name').value = item ? item.name : '';
+    document.getElementById('inv_unit').value = item ? item.unit : '';
+    document.getElementById('inv_qty').value = item ? item.qty : 0;
+    openModal('inventoryModal');
+  }
+
+  async function submitInventoryForm(e) {
+    e.preventDefault();
+    const id = document.getElementById('inv_id').value;
+    const body = {
+      name: document.getElementById('inv_name').value.trim(),
+      unit: document.getElementById('inv_unit').value.trim(),
+      qty: Number(document.getElementById('inv_qty').value) || 0,
+    };
+    try {
+      if (id) {
+        await api('/api/inventory/' + id, { method: 'PUT', body: JSON.stringify(body) });
+      } else {
+        await api('/api/inventory', { method: 'POST', body: JSON.stringify(body) });
+      }
+      toast('庫存已更新');
+      closeModal('inventoryModal');
+      loadInventory();
+    } catch (err) {
+      toast(err.message, true);
+    }
+  }
+
+  async function syncInventoryFromDishes() {
+    const result = await api('/api/inventory/sync', { method: 'POST' });
+    toast(result.added > 0 ? `已補齊 ${result.added} 項食材（庫存量預設 0）` : '目前菜色食材都已經在清單裡了');
+    loadInventory();
+  }
+
+  // ================= 庫存：食材採買 =================
 
   async function renderPurchase() {
     const date = document.getElementById('purchaseDate').value;
@@ -833,11 +913,22 @@
       return;
     }
     const orderList = data.orders.map((o) => `[${o.type}]${escapeHtml(o.customer_name)}（${o.quantity}份）`).join('、');
-    const rows = data.aggregated.map((a) => `<tr><td>${escapeHtml(a.name)}</td><td>${a.qtyTotal}</td><td>${a.unit}</td></tr>`).join('');
+    const rows = data.aggregated
+      .map(
+        (a) => `
+      <tr class="${a.toBuyQty > 0 ? '' : 'purchase-row-covered'}">
+        <td>${escapeHtml(a.name)}</td>
+        <td>${a.qtyTotal}</td>
+        <td>${a.stockQty}</td>
+        <td>${a.toBuyQty}</td>
+        <td>${a.unit}</td>
+      </tr>`
+      )
+      .join('');
     result.innerHTML = `
       <p class="hint">共 ${data.orderCount} 筆已確認訂單：${orderList}</p>
       <table class="ingredient-table">
-        <thead><tr><th>食材</th><th>需採購量</th><th>單位</th></tr></thead>
+        <thead><tr><th>食材</th><th>訂單需求量</th><th>目前庫存</th><th>還要採買</th><th>單位</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     `;

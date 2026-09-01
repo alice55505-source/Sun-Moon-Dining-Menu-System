@@ -206,6 +206,8 @@ legend { font-size: 13px; color: var(--muted); padding: 0 6px; }
 
 .ingredient-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
 .ingredient-table th, .ingredient-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); text-align: left; }
+.ingredient-table tr.purchase-row-covered td { color: var(--muted); }
+.ingredient-table tr.purchase-row-covered td:nth-child(4) { color: var(--ok); font-weight: 600; }
 
 .sheet-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13.5px; background: var(--card); }
 .sheet-table th, .sheet-table td { padding: 7px 10px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }

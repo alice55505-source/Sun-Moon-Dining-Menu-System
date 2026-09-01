@@ -26,7 +26,8 @@
   </div>
   <div class="tab-sub-group hidden" data-group="shared">
     <button class="tab-btn" data-tab="dishes">菜色資料庫</button>
-    <button class="tab-btn" data-tab="purchase">採購清單</button>
+    <button class="tab-btn" data-tab="inventory">庫存清點</button>
+    <button class="tab-btn" data-tab="purchase">食材採買</button>
     <button class="tab-btn" data-tab="daily-sheet">當天食材表</button>
   </div>
 </nav>
@@ -95,15 +96,35 @@
     </div>
   </section>
 
-  <!-- ============ 採購清單 ============ -->
+  <!-- ============ 庫存：食材採買 ============ -->
   <section id="tab-purchase" class="tab-panel">
     <div class="panel-header">
-      <h2>採購清單（依出貨日期彙總已確認訂單，合菜＋便當共用）</h2>
+      <h2>食材採買（依出貨日期彙總已確認訂單需求，扣掉目前庫存）</h2>
       <div class="filters">
         <label>出貨日期 <input type="date" id="purchaseDate" /></label>
       </div>
     </div>
     <div id="purchaseResult"></div>
+  </section>
+
+  <!-- ============ 庫存：庫存清點 ============ -->
+  <section id="tab-inventory" class="tab-panel">
+    <div class="panel-header">
+      <h2>庫存清點</h2>
+      <div class="filters">
+        <button id="btnSyncInventory" class="btn-ghost">從菜色食材補齊清單</button>
+        <button id="btnNewInventoryItem" class="btn-primary">＋ 新增食材</button>
+      </div>
+    </div>
+    <p class="hint">記錄目前手上每項食材還有多少，「食材採買」會拿當天訂單需求扣掉這裡的庫存量，算出實際還要採買多少。</p>
+    <div class="table-wrap">
+      <table id="inventoryTable">
+        <thead>
+          <tr><th>食材</th><th>單位</th><th>目前庫存</th><th>最後更新</th><th></th></tr>
+        </thead>
+        <tbody id="inventoryTableBody"></tbody>
+      </table>
+    </div>
   </section>
 
   <!-- ============ 便當：工廠訂單 ============ -->
@@ -326,6 +347,30 @@
         <div class="modal-actions">
           <button type="button" class="btn-ghost" data-close="bentoOrderModal">取消</button>
           <button type="submit" class="btn-primary">儲存訂單</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 庫存項目編輯 Modal ============ -->
+<div id="inventoryModal" class="modal-backdrop hidden">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="inventoryModalTitle">新增食材</h3>
+      <button class="modal-close" data-close="inventoryModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="inventoryForm">
+        <input type="hidden" id="inv_id" />
+        <div class="grid-2">
+          <label>食材名稱 <input required type="text" id="inv_name" /></label>
+          <label>單位 <input required type="text" id="inv_unit" placeholder="g / ml / 顆 / 份" /></label>
+          <label>目前庫存量 <input required type="number" step="any" min="0" id="inv_qty" value="0" /></label>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" data-close="inventoryModal">取消</button>
+          <button type="submit" class="btn-primary">儲存</button>
         </div>
       </form>
     </div>

@@ -114,3 +114,17 @@ CREATE TABLE IF NOT EXISTS bento_menu_items (
 );
 
 CREATE INDEX IF NOT EXISTS idx_bento_menu_items_date ON bento_menu_items(menu_date);
+
+-- ==================== 庫存板塊（取代採購清單） ====================
+-- 庫存清點：目前每項食材手上有多少（只存「目前」這一份快照，不是逐筆進出貨紀錄）。
+-- 食材採買（functions/_lib/purchase.js）會拿「當天訂單需求」減掉這裡的庫存量，
+-- 算出實際還要採買多少，key 用 name+unit 跟 aggregateIngredients() 對齊。
+CREATE TABLE IF NOT EXISTS inventory_items (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  unit TEXT NOT NULL,
+  qty REAL NOT NULL DEFAULT 0,
+  updated_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_inventory_items_name_unit ON inventory_items(name, unit);

@@ -1,4 +1,5 @@
 import { resolveBentoOrderDishes } from './bentoOrderResolve.js';
+import { getInventoryMap } from './inventory.js';
 
 async function getOrderById(db, orderId) {
   return db.prepare(`SELECT * FROM orders WHERE id = ?`).bind(orderId).first();
@@ -140,11 +141,22 @@ export async function getPurchaseListByDate(db, date) {
     });
   }
 
+  const demand = aggregateIngredients(allIngredients);
+  const inventoryMap = await getInventoryMap(db);
+  const aggregated = demand.map((d) => {
+    const stockQty = inventoryMap.get(`${d.name}__${d.unit}`) || 0;
+    return {
+      ...d,
+      stockQty: round2(stockQty),
+      toBuyQty: round2(Math.max(0, d.qtyTotal - stockQty)),
+    };
+  });
+
   return {
     date,
     orderCount: orders.length + bentoOrders.length,
     orders: orderSummaries,
-    aggregated: aggregateIngredients(allIngredients),
+    aggregated,
   };
 }
 
