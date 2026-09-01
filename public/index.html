@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>日月自助餐 出菜單系統</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<header class="topbar">
+  <h1>🍱 日月自助餐 出菜單系統</h1>
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="orders">合菜訂單</button>
+    <button class="tab-btn" data-tab="monthly">月菜單管理</button>
+    <button class="tab-btn" data-tab="dishes">菜色資料庫</button>
+    <button class="tab-btn" data-tab="purchase">採購清單</button>
+  </nav>
+</header>
+
+<main id="app">
+  <!-- ============ 訂單管理 ============ -->
+  <section id="tab-orders" class="tab-panel active">
+    <div class="panel-header">
+      <h2>合菜訂單</h2>
+      <div class="filters">
+        <label>依日期篩選 <input type="date" id="orderFilterDate" /></label>
+        <button id="clearOrderFilter" class="btn-ghost">清除</button>
+        <button id="btnNewOrder" class="btn-primary">＋ 新增訂單</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table id="orderTable">
+        <thead>
+          <tr>
+            <th>出貨日期</th><th>時間</th><th>客戶</th><th>電話</th><th>數量</th><th>單價</th>
+            <th>總額</th><th>訂金</th><th>尾款</th><th>司機</th><th>菜單狀態</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="orderTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 月菜單管理 ============ -->
+  <section id="tab-monthly" class="tab-panel">
+    <div class="panel-header">
+      <h2>月菜單管理</h2>
+      <div class="filters">
+        <label>月份 <input type="month" id="monthlyPicker" /></label>
+      </div>
+    </div>
+    <p class="hint">原則：① 一個月不重複（同食材不同烹調可接受） ② 整體色彩搭配 ③ 烹調方式不過度集中（炸物≤2） ④ 主菜與副菜不同肉類 ⑤ 辣菜1~2樣</p>
+    <div id="monthlyWarnings" class="warnings"></div>
+    <div id="monthlySlots" class="monthly-slots"></div>
+  </section>
+
+  <!-- ============ 菜色資料庫 ============ -->
+  <section id="tab-dishes" class="tab-panel">
+    <div class="panel-header">
+      <h2>菜色資料庫</h2>
+      <div class="filters">
+        <select id="dishFilterCategory">
+          <option value="">全部分類</option>
+        </select>
+        <button id="btnNewDish" class="btn-primary">＋ 新增菜色</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table id="dishTable">
+        <thead>
+          <tr><th>分類</th><th>名稱</th><th>蛋白質</th><th>烹調</th><th>顏色</th><th>豬肉</th><th>辣</th><th>軟食</th><th>價格</th><th></th></tr>
+        </thead>
+        <tbody id="dishTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 採購清單 ============ -->
+  <section id="tab-purchase" class="tab-panel">
+    <div class="panel-header">
+      <h2>採購清單（依出貨日期彙總已確認訂單）</h2>
+      <div class="filters">
+        <label>出貨日期 <input type="date" id="purchaseDate" /></label>
+      </div>
+    </div>
+    <div id="purchaseResult"></div>
+  </section>
+</main>
+
+<!-- ============ 訂單編輯 Modal ============ -->
+<div id="orderModal" class="modal-backdrop hidden">
+  <div class="modal modal-lg">
+    <div class="modal-head">
+      <h3 id="orderModalTitle">新增訂單</h3>
+      <button class="modal-close" data-close="orderModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="orderForm">
+        <input type="hidden" id="orderId" />
+        <div class="grid-2">
+          <label>出貨日期 <input required type="date" id="f_delivery_date" /></label>
+          <label>時間 <input type="time" id="f_delivery_time" /></label>
+          <label>數量（桌數/份數） <input required type="number" min="1" id="f_quantity" value="1" /></label>
+          <label>單價 <input required type="number" min="0" id="f_unit_price" /></label>
+          <label>客戶姓名 <input required type="text" id="f_customer_name" /></label>
+          <label>客戶電話 <input type="text" id="f_customer_phone" /></label>
+          <label>訂金 <input type="number" min="0" id="f_deposit" /></label>
+          <label>司機 <input type="text" id="f_driver" /></label>
+        </div>
+        <label class="block">送餐地址 <input type="text" id="f_delivery_address" /></label>
+
+        <fieldset>
+          <legend>餐具數量</legend>
+          <div class="grid-4">
+            <label>菜夾 <input type="number" min="0" id="f_tableware_veg_clip" value="0" /></label>
+            <label>菜匙 <input type="number" min="0" id="f_tableware_veg_spoon" value="0" /></label>
+            <label>飯匙 <input type="number" min="0" id="f_tableware_rice_spoon" value="0" /></label>
+            <label>大湯匙 <input type="number" min="0" id="f_tableware_soup_spoon" value="0" /></label>
+            <label>六角碗 <input type="number" min="0" id="f_tableware_bowl" value="0" /></label>
+            <label>盤子 <input type="number" min="0" id="f_tableware_plate" value="0" /></label>
+            <label>筷子 <input type="number" min="0" id="f_tableware_chopsticks" value="0" /></label>
+            <label>紙杯 <input type="number" min="0" id="f_tableware_cup" value="0" /></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>客製化選項</legend>
+          <div class="checkbox-row">
+            <label><input type="checkbox" id="f_opt_no_pork" /> 不豬</label>
+            <label><input type="checkbox" id="f_opt_no_spicy" /> 不辣</label>
+            <label><input type="checkbox" id="f_opt_hearty" /> 粗飽</label>
+            <label><input type="checkbox" id="f_opt_kids" /> 孩子</label>
+            <label><input type="checkbox" id="f_opt_elderly" /> 老人</label>
+          </div>
+        </fieldset>
+
+        <label class="block">備註 <textarea id="f_notes" rows="2"></textarea></label>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" data-close="orderModal">取消</button>
+          <button type="submit" class="btn-primary">儲存訂單</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 訂單詳情 / 客製化菜單 Modal ============ -->
+<div id="orderDetailModal" class="modal-backdrop hidden">
+  <div class="modal modal-lg">
+    <div class="modal-head">
+      <h3>訂單詳情與客製化菜單</h3>
+      <button class="modal-close" data-close="orderDetailModal">✕</button>
+    </div>
+    <div class="modal-body" id="orderDetailBody"></div>
+  </div>
+</div>
+
+<!-- ============ 菜色編輯 Modal ============ -->
+<div id="dishModal" class="modal-backdrop hidden">
+  <div class="modal modal-lg">
+    <div class="modal-head">
+      <h3 id="dishModalTitle">新增菜色</h3>
+      <button class="modal-close" data-close="dishModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="dishForm">
+        <input type="hidden" id="d_id" />
+        <div class="grid-2">
+          <label>名稱 <input required type="text" id="d_name" /></label>
+          <label>分類 <select required id="d_category"></select></label>
+          <label>蛋白質種類 <select id="d_protein_type"></select></label>
+          <label>烹調方式 <select id="d_cooking_method"></select></label>
+          <label>色系 <select id="d_color_tag"></select></label>
+          <label>預算價格 <input type="number" min="0" id="d_price" value="0" /></label>
+        </div>
+        <div class="checkbox-row">
+          <label><input type="checkbox" id="d_is_pork" /> 含豬肉</label>
+          <label><input type="checkbox" id="d_is_spicy" /> 辣</label>
+          <label><input type="checkbox" id="d_is_soft" /> 軟食（適合老人/孩童）</label>
+        </div>
+        <label class="block">備註 <input type="text" id="d_notes" /></label>
+
+        <fieldset>
+          <legend>主要食材（不含調味料）</legend>
+          <div id="d_ingredients"></div>
+          <button type="button" id="d_addIngredient" class="btn-ghost">＋ 新增食材</button>
+        </fieldset>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" data-close="dishModal">取消</button>
+          <button type="submit" class="btn-primary">儲存菜色</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="js/app.js"></script>
+</body>
+</html>

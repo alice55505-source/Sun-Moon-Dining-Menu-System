@@ -1,0 +1,15 @@
+{
+  "name": "sun-moon-dining-menu-system",
+  "version": "0.1.0",
+  "description": "日月自助餐出菜單系統 - 合菜訂單、月菜單、客製化菜單與採購管理",
+  "private": true,
+  "main": "server/app.js",
+  "scripts": {
+    "start": "node server/app.js",
+    "dev": "node server/app.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.3.0",
+    "express": "^4.19.2"
+  }
+}
