@@ -37,13 +37,15 @@ const dishRows = DISHES.map((d, idx) => {
     id,
     row: `(${id}, ${esc(d.name)}, ${esc(d.category)}, ${d.is_pork ? 1 : 0}, ${esc(d.protein_type || '素')}, ${esc(
       d.cooking_method || '其他'
-    )}, ${esc(d.color_tag || '其他')}, ${d.is_spicy ? 1 : 0}, ${d.is_soft ? 1 : 0}, ${d.price || 0}, ${esc(d.notes || '')})`,
+    )}, ${esc(d.color_tag || '其他')}, ${d.is_spicy ? 1 : 0}, ${d.is_soft ? 1 : 0}, ${d.price || 0}, ${esc(
+      d.notes || ''
+    )}, ${esc(d.flavor_style || '')}, ${esc(d.main_ingredient || '')})`,
   };
 });
 
 for (const group of chunk(dishRows, 40)) {
   lines.push(
-    'INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES\n' +
+    'INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes, flavor_style, main_ingredient) VALUES\n' +
       group.map((g) => g.row).join(',\n') +
       ';'
   );

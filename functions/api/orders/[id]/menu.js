@@ -9,14 +9,14 @@ export async function onRequestPut({ request, params, env }) {
   const { items, confirm } = body;
   if (!Array.isArray(items)) return errorJson('items 為必填陣列');
 
-  const totalPrice = items.reduce((s, it) => s + (Number(it.price) || 0), 0);
+  const unitPrice = Number(order.unit_price) || 0;
   if (items.length > HIGH_TIER_MAX_ITEMS) {
     return errorJson(`最多 ${HIGH_TIER_MAX_ITEMS} 樣菜色`);
   }
-  const maxItemsAllowed = getMaxItemsForPrice(totalPrice);
+  const maxItemsAllowed = getMaxItemsForPrice(unitPrice);
   if (items.length > maxItemsAllowed) {
     return errorJson(
-      `總價 $${totalPrice} 在 ${PRICE_THRESHOLD} 元以內最多 ${maxItemsAllowed} 樣，若要選 ${items.length} 樣，總價需超過 ${PRICE_THRESHOLD} 元`
+      `訂單單價 $${unitPrice} 在 ${PRICE_THRESHOLD} 元以內最多 ${maxItemsAllowed} 樣，若要選 ${items.length} 樣，訂單單價需超過 ${PRICE_THRESHOLD} 元`
     );
   }
 

@@ -49,6 +49,21 @@ class ShuffleBag {
   }
 }
 
+// 建立「當天」共用的排除條件：炸物≤2、辣菜≤2、同一天不可調味風格重複、同一天不可主食材重複，
+// 並可傳入 extraRejectFn 補充分類專屬的條件（例如主菜/副菜不可同肉類）
+function dayRejectFn(picked, extraRejectFn) {
+  return (d) => {
+    const friedCount = picked.filter((p) => p.cooking_method === '炸').length;
+    const spicyCount = picked.filter((p) => p.is_spicy).length;
+    if (d.cooking_method === '炸' && friedCount >= 2) return true;
+    if (d.is_spicy && spicyCount >= 2) return true;
+    if (d.flavor_style && picked.some((p) => p.flavor_style === d.flavor_style)) return true;
+    if (d.main_ingredient && picked.some((p) => p.main_ingredient === d.main_ingredient)) return true;
+    if (extraRejectFn && extraRejectFn(d)) return true;
+    return false;
+  };
+}
+
 // 從 bag 抽一個不違反 rejectFn 的菜（最多試 maxAttempts 次），找不到就妥協接受最後一個
 function drawAvoiding(bag, excludeIds, rejectFn, maxAttempts = 8) {
   const rejected = [];
@@ -96,17 +111,13 @@ export async function generateMonthCalendar(db, month) {
   for (let day = 1; day <= total; day++) {
     const date = `${month}-${String(day).padStart(2, '0')}`;
     const picked = [];
-    const isFried = (d) => d.cooking_method === '炸';
-    const isSpicy = (d) => !!d.is_spicy;
-    const friedCount = () => picked.filter(isFried).length;
-    const spicyCount = () => picked.filter(isSpicy).length;
     const pickedIds = () => picked.map((p) => p.dish_id);
     const mainProteins = () => picked.filter((p) => p.slot_category === '主菜' && p.protein_type !== '素').map((p) => p.protein_type);
 
-    const notPork = drawAvoiding(bagMainNoPork, pickedIds(), (d) => (isFried(d) && friedCount() >= 2) || (isSpicy(d) && spicyCount() >= 2));
+    const notPork = drawAvoiding(bagMainNoPork, pickedIds(), dayRejectFn(picked));
     picked.push({ slot_category: '主菜', variant: '不豬', ...notPork, dish_id: notPork.id });
 
-    const general = drawAvoiding(bagMainAll, pickedIds(), (d) => (isFried(d) && friedCount() >= 2) || (isSpicy(d) && spicyCount() >= 2));
+    const general = drawAvoiding(bagMainAll, pickedIds(), dayRejectFn(picked));
     picked.push({ slot_category: '主菜', variant: '一般', ...general, dish_id: general.id });
 
     for (let i = 0; i < 2; i++) {
@@ -114,16 +125,13 @@ export async function generateMonthCalendar(db, month) {
       const side = drawAvoiding(
         bagSide,
         pickedIds(),
-        (d) =>
-          (isFried(d) && friedCount() >= 2) ||
-          (isSpicy(d) && spicyCount() >= 2) ||
-          (d.protein_type !== '素' && mains.includes(d.protein_type))
+        dayRejectFn(picked, (d) => d.protein_type !== '素' && mains.includes(d.protein_type))
       );
       picked.push({ slot_category: '副菜', variant: '一般', ...side, dish_id: side.id });
     }
 
     for (let i = 0; i < 2; i++) {
-      const veg = drawAvoiding(bagVeg, pickedIds(), (d) => isSpicy(d) && spicyCount() >= 2);
+      const veg = drawAvoiding(bagVeg, pickedIds(), dayRejectFn(picked));
       picked.push({ slot_category: '時蔬', variant: '一般', ...veg, dish_id: veg.id });
     }
 

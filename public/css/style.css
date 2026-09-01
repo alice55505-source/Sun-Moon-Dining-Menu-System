@@ -120,6 +120,12 @@ tr.clickable { cursor: pointer; }
 .add-slot-row { display: flex; gap: 6px; margin-top: 10px; }
 .add-slot-row select { flex: 1; }
 
+.gen-progress { display: flex; align-items: center; gap: 10px; margin: 4px 0 14px; }
+.gen-progress.hidden { display: none; }
+.gen-progress-bar { flex: 1; max-width: 320px; height: 8px; border-radius: 4px; background: #f1ece4; overflow: hidden; }
+.gen-progress-fill { height: 100%; width: 0%; background: var(--primary); border-radius: 4px; transition: width 0.2s ease; }
+.gen-progress-text { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+
 #monthlyCalendar { overflow-x: auto; }
 .calendar-table { width: 100%; min-width: 760px; border-collapse: collapse; table-layout: fixed; background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
 .calendar-table th {
@@ -132,16 +138,9 @@ tr.clickable { cursor: pointer; }
 .cal-empty { background: #faf6f1; }
 .cal-date { font-weight: 600; font-size: 13px; margin-bottom: 4px; }
 .cal-dishes { list-style: none; margin: 4px 0 0; padding: 0; font-size: 11px; color: var(--text); }
-.cal-dishes li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.6; }
+.cal-dishes li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.7; }
 .cal-dishes li.hint { color: var(--muted); }
-
-.day-badge { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 10px; }
-.day-badge.ok { background: #eaf6ec; color: var(--ok); }
-.day-badge.warn { background: var(--warn-bg); color: #a06a0a; }
-.day-badge.empty { background: #f1ece4; color: var(--muted); }
-
-.month-repeat-summary { background: var(--warn-bg); border: 1px solid var(--warn-border); border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; font-size: 13.5px; }
-.month-repeat-summary ul { margin: 6px 0 0; padding-left: 20px; }
+.cal-slot { display: inline-block; min-width: 40px; color: var(--muted); font-size: 10px; margin-right: 3px; }
 
 .modal-backdrop {
   position: fixed; inset: 0; background: rgba(30,20,10,0.45);

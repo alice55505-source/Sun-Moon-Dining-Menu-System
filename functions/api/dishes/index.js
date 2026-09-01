@@ -24,8 +24,8 @@ export async function onRequestPost({ request, env }) {
   if (!b.name || !b.category) return errorJson('name 與 category 為必填');
 
   const result = await env.DB.prepare(
-    `INSERT INTO dishes (name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    `INSERT INTO dishes (name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes, flavor_style, main_ingredient)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   )
     .bind(
       b.name,
@@ -37,7 +37,9 @@ export async function onRequestPost({ request, env }) {
       b.is_spicy ? 1 : 0,
       b.is_soft ? 1 : 0,
       b.price || 0,
-      b.notes || ''
+      b.notes || '',
+      b.flavor_style || '',
+      b.main_ingredient || ''
     )
     .run();
 

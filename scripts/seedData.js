@@ -7,8 +7,20 @@
 // 300 筆），確保數量剛好、不重複，且方便日後調整（改食材清單或風格清單即可）。
 // 這樣「月菜單管理」的自動排月曆功能（每天2主菜+2副菜+2時蔬，共30天）才有足夠的
 // 菜色可以輪替、避免同一道菜在一個月內太快重複出現。
+//
+// 調味風格採用「風格池 + 輪轉挑選」：每種食材/主食材不是套用同一組固定風格，而是從
+// 較大的風格池中，依索引輪轉挑出一組（pickStyles），讓整體 100 道菜的調味風格更多元。
 
-// ==================== 主菜：20 食材 × 5 風格 = 100 道 ====================
+// pickStyles：從風格池中，依 index 輪轉挑出 count 個風格（同一項食材挑到的風格彼此不重複，
+// 不同食材之間盡量挑到不同的風格組合）。13 與常用池大小（16/20/30/35）互質，輪轉分散度較好。
+function pickStyles(pool, index, count) {
+  const start = (index * 13) % pool.length;
+  const out = [];
+  for (let i = 0; i < count; i++) out.push(pool[(start + i) % pool.length]);
+  return out;
+}
+
+// ==================== 主菜：15 肉類 × 5 風格 + 5 海鮮 × 5 風格 = 100 道 ====================
 
 const MEAT_PROTEINS = [
   { name: '五花肉', protein_type: '豬', is_pork: 1, qty: 400, unit: 'g', price: 85 },
@@ -36,26 +48,74 @@ const SEAFOOD_PROTEINS = [
   { name: '中卷', protein_type: '海鮮', is_pork: 0, qty: 400, unit: 'g', price: 120 },
 ];
 
-const MEAT_STYLES = [
+// 肉類／雞鴨牛羊適用風格池（35 種，涵蓋炒/滷/炸/蒸/烤/煮多種烹調方式）
+const MEAT_STYLE_POOL = [
   { label: '塔香', cooking_method: '炒', color_tag: '褐', is_spicy: 0, is_soft: 0, priceAdd: 10, extra: { name: '九層塔', qty: 20, unit: 'g' } },
   { label: '蒜香', cooking_method: '炒', color_tag: '褐', is_spicy: 0, is_soft: 0, priceAdd: 5, extra: { name: '蒜末', qty: 30, unit: 'g' } },
   { label: '紅燒', cooking_method: '滷', color_tag: '褐', is_spicy: 0, is_soft: 1, priceAdd: 5, extra: null },
   { label: '京都', cooking_method: '炸', color_tag: '紅', is_spicy: 0, is_soft: 0, priceAdd: 5, extra: { name: '洋蔥', qty: 60, unit: 'g' } },
   { label: '麻辣', cooking_method: '炒', color_tag: '紅', is_spicy: 1, is_soft: 0, priceAdd: 10, extra: { name: '乾辣椒', qty: 20, unit: 'g' } },
+  { label: '三杯', cooking_method: '炒', color_tag: '褐', is_spicy: 0, is_soft: 0, priceAdd: 10, extra: { name: '九層塔', qty: 20, unit: 'g' } },
+  { label: '沙茶', cooking_method: '炒', color_tag: '褐', is_spicy: 0, is_soft: 0, priceAdd: 10, extra: { name: '沙茶醬', qty: 30, unit: 'g' } },
+  { label: '蔥爆', cooking_method: '炒', color_tag: '白', is_spicy: 0, is_soft: 0, priceAdd: 5, extra: { name: '蔥段', qty: 40, unit: 'g' } },
+  { label: '薑炒', cooking_method: '炒', color_tag: '白', is_spicy: 0, is_soft: 0, priceAdd: 5, extra: { name: '薑絲', qty: 30, unit: 'g' } },
+  { label: '宮保', cooking_method: '炒', color_tag: '紅', is_spicy: 1, is_soft: 0, priceAdd: 10, extra: { name: '乾辣椒', qty: 20, unit: 'g' } },
+  { label: '魚香', cooking_method: '炒', color_tag: '紅', is_spicy: 1, is_soft: 0, priceAdd: 10, extra: { name: '魚香醬', qty: 30, unit: 'g' } },
+  { label: 'XO醬', cooking_method: '炒', color_tag: '紅', is_spicy: 1, is_soft: 0, priceAdd: 15, extra: { name: 'XO醬', qty: 40, unit: 'g' } },
+  { label: '豆豉', cooking_method: '炒', color_tag: '黑', is_spicy: 0, is_soft: 0, priceAdd: 5, extra: { name: '豆豉', qty: 20, unit: 'g' } },
+  { label: '黑胡椒', cooking_method: '炒', color_tag: '黑', is_spicy: 0, is_soft: 0, priceAdd: 10, extra: { name: '黑胡椒醬', qty: 30, unit: 'g' } },
+  { label: '白胡椒', cooking_method: '炒', color_tag: '白', is_spicy: 0, is_soft: 0, priceAdd: 10, extra: { name: '白胡椒粉', qty: 10, unit: 'g' } },
+  { label: '蠔油', cooking_method: '炒', color_tag: '褐', is_spicy: 0, is_soft: 0, priceAdd: 5, extra: { name: '蠔油', qty: 20, unit: 'g' } },
+  { label: '醬燒', cooking_method: '滷', color_tag: '褐', is_spicy: 0, is_soft: 1, priceAdd: 5, extra: null },
+  { label: '照燒', cooking_method: '滷', color_tag: '褐', is_spicy: 0, is_soft: 1, priceAdd: 10, extra: { name: '照燒醬', qty: 30, unit: 'g' } },
+  { label: '蜜汁', cooking_method: '滷', color_tag: '褐', is_spicy: 0, is_soft: 1, priceAdd: 10, extra: { name: '蜂蜜', qty: 20, unit: 'g' } },
+  { label: '五香', cooking_method: '滷', color_tag: '褐', is_spicy: 0, is_soft: 1, priceAdd: 5, extra: { name: '五香粉', qty: 10, unit: 'g' } },
+  { label: '糖醋', cooking_method: '炒', color_tag: '紅', is_spicy: 0, is_soft: 0, priceAdd: 10, extra: { name: '番茄醬', qty: 40, unit: 'g' } },
+  { label: '椒鹽', cooking_method: '炸', color_tag: '黃', is_spicy: 0, is_soft: 0, priceAdd: 10, extra: { name: '椒鹽粉', qty: 10, unit: 'g' } },
+  { label: '鹽酥', cooking_method: '炸', color_tag: '黃', is_spicy: 0, is_soft: 0, priceAdd: 10, extra: { name: '地瓜粉', qty: 50, unit: 'g' } },
+  { label: '香酥', cooking_method: '炸', color_tag: '黃', is_spicy: 0, is_soft: 0, priceAdd: 10, extra: null },
+  { label: '清蒸', cooking_method: '蒸', color_tag: '白', is_spicy: 0, is_soft: 1, priceAdd: 0, extra: { name: '薑絲', qty: 20, unit: 'g' } },
+  { label: '蒜蓉蒸', cooking_method: '蒸', color_tag: '白', is_spicy: 0, is_soft: 1, priceAdd: 5, extra: { name: '蒜蓉', qty: 40, unit: 'g' } },
+  { label: '豆豉蒸', cooking_method: '蒸', color_tag: '黑', is_spicy: 0, is_soft: 1, priceAdd: 5, extra: { name: '豆豉', qty: 20, unit: 'g' } },
+  { label: '破布子蒸', cooking_method: '蒸', color_tag: '褐', is_spicy: 0, is_soft: 1, priceAdd: 5, extra: { name: '破布子', qty: 30, unit: 'g' } },
+  { label: '鹽烤', cooking_method: '烤', color_tag: '褐', is_spicy: 0, is_soft: 0, priceAdd: 5, extra: null },
+  { label: '蒜香烤', cooking_method: '烤', color_tag: '褐', is_spicy: 0, is_soft: 0, priceAdd: 10, extra: { name: '蒜末', qty: 30, unit: 'g' } },
+  { label: '黑胡椒烤', cooking_method: '烤', color_tag: '黑', is_spicy: 0, is_soft: 0, priceAdd: 10, extra: { name: '黑胡椒醬', qty: 30, unit: 'g' } },
+  { label: '咖哩', cooking_method: '煮', color_tag: '黃', is_spicy: 0, is_soft: 0, priceAdd: 10, extra: { name: '咖哩塊', qty: 50, unit: 'g' } },
+  { label: '紅糟', cooking_method: '炒', color_tag: '紅', is_spicy: 0, is_soft: 0, priceAdd: 10, extra: { name: '紅糟醬', qty: 30, unit: 'g' } },
+  { label: '客家小炒', cooking_method: '炒', color_tag: '褐', is_spicy: 0, is_soft: 0, priceAdd: 10, extra: { name: '芹菜', qty: 30, unit: 'g' } },
+  { label: '麻油', cooking_method: '炒', color_tag: '褐', is_spicy: 0, is_soft: 0, priceAdd: 10, extra: { name: '麻油', qty: 20, unit: 'ml' } },
 ];
 
-const SEAFOOD_STYLES = [
+// 海鮮適用風格池（20 種，偏重蒸/川燙/清爽的烹調方式）
+const SEAFOOD_STYLE_POOL = [
   { label: '塔香', cooking_method: '炒', color_tag: '黃', is_spicy: 0, is_soft: 0, priceAdd: 10, extra: { name: '九層塔', qty: 20, unit: 'g' } },
-  { label: '蒜蒸', cooking_method: '蒸', color_tag: '白', is_spicy: 0, is_soft: 0, priceAdd: 5, extra: { name: '蒜蓉', qty: 40, unit: 'g' } },
-  { label: '清蒸', cooking_method: '蒸', color_tag: '白', is_spicy: 0, is_soft: 0, priceAdd: 0, extra: { name: '薑絲', qty: 20, unit: 'g' } },
-  { label: '避風塘', cooking_method: '炸', color_tag: '黃', is_spicy: 1, is_soft: 0, priceAdd: 15, extra: { name: '蒜酥', qty: 50, unit: 'g' } },
+  { label: '蒜蒸', cooking_method: '蒸', color_tag: '白', is_spicy: 0, is_soft: 1, priceAdd: 5, extra: { name: '蒜蓉', qty: 40, unit: 'g' } },
+  { label: '清蒸', cooking_method: '蒸', color_tag: '白', is_spicy: 0, is_soft: 1, priceAdd: 0, extra: { name: '薑絲', qty: 20, unit: 'g' } },
+  { label: '川燙', cooking_method: '煮', color_tag: '白', is_spicy: 0, is_soft: 0, priceAdd: 0, extra: { name: '五味醬', qty: 40, unit: 'g' } },
   { label: 'XO醬', cooking_method: '炒', color_tag: '紅', is_spicy: 1, is_soft: 0, priceAdd: 20, extra: { name: 'XO醬', qty: 40, unit: 'g' } },
+  { label: '三杯', cooking_method: '炒', color_tag: '褐', is_spicy: 0, is_soft: 0, priceAdd: 10, extra: { name: '九層塔', qty: 20, unit: 'g' } },
+  { label: '豆豉蒸', cooking_method: '蒸', color_tag: '黑', is_spicy: 0, is_soft: 1, priceAdd: 5, extra: { name: '豆豉', qty: 20, unit: 'g' } },
+  { label: '味噌蒸', cooking_method: '蒸', color_tag: '褐', is_spicy: 0, is_soft: 1, priceAdd: 5, extra: { name: '味噌', qty: 30, unit: 'g' } },
+  { label: '蔥蒸', cooking_method: '蒸', color_tag: '白', is_spicy: 0, is_soft: 1, priceAdd: 5, extra: { name: '蔥段', qty: 30, unit: 'g' } },
+  { label: '破布子蒸', cooking_method: '蒸', color_tag: '褐', is_spicy: 0, is_soft: 1, priceAdd: 5, extra: { name: '破布子', qty: 30, unit: 'g' } },
+  { label: '糖醋', cooking_method: '炒', color_tag: '紅', is_spicy: 0, is_soft: 0, priceAdd: 10, extra: { name: '番茄醬', qty: 40, unit: 'g' } },
+  { label: '椒鹽', cooking_method: '炸', color_tag: '黃', is_spicy: 0, is_soft: 0, priceAdd: 10, extra: { name: '椒鹽粉', qty: 10, unit: 'g' } },
+  { label: '五味', cooking_method: '涼拌', color_tag: '紅', is_spicy: 0, is_soft: 0, priceAdd: 5, extra: { name: '五味醬', qty: 40, unit: 'g' } },
+  { label: '泰式檸檬', cooking_method: '涼拌', color_tag: '綠', is_spicy: 1, is_soft: 0, priceAdd: 10, extra: { name: '檸檬汁', qty: 30, unit: 'ml' } },
+  { label: '蒜香', cooking_method: '炒', color_tag: '白', is_spicy: 0, is_soft: 0, priceAdd: 5, extra: { name: '蒜末', qty: 30, unit: 'g' } },
+  { label: '醬燒', cooking_method: '滷', color_tag: '褐', is_spicy: 0, is_soft: 1, priceAdd: 5, extra: null },
+  { label: '沙茶', cooking_method: '炒', color_tag: '褐', is_spicy: 0, is_soft: 0, priceAdd: 10, extra: { name: '沙茶醬', qty: 30, unit: 'g' } },
+  { label: '酥炸', cooking_method: '炸', color_tag: '黃', is_spicy: 0, is_soft: 0, priceAdd: 10, extra: null },
+  { label: '黑胡椒', cooking_method: '炒', color_tag: '黑', is_spicy: 0, is_soft: 0, priceAdd: 10, extra: { name: '黑胡椒醬', qty: 30, unit: 'g' } },
+  { label: '紅燒', cooking_method: '滷', color_tag: '褐', is_spicy: 0, is_soft: 1, priceAdd: 5, extra: null },
 ];
 
 function generateMainDishes() {
   const dishes = [];
-  for (const p of MEAT_PROTEINS) {
-    for (const s of MEAT_STYLES) {
+  MEAT_PROTEINS.forEach((p, idx) => {
+    const styles = pickStyles(MEAT_STYLE_POOL, idx, 5);
+    for (const s of styles) {
       dishes.push({
         name: `${s.label}${p.name}`,
         category: '主菜',
@@ -66,12 +126,15 @@ function generateMainDishes() {
         is_spicy: s.is_spicy,
         is_soft: s.is_soft,
         price: p.price + s.priceAdd,
+        flavor_style: s.label,
+        main_ingredient: p.name,
         ingredients: [{ name: p.name, qty: p.qty, unit: p.unit }, ...(s.extra ? [s.extra] : [])],
       });
     }
-  }
-  for (const p of SEAFOOD_PROTEINS) {
-    for (const s of SEAFOOD_STYLES) {
+  });
+  SEAFOOD_PROTEINS.forEach((p, idx) => {
+    const styles = pickStyles(SEAFOOD_STYLE_POOL, idx, 5);
+    for (const s of styles) {
       dishes.push({
         name: `${s.label}${p.name}`,
         category: '主菜',
@@ -82,10 +145,12 @@ function generateMainDishes() {
         is_spicy: s.is_spicy,
         is_soft: s.is_soft,
         price: p.price + s.priceAdd,
+        flavor_style: s.label,
+        main_ingredient: p.name,
         ingredients: [{ name: p.name, qty: p.qty, unit: p.unit }, ...(s.extra ? [s.extra] : [])],
       });
     }
-  }
+  });
   return dishes;
 }
 
@@ -114,18 +179,45 @@ const SIDE_BASES = [
   { name: '綠豆芽', protein_type: '素', is_pork: 0, qty: 350, unit: 'g', price: 35, color: '白' },
 ];
 
-const SIDE_STYLES = [
-  { label: '涼拌', cooking_method: '涼拌', is_spicy: 0, priceAdd: 0, colorOverride: null, extra: { name: '蒜末', qty: 15, unit: 'g' } },
-  { label: '塔香', cooking_method: '炒', is_spicy: 0, priceAdd: 5, colorOverride: null, extra: { name: '九層塔', qty: 15, unit: 'g' } },
-  { label: '紅燒', cooking_method: '滷', is_spicy: 0, priceAdd: 5, colorOverride: '褐', extra: null },
-  { label: '蒜炒', cooking_method: '炒', is_spicy: 0, priceAdd: 0, colorOverride: null, extra: { name: '蒜末', qty: 20, unit: 'g' } },
-  { label: '麻辣', cooking_method: '炒', is_spicy: 1, priceAdd: 10, colorOverride: '紅', extra: { name: '乾辣椒', qty: 15, unit: 'g' } },
+// 副菜適用風格池（30 種）；colorOverride 為 null 時沿用食材本身的顏色
+const SIDE_STYLE_POOL = [
+  { label: '涼拌', cooking_method: '涼拌', is_spicy: 0, is_soft: 0, priceAdd: 0, colorOverride: null, extra: { name: '蒜末', qty: 15, unit: 'g' } },
+  { label: '塔香', cooking_method: '炒', is_spicy: 0, is_soft: 0, priceAdd: 5, colorOverride: null, extra: { name: '九層塔', qty: 15, unit: 'g' } },
+  { label: '紅燒', cooking_method: '滷', is_spicy: 0, is_soft: 1, priceAdd: 5, colorOverride: '褐', extra: null },
+  { label: '蒜炒', cooking_method: '炒', is_spicy: 0, is_soft: 0, priceAdd: 0, colorOverride: null, extra: { name: '蒜末', qty: 20, unit: 'g' } },
+  { label: '麻辣', cooking_method: '炒', is_spicy: 1, is_soft: 0, priceAdd: 10, colorOverride: '紅', extra: { name: '乾辣椒', qty: 15, unit: 'g' } },
+  { label: '沙茶', cooking_method: '炒', is_spicy: 0, is_soft: 0, priceAdd: 10, colorOverride: null, extra: { name: '沙茶醬', qty: 20, unit: 'g' } },
+  { label: '蔥爆', cooking_method: '炒', is_spicy: 0, is_soft: 0, priceAdd: 5, colorOverride: null, extra: { name: '蔥段', qty: 20, unit: 'g' } },
+  { label: '薑炒', cooking_method: '炒', is_spicy: 0, is_soft: 0, priceAdd: 5, colorOverride: null, extra: { name: '薑絲', qty: 20, unit: 'g' } },
+  { label: '宮保', cooking_method: '炒', is_spicy: 1, is_soft: 0, priceAdd: 10, colorOverride: '紅', extra: { name: '乾辣椒', qty: 15, unit: 'g' } },
+  { label: '魚香', cooking_method: '炒', is_spicy: 1, is_soft: 0, priceAdd: 10, colorOverride: '紅', extra: { name: '魚香醬', qty: 20, unit: 'g' } },
+  { label: 'XO醬', cooking_method: '炒', is_spicy: 1, is_soft: 0, priceAdd: 15, colorOverride: '紅', extra: { name: 'XO醬', qty: 30, unit: 'g' } },
+  { label: '豆豉', cooking_method: '炒', is_spicy: 0, is_soft: 0, priceAdd: 5, colorOverride: '黑', extra: { name: '豆豉', qty: 15, unit: 'g' } },
+  { label: '黑胡椒', cooking_method: '炒', is_spicy: 0, is_soft: 0, priceAdd: 10, colorOverride: '黑', extra: { name: '黑胡椒醬', qty: 20, unit: 'g' } },
+  { label: '蠔油', cooking_method: '炒', is_spicy: 0, is_soft: 0, priceAdd: 5, colorOverride: null, extra: { name: '蠔油', qty: 15, unit: 'g' } },
+  { label: '五味', cooking_method: '涼拌', is_spicy: 0, is_soft: 0, priceAdd: 5, colorOverride: '紅', extra: { name: '五味醬', qty: 20, unit: 'g' } },
+  { label: '椒麻', cooking_method: '涼拌', is_spicy: 1, is_soft: 0, priceAdd: 10, colorOverride: '綠', extra: { name: '花椒', qty: 10, unit: 'g' } },
+  { label: '胡麻', cooking_method: '涼拌', is_spicy: 0, is_soft: 0, priceAdd: 5, colorOverride: '白', extra: { name: '胡麻醬', qty: 20, unit: 'g' } },
+  { label: '醋味', cooking_method: '涼拌', is_spicy: 0, is_soft: 0, priceAdd: 0, colorOverride: null, extra: { name: '烏醋', qty: 15, unit: 'g' } },
+  { label: '泰式', cooking_method: '涼拌', is_spicy: 1, is_soft: 0, priceAdd: 10, colorOverride: '綠', extra: { name: '檸檬汁', qty: 20, unit: 'ml' } },
+  { label: '和風', cooking_method: '涼拌', is_spicy: 0, is_soft: 0, priceAdd: 5, colorOverride: null, extra: { name: '柴魚醬油', qty: 15, unit: 'ml' } },
+  { label: '客家', cooking_method: '炒', is_spicy: 0, is_soft: 0, priceAdd: 5, colorOverride: null, extra: { name: '豆豉', qty: 15, unit: 'g' } },
+  { label: '味噌', cooking_method: '炒', is_spicy: 0, is_soft: 0, priceAdd: 5, colorOverride: '褐', extra: { name: '味噌', qty: 20, unit: 'g' } },
+  { label: '破布子', cooking_method: '滷', is_spicy: 0, is_soft: 1, priceAdd: 5, colorOverride: '褐', extra: { name: '破布子', qty: 15, unit: 'g' } },
+  { label: '清蒸', cooking_method: '蒸', is_spicy: 0, is_soft: 1, priceAdd: 0, colorOverride: '白', extra: { name: '薑絲', qty: 15, unit: 'g' } },
+  { label: '豆豉蒸', cooking_method: '蒸', is_spicy: 0, is_soft: 1, priceAdd: 5, colorOverride: '黑', extra: { name: '豆豉', qty: 15, unit: 'g' } },
+  { label: '糖醋', cooking_method: '炒', is_spicy: 0, is_soft: 0, priceAdd: 10, colorOverride: '紅', extra: { name: '番茄醬', qty: 20, unit: 'g' } },
+  { label: '椒鹽', cooking_method: '炸', is_spicy: 0, is_soft: 0, priceAdd: 10, colorOverride: '黃', extra: null },
+  { label: '酥炸', cooking_method: '炸', is_spicy: 0, is_soft: 0, priceAdd: 10, colorOverride: '黃', extra: null },
+  { label: '香蒜', cooking_method: '炒', is_spicy: 0, is_soft: 0, priceAdd: 0, colorOverride: null, extra: { name: '蒜片', qty: 15, unit: 'g' } },
+  { label: '咖哩', cooking_method: '煮', is_spicy: 0, is_soft: 0, priceAdd: 10, colorOverride: '黃', extra: { name: '咖哩塊', qty: 20, unit: 'g' } },
 ];
 
 function generateSideDishes() {
   const dishes = [];
-  for (const b of SIDE_BASES) {
-    for (const s of SIDE_STYLES) {
+  SIDE_BASES.forEach((b, idx) => {
+    const styles = pickStyles(SIDE_STYLE_POOL, idx, 5);
+    for (const s of styles) {
       dishes.push({
         name: `${s.label}${b.name}`,
         category: '副菜',
@@ -134,12 +226,14 @@ function generateSideDishes() {
         cooking_method: s.cooking_method,
         color_tag: s.colorOverride || b.color,
         is_spicy: s.is_spicy,
-        is_soft: s.label === '紅燒' ? 1 : 0,
+        is_soft: s.is_soft,
         price: b.price + s.priceAdd,
+        flavor_style: s.label,
+        main_ingredient: b.name,
         ingredients: [{ name: b.name, qty: b.qty, unit: b.unit }, ...(s.extra ? [s.extra] : [])],
       });
     }
-  }
+  });
   return dishes;
 }
 
@@ -157,17 +251,31 @@ const VEGETABLES = [
   { name: '娃娃菜', color: '綠' },
 ];
 
-const VEG_STYLES = [
+// 時蔬適用風格池（16 種，以炒／涼拌為主）
+const VEG_STYLE_POOL = [
   { label: '蒜炒', cooking_method: '炒', priceAdd: 0, extra: { name: '蒜末', qty: 15, unit: 'g' } },
   { label: '清炒', cooking_method: '炒', priceAdd: 0, extra: null },
   { label: '塔香炒', cooking_method: '炒', priceAdd: 5, extra: { name: '九層塔', qty: 15, unit: 'g' } },
   { label: '涼拌', cooking_method: '涼拌', priceAdd: 0, extra: { name: '蒜末', qty: 15, unit: 'g' } },
+  { label: 'XO醬炒', cooking_method: '炒', priceAdd: 15, extra: { name: 'XO醬', qty: 20, unit: 'g' } },
+  { label: '沙茶炒', cooking_method: '炒', priceAdd: 10, extra: { name: '沙茶醬', qty: 15, unit: 'g' } },
+  { label: '蠔油炒', cooking_method: '炒', priceAdd: 5, extra: { name: '蠔油', qty: 15, unit: 'g' } },
+  { label: '薑炒', cooking_method: '炒', priceAdd: 5, extra: { name: '薑絲', qty: 15, unit: 'g' } },
+  { label: '香蒜炒', cooking_method: '炒', priceAdd: 0, extra: { name: '蒜片', qty: 15, unit: 'g' } },
+  { label: '麻油炒', cooking_method: '炒', priceAdd: 10, extra: { name: '麻油', qty: 10, unit: 'ml' } },
+  { label: '五味涼拌', cooking_method: '涼拌', priceAdd: 5, extra: { name: '五味醬', qty: 20, unit: 'g' } },
+  { label: '胡麻涼拌', cooking_method: '涼拌', priceAdd: 5, extra: { name: '胡麻醬', qty: 20, unit: 'g' } },
+  { label: '和風涼拌', cooking_method: '涼拌', priceAdd: 5, extra: { name: '柴魚醬油', qty: 15, unit: 'ml' } },
+  { label: '醋味涼拌', cooking_method: '涼拌', priceAdd: 0, extra: { name: '烏醋', qty: 15, unit: 'g' } },
+  { label: '快炒', cooking_method: '炒', priceAdd: 0, extra: null },
+  { label: '醬炒', cooking_method: '炒', priceAdd: 5, extra: { name: '醬油膏', qty: 15, unit: 'g' } },
 ];
 
 function generateVegDishes() {
   const dishes = [];
-  for (const v of VEGETABLES) {
-    for (const s of VEG_STYLES) {
+  VEGETABLES.forEach((v, idx) => {
+    const styles = pickStyles(VEG_STYLE_POOL, idx, 4);
+    for (const s of styles) {
       dishes.push({
         name: `${s.label}${v.name}`,
         category: '時蔬',
@@ -178,10 +286,12 @@ function generateVegDishes() {
         is_spicy: 0,
         is_soft: 0,
         price: 40 + s.priceAdd,
+        flavor_style: s.label,
+        main_ingredient: v.name,
         ingredients: [{ name: v.name, qty: 400, unit: 'g' }, ...(s.extra ? [s.extra] : [])],
       });
     }
-  }
+  });
   return dishes;
 }
 

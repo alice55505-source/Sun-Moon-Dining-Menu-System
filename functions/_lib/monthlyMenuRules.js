@@ -7,6 +7,8 @@
 // 3. 考量烹調方式（如炸物不能太多項）
 // 4. 主菜和副菜不能用同一種肉類（同一保護級蛋白質重疊）
 // 5. 辣菜只能1~2樣
+// 6. 同一天不可有兩道相同調味風格（如兩道紅燒、兩道涼拌、兩道麻辣）
+// 7. 同一天不可有兩道使用相同主食材（如涼拌娃娃菜+清炒娃娃菜）
 
 export function validateMonthlyMenu(items) {
   // items: [{ slot_category, variant, dish }] dish has name/cooking_method/color_tag/is_spicy/protein_type
@@ -63,6 +65,42 @@ export function validateMonthlyMenu(items) {
       level: 'warning',
       message: `辣味菜色共 ${spicyCount} 樣，建議控制在 1~2 樣`,
     });
+  }
+
+  // 規則6：同一天不可有兩道相同調味風格（僅比對有填 flavor_style 的菜）
+  const flavorGroups = new Map();
+  for (const it of items) {
+    const style = it.dish.flavor_style;
+    if (!style) continue;
+    if (!flavorGroups.has(style)) flavorGroups.set(style, []);
+    flavorGroups.get(style).push(it.dish.name);
+  }
+  for (const [style, names] of flavorGroups) {
+    if (names.length > 1) {
+      warnings.push({
+        rule: 6,
+        level: 'warning',
+        message: `「${style}」調味風格重複出現於：${names.join('、')}，建議改用不同調味`,
+      });
+    }
+  }
+
+  // 規則7：同一天不可有兩道使用相同主食材（僅比對有填 main_ingredient 的菜）
+  const ingredientGroups = new Map();
+  for (const it of items) {
+    const ing = it.dish.main_ingredient;
+    if (!ing) continue;
+    if (!ingredientGroups.has(ing)) ingredientGroups.set(ing, []);
+    ingredientGroups.get(ing).push(it.dish.name);
+  }
+  for (const [ing, names] of ingredientGroups) {
+    if (names.length > 1) {
+      warnings.push({
+        rule: 7,
+        level: 'warning',
+        message: `主食材「${ing}」重複出現於：${names.join('、')}，建議改用不同食材`,
+      });
+    }
   }
 
   return warnings;

@@ -1,5 +1,5 @@
 (() => {
-  // 客製化菜單樣數上限：總價200元以內最多6樣；超過200元後上限放寬為12樣（可手動新增）
+  // 客製化菜單樣數上限：依訂單單價（客戶每桌/份單價）判斷，200元以內最多6樣；超過200元後上限放寬為12樣（可手動新增）
   const PRICE_THRESHOLD = 200;
   const LOW_TIER_MAX_ITEMS = 6;
   const HIGH_TIER_MAX_ITEMS = 12;
@@ -11,6 +11,7 @@
     dishes: [],
     meta: { dishCategories: [], proteinTypes: [], cookingMethods: [], colorTags: [] },
     currentOrderDetailId: null,
+    currentOrderUnitPrice: 0, // 目前開啟訂單的單價，用來決定客製化菜單樣數上限（6樣/12樣）
     currentGeneratedMenu: null, // holds items being edited before save
   };
 
@@ -229,6 +230,7 @@
   async function openOrderDetail(orderId) {
     state.currentOrderDetailId = orderId;
     const order = await api('/api/orders/' + orderId);
+    state.currentOrderUnitPrice = Number(order.unit_price) || 0;
     state.currentGeneratedMenu = order.menuItems.map((mi) => ({ category: mi.category, dish_id: mi.dish_id, name: mi.dish_name, price: mi.price }));
     renderOrderDetail(order);
     openModal('orderDetailModal');
@@ -259,7 +261,7 @@
         <div style="grid-column:1/-1"><span>備註</span>${escapeHtml(order.notes || '')}</div>
       </div>
 
-      <div class="section-title">客製化菜單（主食／主菜／副菜／配菜／湯品／甜點／飲料：總價200元以內最多6樣，超過200元最多可達12樣）</div>
+      <div class="section-title">客製化菜單（主食／主菜／副菜／配菜／湯品／甜點／飲料：訂單單價200元以內最多6樣，超過200元最多可達12樣）</div>
       <div id="genWarnings"></div>
       <div id="menuItemsList"></div>
       <div class="add-slot-row" style="margin:10px 0">
@@ -305,12 +307,11 @@
     const dish = state.dishes.find((d) => d.id === dishId);
     if (!dish) { toast('請先在菜色資料庫新增此分類的菜色', true); return; }
     const items = state.currentGeneratedMenu;
-    const currentTotal = items.reduce((s, it) => s + (Number(it.price) || 0), 0);
-    const newTotal = currentTotal + (Number(dish.price) || 0);
-    const cap = maxItemsForPrice(newTotal);
+    const unitPrice = state.currentOrderUnitPrice;
+    const cap = maxItemsForPrice(unitPrice);
     if (items.length >= cap) {
-      const hint = newTotal <= PRICE_THRESHOLD
-        ? `總價 ${PRICE_THRESHOLD} 元以內最多 ${LOW_TIER_MAX_ITEMS} 樣，若要選更多樣，總價需超過 ${PRICE_THRESHOLD} 元`
+      const hint = unitPrice <= PRICE_THRESHOLD
+        ? `訂單單價 $${unitPrice}（${PRICE_THRESHOLD} 元以內）最多 ${LOW_TIER_MAX_ITEMS} 樣，若要選更多樣，訂單單價需超過 ${PRICE_THRESHOLD} 元`
         : `最多只能選 ${HIGH_TIER_MAX_ITEMS} 樣菜`;
       toast(hint, true);
       return;
@@ -355,14 +356,15 @@
   function renderMenuSummary() {
     const items = state.currentGeneratedMenu;
     const total = items.reduce((s, it) => s + (Number(it.price) || 0), 0);
-    const cap = maxItemsForPrice(total);
+    const unitPrice = state.currentOrderUnitPrice;
+    const cap = maxItemsForPrice(unitPrice);
     const summary = document.getElementById('menuSummary');
     const over = items.length > cap;
     summary.className = 'menu-summary' + (over ? ' over' : '');
-    const tierHint = total > PRICE_THRESHOLD
-      ? `（總價超過${PRICE_THRESHOLD}元，上限${HIGH_TIER_MAX_ITEMS}樣）`
-      : `（總價${PRICE_THRESHOLD}元以內，上限${LOW_TIER_MAX_ITEMS}樣；超過${PRICE_THRESHOLD}元可達${HIGH_TIER_MAX_ITEMS}樣）`;
-    summary.textContent = `共 ${items.length} / ${cap} 樣　總價 $${total} ${tierHint}`;
+    const tierHint = unitPrice > PRICE_THRESHOLD
+      ? `（訂單單價 $${unitPrice} 超過${PRICE_THRESHOLD}元，上限${HIGH_TIER_MAX_ITEMS}樣）`
+      : `（訂單單價 $${unitPrice}，${PRICE_THRESHOLD}元以內，上限${LOW_TIER_MAX_ITEMS}樣；超過${PRICE_THRESHOLD}元可達${HIGH_TIER_MAX_ITEMS}樣）`;
+    summary.textContent = `共 ${items.length} / ${cap} 樣　菜色總價 $${total} ${tierHint}`;
   }
 
   async function autoGenerateMenu(orderId) {
@@ -428,8 +430,14 @@
   // ================= 月菜單管理（每日行事曆） =================
 
   const SLOT_CATEGORIES = ['主菜', '副菜', '時蔬'];
-  const WEEKDAY_LABELS = ['日', '一', '二', '三', '四', '五', '六'];
+  const WEEKDAY_LABELS = ['日', '一', '二', '三', '四', '五', '六']; // 依 Date.getDay()（0=週日）索引，供單日標題等查表用
+  const WEEKDAY_HEADER_ORDER = [1, 2, 3, 4, 5, 6, 0]; // 月曆表頭欄位順序：週一起始
   let currentMonthCalendar = null; // 快取目前月份的資料，供點開單日 modal 使用
+
+  function slotLabel(it) {
+    if (it.slot_category === '主菜') return it.variant === '不豬' ? '主菜(不豬)' : '主菜(一般)';
+    return it.slot_category;
+  }
 
   document.getElementById('btnGenerateMonth').addEventListener('click', generateMonth);
 
@@ -442,26 +450,7 @@
     const month = document.getElementById('monthlyPicker').value;
     const data = await api('/api/monthly-menu?month=' + month);
     currentMonthCalendar = data;
-    renderMonthRepeatSummary(data.monthSummary);
     renderCalendar(data);
-  }
-
-  function renderMonthRepeatSummary(summary) {
-    const box = document.getElementById('monthRepeatSummary');
-    if (!summary || summary.repeats.length === 0) {
-      box.innerHTML = '<div class="ok-item">✅ 本月尚無重複的菜色（同食材+同烹調方式）</div>';
-      return;
-    }
-    box.innerHTML = `
-      <div class="month-repeat-summary">
-        ⚠️ [原則1] 本月共 ${summary.repeats.length} 種菜色重複出現：
-        <ul>
-          ${summary.repeats
-            .map((r) => `<li>${escapeHtml(r.name)}（${escapeHtml(r.cooking_method)}）× ${r.dates.length}：${r.dates.join('、')}</li>`)
-            .join('')}
-        </ul>
-      </div>
-    `;
   }
 
   function renderCalendar(data) {
@@ -472,7 +461,8 @@
     }
 
     const [year, monthNum] = data.month.split('-').map(Number);
-    const firstWeekday = new Date(year, monthNum - 1, 1).getDay(); // 0=週日
+    const firstWeekdaySun = new Date(year, monthNum - 1, 1).getDay(); // 0=週日
+    const firstWeekday = (firstWeekdaySun + 6) % 7; // 轉成週一起始（週一=0...週日=6）
     const totalDays = new Date(year, monthNum, 0).getDate();
     const dayMap = new Map(data.days.map((d) => [d.date, d]));
 
@@ -482,18 +472,12 @@
       const dateStr = `${data.month}-${String(day).padStart(2, '0')}`;
       const d = dayMap.get(dateStr);
       const items = d ? d.items : [];
-      const warnings = d ? d.warnings : [];
-      const badge =
-        items.length === 0
-          ? '<span class="day-badge empty">未排菜</span>'
-          : warnings.length > 0
-          ? `<span class="day-badge warn">${warnings.length}項提醒</span>`
-          : '<span class="day-badge ok">符合原則</span>';
-      const dishList = items.map((it) => `<li>${escapeHtml(it.name)}</li>`).join('');
+      const dishList = items
+        .map((it) => `<li><span class="cal-slot">${slotLabel(it)}</span>${escapeHtml(it.name)}</li>`)
+        .join('');
       cells.push(`
         <td class="cal-cell" data-date="${dateStr}">
-          <div class="cal-date">${day}</div>
-          ${badge}
+          <div class="cal-date">${dateStr.slice(5)}</div>
           <ul class="cal-dishes">${dishList || '<li class="hint">尚未排菜</li>'}</ul>
         </td>
       `);
@@ -507,7 +491,7 @@
 
     container.innerHTML = `
       <table class="calendar-table">
-        <thead><tr>${WEEKDAY_LABELS.map((w) => `<th>星期${w}</th>`).join('')}</tr></thead>
+        <thead><tr>${WEEKDAY_HEADER_ORDER.map((i) => `<th>星期${WEEKDAY_LABELS[i]}</th>`).join('')}</tr></thead>
         <tbody>${rowsHtml}</tbody>
       </table>
     `;
@@ -520,14 +504,43 @@
   async function generateMonth() {
     const month = document.getElementById('monthlyPicker').value;
     if (!confirm(`確定要自動排出 ${month} 整個月每一天的菜單嗎？這會覆蓋這個月目前已排的菜單。`)) return;
+
+    const btn = document.getElementById('btnGenerateMonth');
+    const progress = document.getElementById('monthGenProgress');
+    const fill = document.getElementById('monthGenProgressFill');
+    const text = document.getElementById('monthGenProgressText');
+
+    btn.disabled = true;
+    progress.classList.remove('hidden');
+    fill.style.width = '4%';
+    text.textContent = '正在排本月菜單…0%';
+
+    // 排整月菜單需要伺服器逐日運算＋寫入，非瞬間完成；因為是單一請求無法取得真實進度，
+    // 這裡先以逐步趨近的方式模擬進度，實際完成時再補到 100%，讓使用者知道系統仍在處理。
+    let pct = 4;
+    const timer = setInterval(() => {
+      pct += (90 - pct) * 0.12;
+      fill.style.width = `${pct.toFixed(0)}%`;
+      text.textContent = `正在排本月菜單…${pct.toFixed(0)}%`;
+    }, 200);
+
     try {
       const data = await api('/api/monthly-menu/generate', { method: 'POST', body: JSON.stringify({ month }) });
+      clearInterval(timer);
+      fill.style.width = '100%';
+      text.textContent = '完成！';
       currentMonthCalendar = data;
-      renderMonthRepeatSummary(data.monthSummary);
       renderCalendar(data);
       toast('已自動排出本月每一天的菜單');
     } catch (err) {
+      clearInterval(timer);
       toast(err.message, true);
+    } finally {
+      btn.disabled = false;
+      setTimeout(() => {
+        progress.classList.add('hidden');
+        fill.style.width = '0%';
+      }, 600);
     }
   }
 
@@ -701,6 +714,8 @@
       document.getElementById('d_cooking_method').value = dish.cooking_method;
       document.getElementById('d_color_tag').value = dish.color_tag;
       document.getElementById('d_price').value = dish.price;
+      document.getElementById('d_flavor_style').value = dish.flavor_style || '';
+      document.getElementById('d_main_ingredient').value = dish.main_ingredient || '';
       document.getElementById('d_is_pork').checked = !!dish.is_pork;
       document.getElementById('d_is_spicy').checked = !!dish.is_spicy;
       document.getElementById('d_is_soft').checked = !!dish.is_soft;
@@ -730,6 +745,8 @@
       cooking_method: document.getElementById('d_cooking_method').value,
       color_tag: document.getElementById('d_color_tag').value,
       price: Number(document.getElementById('d_price').value) || 0,
+      flavor_style: document.getElementById('d_flavor_style').value.trim(),
+      main_ingredient: document.getElementById('d_main_ingredient').value.trim(),
       is_pork: document.getElementById('d_is_pork').checked,
       is_spicy: document.getElementById('d_is_spicy').checked,
       is_soft: document.getElementById('d_is_soft').checked,

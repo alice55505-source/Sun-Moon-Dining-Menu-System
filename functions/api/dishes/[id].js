@@ -18,7 +18,8 @@ export async function onRequestPut({ request, params, env }) {
 
   await env.DB.prepare(
     `UPDATE dishes SET name=?, category=?, is_pork=?, protein_type=?,
-      cooking_method=?, color_tag=?, is_spicy=?, is_soft=?, price=?, notes=? WHERE id=?`
+      cooking_method=?, color_tag=?, is_spicy=?, is_soft=?, price=?, notes=?,
+      flavor_style=?, main_ingredient=? WHERE id=?`
   )
     .bind(
       b.name ?? existing.name,
@@ -31,6 +32,8 @@ export async function onRequestPut({ request, params, env }) {
       b.is_soft ? 1 : 0,
       b.price ?? existing.price,
       b.notes ?? existing.notes,
+      b.flavor_style ?? existing.flavor_style,
+      b.main_ingredient ?? existing.main_ingredient,
       params.id
     )
     .run();

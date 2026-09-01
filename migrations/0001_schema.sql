@@ -10,6 +10,10 @@ CREATE TABLE IF NOT EXISTS dishes (
   is_soft INTEGER NOT NULL DEFAULT 0,
   price REAL NOT NULL DEFAULT 0,
   notes TEXT DEFAULT '',
+  -- flavor_style（調味風格，如 紅燒/塔香/涼拌/麻辣）與 main_ingredient（主食材，如 娃娃菜/牛小排）
+  -- 只用於主菜/副菜/時蔬：月菜單排菜時，同一天不可出現兩道相同調味風格或相同主食材的菜
+  flavor_style TEXT DEFAULT '',
+  main_ingredient TEXT DEFAULT '',
   created_at TEXT DEFAULT (datetime('now'))
 );
 

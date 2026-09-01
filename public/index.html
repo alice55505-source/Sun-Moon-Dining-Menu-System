@@ -50,8 +50,11 @@
         <button id="btnGenerateMonth" class="btn-primary">🔄 自動排本月菜單（每天不重複）</button>
       </div>
     </div>
-    <p class="hint">每天固定排：主菜2（1一般＋1不豬）、副菜2、時蔬2。原則：① 一個月內同一道菜盡量不重複（同食材不同烹調可接受） ② 當天整體色彩搭配 ③ 當天烹調方式不過度集中（炸物≤2） ④ 當天主菜與副菜不同肉類 ⑤ 當天辣菜1~2樣。點選下方任一天可查看/手動調整當天菜色。</p>
-    <div id="monthRepeatSummary"></div>
+    <p class="hint">每天固定排：主菜2（1一般＋1不豬）、副菜2、時蔬2。原則：① 一個月內同一道菜盡量不重複（同食材不同烹調可接受） ② 當天整體色彩搭配 ③ 當天烹調方式不過度集中（炸物≤2） ④ 當天主菜與副菜不同肉類 ⑤ 當天辣菜1~2樣 ⑥ 當天不可有兩道相同調味風格（如兩道紅燒） ⑦ 當天不可有兩道使用相同主食材（如涼拌娃娃菜+清炒娃娃菜）。點選下方任一天可查看/手動調整當天菜色。</p>
+    <div id="monthGenProgress" class="gen-progress hidden">
+      <div class="gen-progress-bar"><div id="monthGenProgressFill" class="gen-progress-fill"></div></div>
+      <span id="monthGenProgressText" class="gen-progress-text">正在排本月菜單…</span>
+    </div>
     <div id="monthlyCalendar" class="calendar-list"></div>
   </section>
 
@@ -174,7 +177,10 @@
           <label>烹調方式 <select id="d_cooking_method"></select></label>
           <label>色系 <select id="d_color_tag"></select></label>
           <label>預算價格 <input type="number" min="0" id="d_price" value="0" /></label>
+          <label>調味風格（如：紅燒、塔香、涼拌、麻辣） <input type="text" id="d_flavor_style" /></label>
+          <label>主食材（如：娃娃菜、牛小排） <input type="text" id="d_main_ingredient" /></label>
         </div>
+        <p class="hint">調味風格與主食材只用於主菜／副菜／時蔬：排月曆時，同一天不會出現兩道調味風格相同、或主食材相同的菜。</p>
         <div class="checkbox-row">
           <label><input type="checkbox" id="d_is_pork" /> 含豬肉</label>
           <label><input type="checkbox" id="d_is_spicy" /> 辣</label>

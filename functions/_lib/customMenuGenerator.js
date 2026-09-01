@@ -1,16 +1,12 @@
-// 客製化菜單樣數上限採兩段式：總價200元以內最多6樣；一旦總價超過200元，
-// 上限放寬為12樣（超過200元後可由使用者手動新增至上限）。
+// 客製化菜單樣數上限採兩段式，依「訂單單價」（客戶每桌/份的單價，非菜色加總的總價）判斷：
+// 訂單單價200元以內最多6樣；訂單單價超過200元，上限放寬為12樣（可由使用者手動新增至上限）。
 export const PRICE_THRESHOLD = 200;
 export const LOW_TIER_MAX_ITEMS = 6;
 export const HIGH_TIER_MAX_ITEMS = 12;
 
-export function getMaxItemsForPrice(totalPrice) {
-  return totalPrice > PRICE_THRESHOLD ? HIGH_TIER_MAX_ITEMS : LOW_TIER_MAX_ITEMS;
+export function getMaxItemsForPrice(unitPrice) {
+  return unitPrice > PRICE_THRESHOLD ? HIGH_TIER_MAX_ITEMS : LOW_TIER_MAX_ITEMS;
 }
-
-// 自動產生建議菜單時，預設鎖定在基本檔次（200元內、6樣）
-export const MAX_ITEMS = LOW_TIER_MAX_ITEMS;
-export const MAX_PRICE = PRICE_THRESHOLD;
 
 async function fetchDailySlot(db, menuDate, slotCategory) {
   const { results } = await db
@@ -67,6 +63,9 @@ function sortPool(pool, order) {
 export async function generateCustomMenu(db, order) {
   const deliveryDate = order.delivery_date;
   const warnings = [];
+  const unitPrice = Number(order.unit_price) || 0;
+  const maxItemsAllowed = getMaxItemsForPrice(unitPrice);
+  const maxBudget = unitPrice > 0 ? unitPrice : PRICE_THRESHOLD;
 
   let mains = await fetchDailySlot(db, deliveryDate, '主菜');
   let sides = await fetchDailySlot(db, deliveryDate, '副菜');
@@ -107,8 +106,8 @@ export async function generateCustomMenu(db, order) {
 
   function tryAdd(category, dish) {
     if (!dish) return false;
-    if (picks.length >= MAX_ITEMS) return false;
-    if (totalPrice + dish.price > MAX_PRICE) return false;
+    if (picks.length >= maxItemsAllowed) return false;
+    if (totalPrice + dish.price > maxBudget) return false;
     if (picks.some((p) => p.dish_id === dish.id)) return false;
     picks.push({ category, dish_id: dish.id, name: dish.name, price: dish.price });
     totalPrice += dish.price;
@@ -146,13 +145,13 @@ export async function generateCustomMenu(db, order) {
 
   for (const [cat, pool] of optionalOrder) {
     for (const d of pool) {
-      if (picks.length >= MAX_ITEMS) break;
+      if (picks.length >= maxItemsAllowed) break;
       if (tryAdd(cat, d)) break;
     }
   }
 
   // 粗飽：若仍有名額與預算，優先再補一樣主菜或主食，而非甜點/飲料
-  if (order.opt_hearty && picks.length < MAX_ITEMS) {
+  if (order.opt_hearty && picks.length < maxItemsAllowed) {
     const extraMain = sortedMains.find((d) => !picks.some((p) => p.dish_id === d.id));
     if (extraMain) tryAdd('主菜', extraMain);
   }
@@ -162,8 +161,9 @@ export async function generateCustomMenu(db, order) {
     items: picks,
     totalPrice,
     itemCount: picks.length,
-    maxPrice: MAX_PRICE,
-    maxItems: MAX_ITEMS,
+    unitPrice,
+    maxPrice: maxBudget,
+    maxItems: maxItemsAllowed,
     warnings,
   };
 }
