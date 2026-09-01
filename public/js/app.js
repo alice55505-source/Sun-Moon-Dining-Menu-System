@@ -465,7 +465,7 @@
   function renderCalendar(data) {
     const container = document.getElementById('monthlyCalendar');
     const printTitle = document.getElementById('printMonthTitle');
-    if (printTitle) printTitle.textContent = `日月自助餐 ${data.month} 月菜單`;
+    if (printTitle) printTitle.textContent = `日月自助餐 合菜 ${data.month} 月菜單`;
     if (data.days.length === 0) {
       container.innerHTML = '<p class="hint">本月尚未排菜單，請按上方「自動排本月菜單」一次排出全月每一天的菜單，或於下方逐日手動安排。</p>';
       return;
