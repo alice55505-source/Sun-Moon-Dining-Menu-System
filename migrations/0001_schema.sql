@@ -21,14 +21,18 @@ CREATE TABLE IF NOT EXISTS dish_ingredients (
   unit TEXT NOT NULL
 );
 
+-- 月菜單其實是「每一天」的菜單集合：每天固定 2 主菜(1一般+1不豬)+2副菜+2時蔬。
+-- menu_date 是實際日期（YYYY-MM-DD），而不是整個月共用同一份菜單。
 CREATE TABLE IF NOT EXISTS monthly_menu_items (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  month TEXT NOT NULL,
+  menu_date TEXT NOT NULL,
   slot_category TEXT NOT NULL,
   variant TEXT NOT NULL DEFAULT '一般',
   dish_id INTEGER NOT NULL REFERENCES dishes(id) ON DELETE CASCADE,
   sort_order INTEGER NOT NULL DEFAULT 0
 );
+
+CREATE INDEX IF NOT EXISTS idx_monthly_menu_items_date ON monthly_menu_items(menu_date);
 
 CREATE TABLE IF NOT EXISTS orders (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -12,19 +12,15 @@ export function getMaxItemsForPrice(totalPrice) {
 export const MAX_ITEMS = LOW_TIER_MAX_ITEMS;
 export const MAX_PRICE = PRICE_THRESHOLD;
 
-function getMonth(dateStr) {
-  return (dateStr || '').slice(0, 7);
-}
-
-async function fetchMonthlySlot(db, month, slotCategory) {
+async function fetchDailySlot(db, menuDate, slotCategory) {
   const { results } = await db
     .prepare(
       `SELECT mmi.variant, d.* FROM monthly_menu_items mmi
        JOIN dishes d ON d.id = mmi.dish_id
-       WHERE mmi.month = ? AND mmi.slot_category = ?
+       WHERE mmi.menu_date = ? AND mmi.slot_category = ?
        ORDER BY mmi.sort_order`
     )
-    .bind(month, slotCategory)
+    .bind(menuDate, slotCategory)
     .all();
   return results;
 }
@@ -69,12 +65,12 @@ function sortPool(pool, order) {
 }
 
 export async function generateCustomMenu(db, order) {
-  const month = getMonth(order.delivery_date);
+  const deliveryDate = order.delivery_date;
   const warnings = [];
 
-  let mains = await fetchMonthlySlot(db, month, '主菜');
-  let sides = await fetchMonthlySlot(db, month, '副菜');
-  let vegSlot = await fetchMonthlySlot(db, month, '時蔬');
+  let mains = await fetchDailySlot(db, deliveryDate, '主菜');
+  let sides = await fetchDailySlot(db, deliveryDate, '副菜');
+  let vegSlot = await fetchDailySlot(db, deliveryDate, '時蔬');
   const vegPool = await fetchDishPool(db, '配菜');
   const staplePool = await fetchDishPool(db, '主食');
   const soupPool = await fetchDishPool(db, '湯品');
@@ -82,7 +78,7 @@ export async function generateCustomMenu(db, order) {
   const drinkPool = await fetchDishPool(db, '飲料');
 
   if (mains.length === 0 || sides.length === 0 || vegSlot.length === 0) {
-    warnings.push(`本月（${month}）尚未設定完整的月菜單（主菜/副菜/時蔬），請先於「月菜單管理」建立本月菜單`);
+    warnings.push(`出貨當天（${deliveryDate}）尚未排定當天的月菜單（主菜/副菜/時蔬），請先於「月菜單管理」排這一天的菜單`);
   }
 
   if (order.opt_no_pork) {
@@ -162,7 +158,7 @@ export async function generateCustomMenu(db, order) {
   }
 
   return {
-    month,
+    deliveryDate,
     items: picks,
     totalPrice,
     itemCount: picks.length,

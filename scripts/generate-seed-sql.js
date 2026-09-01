@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const { DISHES, MONTHLY_PLAN } = require('./seedData');
+const { DISHES } = require('./seedData');
 
 function esc(v) {
   if (v === null || v === undefined) return 'NULL';
@@ -20,10 +20,8 @@ lines.push("DELETE FROM dish_ingredients;");
 lines.push("DELETE FROM dishes;");
 lines.push('');
 
-const dishIds = {};
 DISHES.forEach((d, idx) => {
   const id = idx + 1;
-  dishIds[d.name] = id;
   lines.push(
     `INSERT INTO dishes (id, name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes) VALUES (${id}, ${esc(
       d.name
@@ -42,17 +40,8 @@ DISHES.forEach((d, idx) => {
   }
 });
 
-lines.push('');
-const month = new Date().toISOString().slice(0, 7);
-MONTHLY_PLAN.forEach(([slot, variant, name, order]) => {
-  const dishId = dishIds[name];
-  if (dishId == null) return;
-  lines.push(
-    `INSERT INTO monthly_menu_items (month, slot_category, variant, dish_id, sort_order) VALUES (${esc(
-      month
-    )}, ${esc(slot)}, ${esc(variant)}, ${dishId}, ${order});`
-  );
-});
+// 月菜單改為每日行事曆，由「月菜單管理」頁面的「自動排本月菜單」功能產生，
+// 不再於種子資料中預先寫入固定的月菜單。
 
 fs.writeFileSync(path.join(__dirname, '..', 'migrations', '0002_seed.sql'), lines.join('\n') + '\n');
 console.log('已產生 migrations/0002_seed.sql');

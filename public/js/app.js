@@ -425,22 +425,114 @@
     `;
   }
 
-  // ================= 月菜單管理 =================
+  // ================= 月菜單管理（每日行事曆） =================
 
   const SLOT_CATEGORIES = ['主菜', '副菜', '時蔬'];
+  const WEEKDAY_LABELS = ['日', '一', '二', '三', '四', '五', '六'];
+  let currentMonthCalendar = null; // 快取目前月份的資料，供點開單日 modal 使用
+
+  document.getElementById('btnGenerateMonth').addEventListener('click', generateMonth);
+
+  function weekdayLabel(dateStr) {
+    const d = new Date(dateStr + 'T00:00:00');
+    return WEEKDAY_LABELS[d.getDay()];
+  }
 
   async function loadMonthlyMenu() {
     const month = document.getElementById('monthlyPicker').value;
     const data = await api('/api/monthly-menu?month=' + month);
-    const warnBox = document.getElementById('monthlyWarnings');
-    warnBox.innerHTML = data.warnings.length
-      ? data.warnings.map((w) => `<div class="${w.level === 'error' ? 'err-item' : 'warn-item'}">⚠️ [原則${w.rule}] ${escapeHtml(w.message)}</div>`).join('')
-      : '<div class="ok-item">✅ 本月菜單符合五大原則檢核</div>';
+    currentMonthCalendar = data;
+    renderMonthRepeatSummary(data.monthSummary);
+    renderCalendar(data);
+  }
 
-    const container = document.getElementById('monthlySlots');
+  function renderMonthRepeatSummary(summary) {
+    const box = document.getElementById('monthRepeatSummary');
+    if (!summary || summary.repeats.length === 0) {
+      box.innerHTML = '<div class="ok-item">✅ 本月尚無重複的菜色（同食材+同烹調方式）</div>';
+      return;
+    }
+    box.innerHTML = `
+      <div class="month-repeat-summary">
+        ⚠️ [原則1] 本月共 ${summary.repeats.length} 種菜色重複出現：
+        <ul>
+          ${summary.repeats
+            .map((r) => `<li>${escapeHtml(r.name)}（${escapeHtml(r.cooking_method)}）× ${r.dates.length}：${r.dates.join('、')}</li>`)
+            .join('')}
+        </ul>
+      </div>
+    `;
+  }
+
+  function renderCalendar(data) {
+    const container = document.getElementById('monthlyCalendar');
+    if (data.days.length === 0) {
+      container.innerHTML = '<p class="hint">本月尚未排菜單，請按上方「自動排本月菜單」一次排出全月每一天的菜單，或於下方逐日手動安排。</p>';
+      return;
+    }
     container.innerHTML = '';
+    for (const day of data.days) {
+      const dishNames = day.items.map((it) => it.name).join('、');
+      const badge =
+        day.items.length === 0
+          ? '<span class="day-badge empty">未排菜</span>'
+          : day.warnings.length > 0
+          ? `<span class="day-badge warn">${day.warnings.length} 項提醒</span>`
+          : '<span class="day-badge ok">符合原則</span>';
+      const row = el(`
+        <div class="day-row" data-date="${day.date}">
+          <div><div class="day-label">${day.date.slice(5)}</div><div class="weekday">星期${weekdayLabel(day.date)}</div></div>
+          <div>${badge}</div>
+          <div class="day-dishes">${escapeHtml(dishNames) || '尚未排菜'}</div>
+          <div>›</div>
+        </div>
+      `);
+      row.addEventListener('click', () => openDayMenu(day.date));
+      container.appendChild(row);
+    }
+  }
+
+  async function generateMonth() {
+    const month = document.getElementById('monthlyPicker').value;
+    if (!confirm(`確定要自動排出 ${month} 整個月每一天的菜單嗎？這會覆蓋這個月目前已排的菜單。`)) return;
+    try {
+      const data = await api('/api/monthly-menu/generate', { method: 'POST', body: JSON.stringify({ month }) });
+      currentMonthCalendar = data;
+      renderMonthRepeatSummary(data.monthSummary);
+      renderCalendar(data);
+      toast('已自動排出本月每一天的菜單');
+    } catch (err) {
+      toast(err.message, true);
+    }
+  }
+
+  function findDay(date) {
+    return currentMonthCalendar && currentMonthCalendar.days.find((d) => d.date === date);
+  }
+
+  function openDayMenu(date) {
+    renderDayMenuModal(date);
+    openModal('dayMenuModal');
+  }
+
+  function renderDayMenuModal(date) {
+    const day = findDay(date) || { date, items: [], warnings: [] };
+    document.getElementById('dayMenuModalTitle').textContent = `${date}（星期${weekdayLabel(date)}）菜單`;
+    const body = document.getElementById('dayMenuModalBody');
+    body.innerHTML = `
+      <div id="dayWarnings"></div>
+      <div id="daySlots" class="monthly-slots"></div>
+    `;
+
+    const warnBox = document.getElementById('dayWarnings');
+    warnBox.innerHTML = day.warnings.length
+      ? day.warnings.map((w) => `<div class="${w.level === 'error' ? 'err-item' : 'warn-item'}">⚠️ [原則${w.rule}] ${escapeHtml(w.message)}</div>`).join('')
+      : '<div class="ok-item">✅ 當天菜單符合原則2~5檢核</div>';
+
+    const slotsContainer = document.getElementById('daySlots');
+    slotsContainer.innerHTML = '';
     for (const slot of SLOT_CATEGORIES) {
-      const items = data.items.filter((it) => it.slot_category === slot);
+      const items = day.items.filter((it) => it.slot_category === slot);
       const card = el(`
         <div class="slot-card">
           <h3>${slot}</h3>
@@ -468,7 +560,8 @@
           `);
           row.querySelector('[data-remove]').addEventListener('click', async () => {
             await api('/api/monthly-menu/' + it.id, { method: 'DELETE' });
-            loadMonthlyMenu();
+            await loadMonthlyMenu();
+            renderDayMenuModal(date);
           });
           list.appendChild(row);
         }
@@ -486,19 +579,20 @@
           await api('/api/monthly-menu', {
             method: 'POST',
             body: JSON.stringify({
-              month,
+              date,
               slot_category: slot,
               variant: variantSelect ? variantSelect.value : '一般',
               dish_id: dishId,
               sort_order: items.length + 1,
             }),
           });
-          loadMonthlyMenu();
+          await loadMonthlyMenu();
+          renderDayMenuModal(date);
         } catch (err) {
           toast(err.message, true);
         }
       });
-      container.appendChild(card);
+      slotsContainer.appendChild(card);
     }
   }
 

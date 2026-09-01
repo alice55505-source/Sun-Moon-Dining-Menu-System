@@ -47,11 +47,12 @@
       <h2>月菜單管理</h2>
       <div class="filters">
         <label>月份 <input type="month" id="monthlyPicker" /></label>
+        <button id="btnGenerateMonth" class="btn-primary">🔄 自動排本月菜單（每天不重複）</button>
       </div>
     </div>
-    <p class="hint">原則：① 一個月不重複（同食材不同烹調可接受） ② 整體色彩搭配 ③ 烹調方式不過度集中（炸物≤2） ④ 主菜與副菜不同肉類 ⑤ 辣菜1~2樣</p>
-    <div id="monthlyWarnings" class="warnings"></div>
-    <div id="monthlySlots" class="monthly-slots"></div>
+    <p class="hint">每天固定排：主菜2（1一般＋1不豬）、副菜2、時蔬2。原則：① 一個月內同一道菜盡量不重複（同食材不同烹調可接受） ② 當天整體色彩搭配 ③ 當天烹調方式不過度集中（炸物≤2） ④ 當天主菜與副菜不同肉類 ⑤ 當天辣菜1~2樣。點選下方任一天可查看/手動調整當天菜色。</p>
+    <div id="monthRepeatSummary"></div>
+    <div id="monthlyCalendar" class="calendar-list"></div>
   </section>
 
   <!-- ============ 菜色資料庫 ============ -->
@@ -193,6 +194,17 @@
         </div>
       </form>
     </div>
+  </div>
+</div>
+
+<!-- ============ 單日菜單 Modal ============ -->
+<div id="dayMenuModal" class="modal-backdrop hidden">
+  <div class="modal modal-lg">
+    <div class="modal-head">
+      <h3 id="dayMenuModalTitle">當日菜單</h3>
+      <button class="modal-close" data-close="dayMenuModal">✕</button>
+    </div>
+    <div class="modal-body" id="dayMenuModalBody"></div>
   </div>
 </div>
 

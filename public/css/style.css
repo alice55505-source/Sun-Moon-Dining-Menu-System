@@ -120,6 +120,24 @@ tr.clickable { cursor: pointer; }
 .add-slot-row { display: flex; gap: 6px; margin-top: 10px; }
 .add-slot-row select { flex: 1; }
 
+.calendar-list { display: flex; flex-direction: column; gap: 8px; }
+.day-row {
+  display: grid; grid-template-columns: 90px auto 1fr auto; gap: 14px; align-items: center;
+  background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px;
+  cursor: pointer; font-size: 13.5px;
+}
+.day-row:hover { border-color: var(--primary); }
+.day-row .day-label { font-weight: 600; }
+.day-row .weekday { color: var(--muted); font-size: 12px; }
+.day-row .day-dishes { color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.day-row .day-badge { font-size: 12px; padding: 2px 8px; border-radius: 10px; }
+.day-row .day-badge.ok { background: #eaf6ec; color: var(--ok); }
+.day-row .day-badge.warn { background: var(--warn-bg); color: #a06a0a; }
+.day-row .day-badge.empty { background: #f1ece4; color: var(--muted); }
+
+.month-repeat-summary { background: var(--warn-bg); border: 1px solid var(--warn-border); border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; font-size: 13.5px; }
+.month-repeat-summary ul { margin: 6px 0 0; padding-left: 20px; }
+
 .modal-backdrop {
   position: fixed; inset: 0; background: rgba(30,20,10,0.45);
   display: flex; align-items: flex-start; justify-content: center; padding: 30px 16px;

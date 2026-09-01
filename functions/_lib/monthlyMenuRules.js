@@ -1,5 +1,8 @@
 // 月菜單五大原則檢核
 // 1. 一個月不重複（同食材+同烹調方式不可重複出現，同食材不同烹調方式可接受）
+//    — 月菜單現在是「每天一份」的行事曆，規則1改由 summarizeMonthRepeats() 在整個
+//      月的範圍檢查；下面的 validateMonthlyMenu() 負責檢查「同一天」內的規則2~5
+//      （一天的菜色本來就不會重複選同一道菜，規則1在單日層級沒有意義）。
 // 2. 考量整體色彩搭配（避免同色系過多）
 // 3. 考量烹調方式（如炸物不能太多項）
 // 4. 主菜和副菜不能用同一種肉類（同一保護級蛋白質重疊）
@@ -8,20 +11,6 @@
 export function validateMonthlyMenu(items) {
   // items: [{ slot_category, variant, dish }] dish has name/cooking_method/color_tag/is_spicy/protein_type
   const warnings = [];
-
-  // 規則1：同食材(name)+同烹調方式不可重複
-  const seen = new Map();
-  for (const it of items) {
-    const key = `${it.dish.name}__${it.dish.cooking_method}`;
-    if (seen.has(key)) {
-      warnings.push({
-        rule: 1,
-        level: 'error',
-        message: `「${it.dish.name}」的烹調方式「${it.dish.cooking_method}」在本月菜單中重複出現`,
-      });
-    }
-    seen.set(key, true);
-  }
 
   // 規則2：色彩搭配 — 同色系比例過半提出警告
   const colorCount = {};
@@ -77,4 +66,28 @@ export function validateMonthlyMenu(items) {
   }
 
   return warnings;
+}
+
+// 規則1（月層級）：統計整個月當中，同一道「食材+烹調方式」組合出現幾次。
+// days: [{ date, items: [{ slot_category, variant, dish }] }]
+export function summarizeMonthRepeats(days) {
+  const counts = new Map(); // key -> { name, cooking_method, dates: [] }
+  for (const day of days) {
+    for (const it of day.items) {
+      const key = `${it.dish.name}__${it.dish.cooking_method}`;
+      if (!counts.has(key)) {
+        counts.set(key, { name: it.dish.name, cooking_method: it.dish.cooking_method, dates: [] });
+      }
+      counts.get(key).dates.push(day.date);
+    }
+  }
+  const repeats = Array.from(counts.values())
+    .filter((c) => c.dates.length > 1)
+    .sort((a, b) => b.dates.length - a.dates.length);
+
+  return {
+    totalSlots: days.reduce((s, d) => s + d.items.length, 0),
+    distinctCombos: counts.size,
+    repeats,
+  };
 }
