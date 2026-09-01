@@ -43,18 +43,20 @@
 
   <!-- ============ 月菜單管理 ============ -->
   <section id="tab-monthly" class="tab-panel">
-    <div class="panel-header">
+    <div class="panel-header no-print">
       <h2>月菜單管理</h2>
       <div class="filters">
         <label>月份 <input type="month" id="monthlyPicker" /></label>
         <button id="btnGenerateMonth" class="btn-primary">🔄 自動排本月菜單（每天不重複）</button>
+        <button id="btnPrintMonth" class="btn-ghost">🖨️ 列印／匯出 PDF</button>
       </div>
     </div>
-    <p class="hint">每天固定排：主菜2（1一般＋1不豬）、副菜2、時蔬2。原則：① 一個月內同一道菜盡量不重複（同食材不同烹調可接受） ② 當天整體色彩搭配 ③ 當天烹調方式不過度集中（炸物≤2） ④ 當天主菜與副菜不同肉類 ⑤ 當天辣菜1~2樣 ⑥ 當天不可有兩道相同調味風格（如兩道紅燒） ⑦ 當天不可有兩道使用相同主食材（如涼拌娃娃菜+清炒娃娃菜）。點選下方任一天可查看/手動調整當天菜色。</p>
-    <div id="monthGenProgress" class="gen-progress hidden">
+    <p class="hint no-print">每天固定排：主菜2（1一般＋1不豬）、副菜2、時蔬2。原則：① 一個月內同一道菜盡量不重複（同食材不同烹調可接受） ② 當天整體色彩搭配 ③ 當天烹調方式不過度集中（炸物≤2） ④ 當天主菜與副菜不同肉類 ⑤ 當天辣菜1~2樣 ⑥ 當天不可有兩道相同調味風格（如兩道紅燒） ⑦ 當天不可有兩道使用相同主食材（如涼拌娃娃菜+清炒娃娃菜）。點選下方任一天可查看/手動調整當天菜色。</p>
+    <div id="monthGenProgress" class="gen-progress hidden no-print">
       <div class="gen-progress-bar"><div id="monthGenProgressFill" class="gen-progress-fill"></div></div>
       <span id="monthGenProgressText" class="gen-progress-text">正在排本月菜單…</span>
     </div>
+    <h2 id="printMonthTitle" class="print-only"></h2>
     <div id="monthlyCalendar" class="calendar-list"></div>
   </section>
 

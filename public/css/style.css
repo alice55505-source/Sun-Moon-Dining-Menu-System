@@ -192,3 +192,26 @@ legend { font-size: 13px; color: var(--muted); padding: 0 6px; }
 .toast.error { background: var(--err-border); }
 
 .section-title { font-weight: 600; margin: 14px 0 6px; font-size: 14px; }
+
+.print-only { display: none; }
+
+@media print {
+  @page { size: landscape; margin: 10mm; }
+  body { background: #fff !important; }
+  body * { visibility: hidden; }
+  #tab-monthly, #tab-monthly * { visibility: visible; }
+  #tab-monthly {
+    position: absolute; left: 0; top: 0; width: 100%; padding: 0; margin: 0;
+  }
+  .no-print { display: none !important; }
+  .print-only {
+    display: block; font-size: 18px; font-weight: 700; margin: 0 0 10px; color: #000;
+  }
+  #monthlyCalendar { overflow: visible !important; }
+  .calendar-table { min-width: 0 !important; width: 100% !important; font-size: 10px; table-layout: fixed; }
+  .calendar-table th, .calendar-table td { padding: 3px 4px !important; border: 1px solid #999 !important; }
+  .cal-cell { cursor: default; }
+  .cal-cell:hover { background: none; }
+  .cal-dishes li { white-space: normal !important; overflow: visible !important; line-height: 1.5; }
+  .cal-slot { color: #555; }
+}
