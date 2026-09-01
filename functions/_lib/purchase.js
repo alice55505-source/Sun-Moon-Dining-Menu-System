@@ -1,44 +1,50 @@
-const db = require('./db');
-
-function getOrderById(orderId) {
-  return db.prepare(`SELECT * FROM orders WHERE id = ?`).get(orderId);
+async function getOrderById(db, orderId) {
+  return db.prepare(`SELECT * FROM orders WHERE id = ?`).bind(orderId).first();
 }
 
-function getOrderMenuItems(orderId) {
-  return db
+async function getOrderMenuItems(db, orderId) {
+  const { results } = await db
     .prepare(
       `SELECT omi.*, d.name AS dish_name FROM order_menu_items omi
        JOIN dishes d ON d.id = omi.dish_id
        WHERE omi.order_id = ? ORDER BY omi.sort_order`
     )
-    .all(orderId);
+    .bind(orderId)
+    .all();
+  return results;
 }
 
-function getDishIngredients(dishId) {
-  return db.prepare(`SELECT name, qty, unit FROM dish_ingredients WHERE dish_id = ?`).all(dishId);
+async function getDishIngredients(db, dishId) {
+  const { results } = await db
+    .prepare(`SELECT name, qty, unit FROM dish_ingredients WHERE dish_id = ?`)
+    .bind(dishId)
+    .all();
+  return results;
 }
 
 // 計算單一訂單的食材採購量（依訂單數量放大）
-function getOrderIngredientBreakdown(orderId) {
-  const order = getOrderById(orderId);
+export async function getOrderIngredientBreakdown(db, orderId) {
+  const order = await getOrderById(db, orderId);
   if (!order) return null;
-  const menuItems = getOrderMenuItems(orderId);
+  const menuItems = await getOrderMenuItems(db, orderId);
 
-  const perDish = menuItems.map((mi) => {
-    const ingredients = getDishIngredients(mi.dish_id).map((ing) => ({
+  const perDish = [];
+  for (const mi of menuItems) {
+    const rawIngredients = await getDishIngredients(db, mi.dish_id);
+    const ingredients = rawIngredients.map((ing) => ({
       name: ing.name,
       unit: ing.unit,
       qtyPerUnit: ing.qty,
       qtyTotal: round2(ing.qty * order.quantity),
     }));
-    return {
+    perDish.push({
       category: mi.category,
       dish_id: mi.dish_id,
       dish_name: mi.dish_name,
       price: mi.price,
       ingredients,
-    };
-  });
+    });
+  }
 
   const aggregated = aggregateIngredients(perDish.flatMap((p) => p.ingredients));
 
@@ -62,15 +68,16 @@ function aggregateIngredients(ingredientList) {
 }
 
 // 依日期彙總所有「已確認」訂單的採購量
-function getPurchaseListByDate(date) {
-  const orders = db
+export async function getPurchaseListByDate(db, date) {
+  const { results: orders } = await db
     .prepare(`SELECT id FROM orders WHERE delivery_date = ? AND menu_status = 'confirmed'`)
-    .all(date);
+    .bind(date)
+    .all();
 
   const allIngredients = [];
   const orderSummaries = [];
   for (const o of orders) {
-    const breakdown = getOrderIngredientBreakdown(o.id);
+    const breakdown = await getOrderIngredientBreakdown(db, o.id);
     if (!breakdown) continue;
     allIngredients.push(...breakdown.aggregated);
     orderSummaries.push({
@@ -91,8 +98,3 @@ function getPurchaseListByDate(date) {
 function round2(n) {
   return Math.round(n * 100) / 100;
 }
-
-module.exports = {
-  getOrderIngredientBreakdown,
-  getPurchaseListByDate,
-};

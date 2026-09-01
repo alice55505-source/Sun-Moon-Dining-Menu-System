@@ -1,7 +1,7 @@
-const db = require('./db');
-
 // 範例菜色資料庫（僅供系統初次啟動示範使用，之後可在「菜色資料庫」頁面自行新增/修改/刪除）
 // ingredients 為主要食材，不含調味料；qty 為「每桌（每一份訂購數量）」用量
+// 這份資料是 migrations/0002_seed.sql 的來源，修改後請重新執行：
+//   node scripts/generate-seed-sql.js
 const DISHES = [
   // ---- 主食 ----
   { name: '白飯', category: '主食', protein_type: '素', cooking_method: '煮', color_tag: '白', price: 20,
@@ -106,65 +106,16 @@ const DISHES = [
     ingredients: [{ name: '柳橙原汁', qty: 1500, unit: 'ml' }] },
 ];
 
-function seed() {
-  const count = db.prepare('SELECT COUNT(*) AS c FROM dishes').get().c;
-  if (count > 0) return;
+// 示範月菜單：主菜2(各配一般/不豬替代共4)、副菜2、時蔬2
+const MONTHLY_PLAN = [
+  ['主菜', '一般', '紅燒獅子頭', 1],
+  ['主菜', '不豬', '香煎雞腿排', 1],
+  ['主菜', '一般', '糖醋排骨', 2],
+  ['主菜', '不豬', '樹子蒸鱈魚', 2],
+  ['副菜', '一般', '滷豆干海帶', 1],
+  ['副菜', '一般', '涼拌小黃瓜', 2],
+  ['時蔬', '一般', '清炒高麗菜', 1],
+  ['時蔬', '一般', '炒地瓜葉', 2],
+];
 
-  const insertDish = db.prepare(`
-    INSERT INTO dishes (name, category, is_pork, protein_type, cooking_method, color_tag, is_spicy, is_soft, price, notes)
-    VALUES (@name, @category, @is_pork, @protein_type, @cooking_method, @color_tag, @is_spicy, @is_soft, @price, @notes)
-  `);
-  const insertIngredient = db.prepare(`
-    INSERT INTO dish_ingredients (dish_id, name, qty, unit) VALUES (?, ?, ?, ?)
-  `);
-
-  const insertAll = db.transaction((dishes) => {
-    const ids = {};
-    for (const d of dishes) {
-      const info = insertDish.run({
-        name: d.name,
-        category: d.category,
-        is_pork: d.is_pork ? 1 : 0,
-        protein_type: d.protein_type || '素',
-        cooking_method: d.cooking_method || '其他',
-        color_tag: d.color_tag || '其他',
-        is_spicy: d.is_spicy ? 1 : 0,
-        is_soft: d.is_soft ? 1 : 0,
-        price: d.price || 0,
-        notes: d.notes || '',
-      });
-      const dishId = info.lastInsertRowid;
-      ids[d.name] = dishId;
-      for (const ing of d.ingredients || []) {
-        insertIngredient.run(dishId, ing.name, ing.qty, ing.unit);
-      }
-    }
-    return ids;
-  });
-
-  const ids = insertAll(DISHES);
-
-  // 示範月菜單（本月）：主菜2(各配一般/不豬替代共4)、副菜2、時蔬2
-  const month = new Date().toISOString().slice(0, 7);
-  const insertMenuItem = db.prepare(`
-    INSERT INTO monthly_menu_items (month, slot_category, variant, dish_id, sort_order) VALUES (?, ?, ?, ?, ?)
-  `);
-  const monthlyPlan = [
-    ['主菜', '一般', '紅燒獅子頭', 1],
-    ['主菜', '不豬', '香煎雞腿排', 1],
-    ['主菜', '一般', '糖醋排骨', 2],
-    ['主菜', '不豬', '樹子蒸鱈魚', 2],
-    ['副菜', '一般', '滷豆干海帶', 1],
-    ['副菜', '一般', '涼拌小黃瓜', 2],
-    ['時蔬', '一般', '清炒高麗菜', 1],
-    ['時蔬', '一般', '炒地瓜葉', 2],
-  ];
-  const insertMonthly = db.transaction((rows) => {
-    for (const [slot, variant, name, order] of rows) {
-      if (ids[name] != null) insertMenuItem.run(month, slot, variant, ids[name], order);
-    }
-  });
-  insertMonthly(monthlyPlan);
-}
-
-module.exports = seed;
+module.exports = { DISHES, MONTHLY_PLAN };

@@ -5,7 +5,7 @@
 // 4. 主菜和副菜不能用同一種肉類（同一保護級蛋白質重疊）
 // 5. 辣菜只能1~2樣
 
-function validateMonthlyMenu(items) {
+export function validateMonthlyMenu(items) {
   // items: [{ slot_category, variant, dish }] dish has name/cooking_method/color_tag/is_spicy/protein_type
   const warnings = [];
 
@@ -78,5 +78,3 @@ function validateMonthlyMenu(items) {
 
   return warnings;
 }
-
-module.exports = { validateMonthlyMenu };

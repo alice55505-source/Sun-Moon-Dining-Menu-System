@@ -1,36 +1,37 @@
-const db = require('./db');
-
 // 客製化菜單樣數上限採兩段式：總價200元以內最多6樣；一旦總價超過200元，
 // 上限放寬為12樣（超過200元後可由使用者手動新增至上限）。
-const PRICE_THRESHOLD = 200;
-const LOW_TIER_MAX_ITEMS = 6;
-const HIGH_TIER_MAX_ITEMS = 12;
+export const PRICE_THRESHOLD = 200;
+export const LOW_TIER_MAX_ITEMS = 6;
+export const HIGH_TIER_MAX_ITEMS = 12;
 
-function getMaxItemsForPrice(totalPrice) {
+export function getMaxItemsForPrice(totalPrice) {
   return totalPrice > PRICE_THRESHOLD ? HIGH_TIER_MAX_ITEMS : LOW_TIER_MAX_ITEMS;
 }
 
 // 自動產生建議菜單時，預設鎖定在基本檔次（200元內、6樣）
-const MAX_ITEMS = LOW_TIER_MAX_ITEMS;
-const MAX_PRICE = PRICE_THRESHOLD;
+export const MAX_ITEMS = LOW_TIER_MAX_ITEMS;
+export const MAX_PRICE = PRICE_THRESHOLD;
 
 function getMonth(dateStr) {
   return (dateStr || '').slice(0, 7);
 }
 
-function fetchMonthlySlot(month, slotCategory) {
-  return db
+async function fetchMonthlySlot(db, month, slotCategory) {
+  const { results } = await db
     .prepare(
       `SELECT mmi.variant, d.* FROM monthly_menu_items mmi
        JOIN dishes d ON d.id = mmi.dish_id
        WHERE mmi.month = ? AND mmi.slot_category = ?
        ORDER BY mmi.sort_order`
     )
-    .all(month, slotCategory);
+    .bind(month, slotCategory)
+    .all();
+  return results;
 }
 
-function fetchDishPool(category) {
-  return db.prepare(`SELECT * FROM dishes WHERE category = ?`).all(category);
+async function fetchDishPool(db, category) {
+  const { results } = await db.prepare(`SELECT * FROM dishes WHERE category = ?`).bind(category).all();
+  return results;
 }
 
 function applyOptionFilters(pool, order) {
@@ -67,18 +68,18 @@ function sortPool(pool, order) {
     .map((x) => x.d);
 }
 
-function generateCustomMenu(order) {
+export async function generateCustomMenu(db, order) {
   const month = getMonth(order.delivery_date);
   const warnings = [];
 
-  let mains = fetchMonthlySlot(month, '主菜');
-  let sides = fetchMonthlySlot(month, '副菜');
-  let vegSlot = fetchMonthlySlot(month, '時蔬');
-  const vegPool = fetchDishPool('配菜');
-  const staplePool = fetchDishPool('主食');
-  const soupPool = fetchDishPool('湯品');
-  const dessertPool = fetchDishPool('甜點');
-  const drinkPool = fetchDishPool('飲料');
+  let mains = await fetchMonthlySlot(db, month, '主菜');
+  let sides = await fetchMonthlySlot(db, month, '副菜');
+  let vegSlot = await fetchMonthlySlot(db, month, '時蔬');
+  const vegPool = await fetchDishPool(db, '配菜');
+  const staplePool = await fetchDishPool(db, '主食');
+  const soupPool = await fetchDishPool(db, '湯品');
+  const dessertPool = await fetchDishPool(db, '甜點');
+  const drinkPool = await fetchDishPool(db, '飲料');
 
   if (mains.length === 0 || sides.length === 0 || vegSlot.length === 0) {
     warnings.push(`本月（${month}）尚未設定完整的月菜單（主菜/副菜/時蔬），請先於「月菜單管理」建立本月菜單`);
@@ -123,8 +124,8 @@ function generateCustomMenu(order) {
     warnings.push('無法在預算內加入主食，請確認主食價格設定');
   }
 
-  // 2) 主菜：一般預設抓2樣，粗飽選項優先保留主菜名額
-  const mainCount = order.opt_hearty ? 2 : 2;
+  // 2) 主菜：預設抓2樣
+  const mainCount = 2;
   let mainAdded = 0;
   for (const d of sortedMains) {
     if (mainAdded >= mainCount) break;
@@ -170,13 +171,3 @@ function generateCustomMenu(order) {
     warnings,
   };
 }
-
-module.exports = {
-  generateCustomMenu,
-  MAX_ITEMS,
-  MAX_PRICE,
-  PRICE_THRESHOLD,
-  LOW_TIER_MAX_ITEMS,
-  HIGH_TIER_MAX_ITEMS,
-  getMaxItemsForPrice,
-};

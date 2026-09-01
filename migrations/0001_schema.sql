@@ -1,12 +1,3 @@
-const path = require('path');
-const Database = require('better-sqlite3');
-
-const DB_PATH = path.join(__dirname, '..', 'data', 'menu-system.db');
-const db = new Database(DB_PATH);
-db.pragma('journal_mode = WAL');
-db.pragma('foreign_keys = ON');
-
-db.exec(`
 CREATE TABLE IF NOT EXISTS dishes (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL,
@@ -77,6 +68,3 @@ CREATE TABLE IF NOT EXISTS order_menu_items (
   price REAL NOT NULL DEFAULT 0,
   sort_order INTEGER NOT NULL DEFAULT 0
 );
-`);
-
-module.exports = db;
